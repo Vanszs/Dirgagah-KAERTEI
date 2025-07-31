@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="logo-krti25.png" alt="KAERTEI 2025" width="200"/>
+<img src="logo-krti25.png" alt="KAERTEI 2025" width="500"/>
 
 # KAERTEI 2025 FAIO Drone System
 
@@ -11,7 +11,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-yellow?logo=python&logoColor=white)](https://python.org/)
 [![License](https://img.shields.io/badge/License-MIT-red)](LICENSE)
 
-<img src="HumbleHawksbill_TransparentBG-NoROS.png" alt="ROS 2 Humble" width="150"/>
+<img src="HumbleHawksbill_TransparentBG-NoROS.png" alt="ROS 2 Humble" width="350"/>
 
 *Powered by ROS 2 Humble Hawksbill*
 
