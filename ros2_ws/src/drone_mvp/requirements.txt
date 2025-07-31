@@ -7,9 +7,9 @@ geometry_msgs
 sensor_msgs
 nav_msgs
 
-# MAVROS for ArduPilot communication
-mavros>=2.0.0
-mavros-msgs>=2.0.0
+# NOTE: MAVROS must be installed via apt, not pip:
+# sudo apt install ros-humble-mavros ros-humble-mavros-extras
+# MAVROS packages are not available via pip
 
 # Computer Vision
 opencv-python>=4.5.0

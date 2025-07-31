@@ -1,6 +1,6 @@
 <div align="center">
 
-![KAERTEI 2025](logo-krti25.png)
+<img src="logo-kaertei25.png" alt="KAERTEI 2025" width="200"/>
 
 # KAERTEI 2025 FAIO Drone System
 
@@ -11,7 +11,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-yellow?logo=python&logoColor=white)](https://python.org/)
 [![License](https://img.shields.io/badge/License-MIT-red)](LICENSE)
 
-![ROS 2 Humble](HumbleHawksbill_TransparentBG-NoROS.png)
+<img src="HumbleHawksbill_TransparentBG-NoROS.png" alt="ROS 2 Humble" width="150"/>
 
 *Powered by ROS 2 Humble Hawksbill*
 
@@ -537,7 +537,7 @@ sudo chmod 666 /dev/ttyUSB0
 ros2 topic echo /mavros/state --once
 
 # Manual MAVROS launch
-ros2 launch mavros px4.launch.py fcu_url:="serial:///dev/ttyUSB0:57600"
+ros2 launch mavros apm.launch.py fcu_url:="serial:///dev/ttyUSB0:57600"
 ```
 
 ### GPS Troubleshooting
