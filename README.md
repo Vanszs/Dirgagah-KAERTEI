@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="logo-krti25" alt="KAERTEI 2025" width="200"/>
+<img src="logo-krti25.png" alt="KAERTEI 2025" width="200"/>
 
 # KAERTEI 2025 FAIO Drone System
 
