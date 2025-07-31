@@ -1,0 +1,40 @@
+# Requirements for KAERTEI 2025 FAIO Drone System
+
+# Core ROS 2 and Python dependencies
+rclpy>=3.3.0
+std_msgs
+geometry_msgs
+sensor_msgs
+nav_msgs
+
+# MAVROS for ArduPilot communication
+mavros>=2.0.0
+mavros-msgs>=2.0.0
+
+# Computer Vision
+opencv-python>=4.5.0
+cv-bridge
+ultralytics>=8.0.0  # YOLOv8
+numpy>=1.20.0
+Pillow>=8.0.0
+
+# Hardware interfaces (uncomment if using real hardware)
+# RPi.GPIO>=0.7.1
+# adafruit-circuitpython-vl53l0x>=3.6.0
+# adafruit-blinka>=8.0.0
+
+# Mathematical and scientific computing
+scipy>=1.7.0
+matplotlib>=3.3.0
+
+# Additional utilities
+PyYAML>=5.4.0
+transforms3d>=0.3.1
+
+# Optional: Development and debugging tools
+# rqt-common-plugins
+# rqt-graph
+# rqt-console
+
+# For simulation/testing (optional)
+# gazebo-ros-pkgs

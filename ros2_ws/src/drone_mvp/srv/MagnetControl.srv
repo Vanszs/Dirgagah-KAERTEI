@@ -1,0 +1,5 @@
+string magnet_position  # "front" or "back" 
+bool activate           # true = ON, false = OFF
+---
+bool success
+string message
