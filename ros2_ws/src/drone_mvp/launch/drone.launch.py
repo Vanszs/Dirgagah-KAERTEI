@@ -71,7 +71,7 @@ def generate_launch_description():
             PathJoinSubstitution([
                 FindPackageShare('mavros'),
                 'launch',
-                'px4.launch.py'
+                'apm.launch'
             ])
         ]),
         launch_arguments={

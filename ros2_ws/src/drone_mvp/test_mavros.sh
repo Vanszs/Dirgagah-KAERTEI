@@ -53,7 +53,7 @@ test_mavros() {
     echo "Starting MAVROS..."
     
     # Launch MAVROS in background
-    ros2 launch mavros px4.launch.py fcu_url:="$FCU_URL" gcs_url:="$GCS_URL" &
+    ros2 launch mavros apm.launch fcu_url:="$FCU_URL" gcs_url:="$GCS_URL" &
     MAVROS_PID=$!
     
     echo "MAVROS PID: $MAVROS_PID"
@@ -105,7 +105,7 @@ test_services() {
     echo "Testing MAVROS services..."
     
     # Launch MAVROS in background
-    ros2 launch mavros px4.launch.py fcu_url:="$FCU_URL" gcs_url:="$GCS_URL" &
+    ros2 launch mavros apm.launch fcu_url:="$FCU_URL" gcs_url:="$GCS_URL" &
     MAVROS_PID=$!
     
     sleep 10
@@ -225,5 +225,5 @@ echo "3. ArduPilot firmware compatibility"
 echo "4. USB port permissions: sudo chmod 666 /dev/ttyUSB0"
 echo ""
 echo "Manual MAVROS launch:"
-echo "ros2 launch mavros px4.launch.py fcu_url:=\"$FCU_URL\" gcs_url:=\"$GCS_URL\""
+echo "ros2 launch mavros apm.launch fcu_url:=\"$FCU_URL\" gcs_url:=\"$GCS_URL\""
 echo "============================================"

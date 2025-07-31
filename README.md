@@ -1,8 +1,8 @@
 <div align="center">
 
-![KAERTEI 2025](https://raw.githubusercontent.com/your-repo/assets/main/kaertei-2025-logo.png)
+![KAERTEI 2025](logo-krti25.png)
 
-# 🚁 KAERTEI 2025 FAIO Drone System Dibuat oleh Bevan sendiri 💦💦
+# KAERTEI 2025 FAIO Drone System
 
 ### *Fully Autonomous Indoor-Outdoor Competition Ready*
 
@@ -11,7 +11,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-yellow?logo=python&logoColor=white)](https://python.org/)
 [![License](https://img.shields.io/badge/License-MIT-red)](LICENSE)
 
-![ROS 2 Humble](https://raw.githubusercontent.com/your-repo/assets/main/humble-hawksbill-logo.png)
+![ROS 2 Humble](HumbleHawksbill_TransparentBG-NoROS.png)
 
 *Powered by ROS 2 Humble Hawksbill*
 
@@ -19,32 +19,32 @@
 
 ---
 
-## 🎯 **Deskripsi**
+## Deskripsi
 
-Sistem drone VTOL autonomous yang **komprehensif** dan **siap kompetisi** untuk KAERTEI 2025 Divisi **Fully Autonomous Indoor-Outdoor (FAIO)**. Dibangun dengan teknologi terdepan dan arsitektur yang robust untuk menjamin performa maksimal.
+Sistem drone VTOL autonomous yang komprehensif dan siap kompetisi untuk KAERTEI 2025 Divisi Fully Autonomous Indoor-Outdoor (FAIO). Dibangun dengan teknologi terdepan dan arsitektur yang robust untuk menjamin performa maksimal.
 
-### 🛠️ **Tech Stack Unggulan**
-- 🎮 **Hardware**: Pixhawk 2.1 Cube Orange (Industrial Grade)
-- 🧠 **Firmware**: ArduPilot (Proven & Reliable)  
-- 🌉 **Communication**: MAVROS Bridge ke ROS 2
-- 📡 **GCS**: QGroundControl (Professional Mission Planning)
+### Tech Stack Unggulan
+- **Hardware**: Pixhawk 2.1 Cube Orange (Industrial Grade)
+- **Firmware**: ArduPilot (Proven & Reliable)  
+- **Communication**: MAVROS Bridge ke ROS 2
+- **GCS**: QGroundControl (Professional Mission Planning)
 
 ---
 
-## 🏗️ **Arsitektur Sistem**
+## Arsitektur Sistem
 
 <div align="center">
 
 ```mermaid
 graph TB
-    A[🎮 QGroundControl] --> B[📡 MAVROS Bridge]
-    B --> C[🧠 ArduPilot Firmware]
-    C --> D[⚡ Pixhawk 2.1 Cube Orange]
+    A[QGroundControl] --> B[MAVROS Bridge]
+    B --> C[ArduPilot Firmware]
+    C --> D[Pixhawk 2.1 Cube Orange]
     
-    E[👁️ Vision System] --> F[🤖 ROS 2 Nodes]
-    G[📏 ToF Sensors] --> F
-    H[🛰️ GPS/IMU] --> F
-    I[🧲 Electromagnets] --> F
+    E[Vision System] --> F[ROS 2 Nodes]
+    G[ToF Sensors] --> F
+    H[GPS/IMU] --> F
+    I[Electromagnets] --> F
     
     F --> B
     
@@ -57,33 +57,33 @@ graph TB
 
 </div>
 
-### 🎯 **Hardware Konfigurasi Elite**
+### Hardware Konfigurasi Elite
 
 | Komponen | Spesifikasi | Fungsi |
 |----------|-------------|---------|
-| 🚁 **Drone Platform** | Hexacopter VTOL | Stabilitas & Redundancy |
-| 🎛️ **Flight Controller** | Pixhawk 2.1 Cube Orange | Kontrol penerbangan presisi |
-| 👁️ **Vision System** | 3x Kamera (Depan/Belakang/Atas) | Computer vision & navigasi |
-| 📏 **Distance Sensors** | 3x ToF (Kiri/Kanan/Depan) | Obstacle avoidance |
-| 🧲 **Actuators** | 2x Electromagnet + Relay | Pickup & drop mechanism |
-| 🛰️ **Navigation** | GPS + IMU + Compass | Positioning & orientation |
-| 🔋 **Power System** | 4S LiPo dengan monitoring | Extended flight time |
+| **Drone Platform** | Hexacopter VTOL | Stabilitas & Redundancy |
+| **Flight Controller** | Pixhawk 2.1 Cube Orange | Kontrol penerbangan presisi |
+| **Vision System** | 3x Kamera (Depan/Belakang/Atas) | Computer vision & navigasi |
+| **Distance Sensors** | 3x ToF (Kiri/Kanan/Depan) | Obstacle avoidance |
+| **Actuators** | 2x Electromagnet + Relay | Pickup & drop mechanism |
+| **Navigation** | GPS + IMU + Compass | Positioning & orientation |
+| **Power System** | 4S LiPo dengan monitoring | Extended flight time |
 
-### 💻 **Software Stack**
+### Software Stack
 
 <div align="center">
 
 ```ascii
 ┌─────────────────────────────────────────┐
-│     🎯 Mission Control (Python)        │ ← Your Application Layer
+│     Mission Control (Python)           │ ← Your Application Layer
 ├─────────────────────────────────────────┤
-│        🤖 ROS 2 Nodes Network          │ ← Intelligent Coordination  
+│        ROS 2 Nodes Network             │ ← Intelligent Coordination  
 ├─────────────────────────────────────────┤
-│           📡 MAVROS Bridge             │ ← Protocol Translation
+│           MAVROS Bridge                │ ← Protocol Translation
 ├─────────────────────────────────────────┤
-│        🧠 ArduPilot Firmware           │ ← Flight Control Logic
+│        ArduPilot Firmware              │ ← Flight Control Logic
 ├─────────────────────────────────────────┤
-│      ⚡ Pixhawk 2.1 Cube Orange        │ ← Hardware Abstraction
+│      Pixhawk 2.1 Cube Orange           │ ← Hardware Abstraction
 └─────────────────────────────────────────┘
 ```
 
@@ -91,14 +91,14 @@ graph TB
 
 ---
 
-## 🧩 **Node Architecture**
+## Node Architecture
 
 <div align="center">
 
-### 🎯 **Core Mission Intelligence**
+### Core Mission Intelligence
 ```
 ┌─────────────────────────────────────┐
-│        🧠 mission_node.py           │
+│        mission_node.py              │
 │     (Finite State Machine)         │
 │   ┌─────────────────────────────┐   │
 │   │ 22 States Mission Flow      │   │
@@ -111,54 +111,54 @@ graph TB
 
 </div>
 
-### 👁️ **Vision System Modules**
+### Vision System Modules
 
 | Node | Teknologi | Fungsi Spesifik |
 |------|-----------|-----------------|
-| `vision_detector_node.py` | 🔥 **YOLOv8** | Multi-camera object detection |
-| `exit_detector.py` | 📐 **OpenCV** | Exit gate detection (top camera) |
-| `dropzone_detector.py` | 🎯 **Computer Vision** | Basket detection (indoor/outdoor) |
+| `vision_detector_node.py` | **YOLOv8** | Multi-camera object detection |
+| `exit_detector.py` | **OpenCV** | Exit gate detection (top camera) |
+| `dropzone_detector.py` | **Computer Vision** | Basket detection (indoor/outdoor) |
 
-### 🧭 **Navigation & Control Suite**
+### Navigation & Control Suite
 
 | Node | Capability | Advanced Features |
 |------|------------|-------------------|
-| `sensor_monitor.py` | 📏 **ToF Integration** | Real-time obstacle avoidance |
-| `kalibrasi_navigator.py` | 🎯 **Auto-centering** | Drift correction algorithm |
-| `gps_monitor.py` | 🛰️ **GPS Analytics** | Movement detection & quality |
-| `waypoint_controller.py` | 🗺️ **Path Planning** | Outdoor waypoint navigation |
-| `flight_mode_switcher.py` | ✈️ **MAVROS Control** | ArduPilot mode management |
+| `sensor_monitor.py` | **ToF Integration** | Real-time obstacle avoidance |
+| `kalibrasi_navigator.py` | **Auto-centering** | Drift correction algorithm |
+| `gps_monitor.py` | **GPS Analytics** | Movement detection & quality |
+| `waypoint_controller.py` | **Path Planning** | Outdoor waypoint navigation |
+| `flight_mode_switcher.py` | **MAVROS Control** | ArduPilot mode management |
 
-### ⚙️ **Hardware Interface Layer**
+### Hardware Interface Layer
 
 | Node | Hardware Control | Safety Features |
 |------|------------------|-----------------|
-| `magnet_control.py` | 🧲 **Electromagnetic Relays** | Auto-release on disarm |
+| `magnet_control.py` | **Electromagnetic Relays** | Auto-release on disarm |
 
 ---
 
-## 🎮 **Mission Flow Diagram**
+## Mission Flow Diagram
 
 <div align="center">
 
 ```mermaid
 flowchart TD
-    A[🚀 TAKEOFF] --> B[🏠 INDOOR PHASE]
-    B --> C[🔍 Search Item 1]
-    C --> D[🎯 Pickup Item 1]
-    D --> E[🔍 Search Item 2]
-    E --> F[🎯 Pickup Item 2]
-    F --> G[🔄 Navigate Turn]
-    G --> H[🎪 Search Dropzone]
-    H --> I[📦 Drop Items]
-    I --> J[🚪 Find Exit]
-    J --> K[🌍 OUTDOOR PHASE]
-    K --> L[🛰️ GPS Mission]
-    L --> M[🎯 Pickup Outdoor]
-    M --> N[🔙 Return Mission]
-    N --> O[🎪 Hover Search]
-    O --> P[📦 Drop Outdoor]
-    P --> Q[🏁 LANDING]
+    A[TAKEOFF] --> B[INDOOR PHASE]
+    B --> C[Search Item 1]
+    C --> D[Pickup Item 1]
+    D --> E[Search Item 2]
+    E --> F[Pickup Item 2]
+    F --> G[Navigate Turn]
+    G --> H[Search Dropzone]
+    H --> I[Drop Items]
+    I --> J[Find Exit]
+    J --> K[OUTDOOR PHASE]
+    K --> L[GPS Mission]
+    L --> M[Pickup Outdoor]
+    M --> N[Return Mission]
+    N --> O[Hover Search]
+    O --> P[Drop Outdoor]
+    P --> Q[LANDING]
     
     style A fill:#4caf50
     style K fill:#2196f3
@@ -167,58 +167,58 @@ flowchart TD
 
 </div>
 
-### 🏠 **Indoor Phase** (Precision Navigation)
+### Indoor Phase (Precision Navigation)
 
 | Step | Action | Technology Used | Duration |
 |------|--------|-----------------|----------|
-| 1️⃣ | **Takeoff** | MAVROS GUIDED mode → 1.5m | ~30s |
-| 2️⃣ | **Search Item 1** | Front camera + YOLOv8 | ~60s |
-| 3️⃣ | **Pickup Item 1** | Visual alignment + Magnet | ~20s |
-| 4️⃣ | **Search Item 2** | Back camera + YOLOv8 | ~60s |
-| 5️⃣ | **Pickup Item 2** | Visual alignment + Magnet | ~20s |
-| 6️⃣ | **Navigate Turn** | ToF sensor-based turn detection | ~30s |
-| 7️⃣ | **Search Dropzone** | Front camera + basket detection | ~45s |
-| 8️⃣ | **Drop Items** | Sequential electromagnet release | ~15s |
-| 9️⃣ | **Find Exit** | Top camera + gate detection | ~30s |
-| 🔟 | **Exit Indoor** | Transition to outdoor zone | ~20s |
+| 1 | **Takeoff** | MAVROS GUIDED mode → 1.5m | ~30s |
+| 2 | **Search Item 1** | Front camera + YOLOv8 | ~60s |
+| 3 | **Pickup Item 1** | Visual alignment + Magnet | ~20s |
+| 4 | **Search Item 2** | Back camera + YOLOv8 | ~60s |
+| 5 | **Pickup Item 2** | Visual alignment + Magnet | ~20s |
+| 6 | **Navigate Turn** | ToF sensor-based turn detection | ~30s |
+| 7 | **Search Dropzone** | Front camera + basket detection | ~45s |
+| 8 | **Drop Items** | Sequential electromagnet release | ~15s |
+| 9 | **Find Exit** | Top camera + gate detection | ~30s |
+| 10 | **Exit Indoor** | Transition to outdoor zone | ~20s |
 
-### 🌍 **Outdoor Phase** (GPS Navigation)
+### Outdoor Phase (GPS Navigation)
 
 | Step | Action | Technology Used | Distance |
 |------|--------|-----------------|----------|
-| 1️⃣ | **GPS Mission** | ArduPilot AUTO mode | ~30m |
-| 2️⃣ | **GPS Fallback** | GUIDED + dead reckoning (if needed) | Variable |
-| 3️⃣ | **Pickup Outdoor** | YOLOv8 + magnet system | Target zone |
-| 4️⃣ | **Return Mission** | GPS waypoint navigation | ~100m |
-| 5️⃣ | **Hover Search** | 97m threshold + vision search | ~3m radius |
-| 6️⃣ | **Drop Outdoor** | Electromagnet release | Target zone |
-| 7️⃣ | **Landing** | ArduPilot LAND mode | Landing pad |
+| 1 | **GPS Mission** | ArduPilot AUTO mode | ~30m |
+| 2 | **GPS Fallback** | GUIDED + dead reckoning (if needed) | Variable |
+| 3 | **Pickup Outdoor** | YOLOv8 + magnet system | Target zone |
+| 4 | **Return Mission** | GPS waypoint navigation | ~100m |
+| 5 | **Hover Search** | 97m threshold + vision search | ~3m radius |
+| 6 | **Drop Outdoor** | Electromagnet release | Target zone |
+| 7 | **Landing** | ArduPilot LAND mode | Landing pad |
 
 ---
 
-## 🎛️ **Flight Modes** (ArduPilot Integration)
+## Flight Modes (ArduPilot Integration)
 
 <div align="center">
 
 | Mode | Purpose | Usage | Safety Level |
 |------|---------|-------|--------------|
-| 🎯 **GUIDED** | Manual ROS 2 setpoints | Indoor precision | 🟢 High |
-| 🛰️ **AUTO** | GPS mission waypoints | Outdoor navigation | 🟢 High |
-| 🏁 **LAND** | Autonomous landing | Mission completion | 🟡 Medium |
-| ⚠️ **STABILIZE** | Manual emergency control | Emergency only | 🔴 Manual |
+| **GUIDED** | Manual ROS 2 setpoints | Indoor precision | High |
+| **AUTO** | GPS mission waypoints | Outdoor navigation | High |
+| **LAND** | Autonomous landing | Mission completion | Medium |
+| **STABILIZE** | Manual emergency control | Emergency only | Manual |
 
 </div>
 
 ---
 
-## 📡 **Topic Architecture**
+## Topic Architecture
 
-### 🎮 **Command & Control Topics**
+### Command & Control Topics
 
 <div align="center">
 
 ```
-🧠 Mission Intelligence
+Mission Intelligence
 ├── /mission/state              → Current FSM state
 ├── /mission/command            → Mission commands  
 ├── /mavros/set_mode            → ArduPilot mode control
@@ -227,12 +227,12 @@ flowchart TD
 
 </div>
 
-### 👁️ **Vision & Detection Topics**
+### Vision & Detection Topics
 
 <div align="center">
 
 ```
-👁️ Computer Vision
+Computer Vision
 ├── /vision/camera_enable       → Enable specific camera
 ├── /vision/detection           → YOLOv8 detection results
 ├── /vision/exit_detected       → Exit gate detection
@@ -244,12 +244,12 @@ flowchart TD
 
 </div>
 
-### 🧭 **Navigation & Sensor Topics**
+### Navigation & Sensor Topics
 
 <div align="center">
 
 ```
-🛰️ Navigation System
+Navigation System
 ├── /sensors/status            → ToF sensor readings
 ├── /gps/moving_status         → GPS movement detection
 ├── /waypoint/distance         → Distance to target waypoint
@@ -260,12 +260,12 @@ flowchart TD
 
 </div>
 
-### ⚙️ **Hardware Control Topics**
+### Hardware Control Topics
 
 <div align="center">
 
 ```
-🔧 Hardware Interface
+Hardware Interface
 ├── /hardware/magnet_control   → Electromagnet service
 ├── /mavros/setpoint_position/* → Position control
 └── /mavros/setpoint_velocity/* → Velocity control
@@ -277,53 +277,53 @@ flowchart TD
 
 ---
 
-## 🚀 **Installation & Setup**
+## Installation & Setup
 
-### 📋 **Prerequisites**
+### Prerequisites
 
 <div align="center">
 
 | Component | Version | Installation Command |
 |-----------|---------|---------------------|
-| 🤖 **ROS 2** | Humble | `sudo apt install ros-humble-desktop` |
-| 📡 **MAVROS** | Latest | `sudo apt install ros-humble-mavros*` |
-| 🐍 **Python** | 3.8+ | Pre-installed with ROS 2 |
-| 👁️ **OpenCV** | 4.5+ | `pip3 install opencv-python` |
-| 🔥 **YOLOv8** | Latest | `pip3 install ultralytics` |
+| **ROS 2** | Humble | `sudo apt install ros-humble-desktop` |
+| **MAVROS** | Latest | `sudo apt install ros-humble-mavros*` |
+| **Python** | 3.8+ | Pre-installed with ROS 2 |
+| **OpenCV** | 4.5+ | `pip3 install opencv-python` |
+| **YOLOv8** | Latest | `pip3 install ultralytics` |
 
 </div>
 
-### ⚡ **Quick Setup** (Automated)
+### Quick Setup (Automated)
 
 ```bash
-# 🎯 Clone repository
+# Clone repository
 git clone https://github.com/your-username/kaertei-2025-faio.git
 cd kaertei-2025-faio
 
-# 🛠️ Run automated setup
+# Run automated setup
 chmod +x src/drone_mvp/setup.sh
 ./src/drone_mvp/setup.sh
 
-# 🏗️ Build workspace
+# Build workspace
 colcon build --packages-select drone_mvp
 source install/setup.bash
 ```
 
-### 🎮 **Launch Options**
+### Launch Options
 
 <div align="center">
 
-#### **🥇 Recommended: All-in-One Manager**
+#### **Recommended: All-in-One Manager**
 ```bash
 ./src/drone_mvp/drone_manager.sh mission --camera front
 ```
 
-#### **🎯 Direct Launch**
+#### **Direct Launch**
 ```bash
 ros2 launch drone_mvp drone.launch.py
 ```
 
-#### **⚙️ Custom FCU Connection**
+#### **Custom FCU Connection**
 ```bash
 ros2 launch drone_mvp drone.launch.py fcu_url:="serial:///dev/ttyACM0:115200"
 ```
@@ -332,53 +332,53 @@ ros2 launch drone_mvp drone.launch.py fcu_url:="serial:///dev/ttyACM0:115200"
 
 ---
 
-## ⚙️ **Configuration**
+## Configuration
 
-### 📡 **MAVROS Connection Settings**
+### MAVROS Connection Settings
 
 Edit `config/mavros_config.yaml`:
 ```yaml
-# 🔌 Flight Controller Connection
+# Flight Controller Connection
 fcu_url: "serial:///dev/ttyUSB0:57600"  # Adjust for your Pixhawk
 gcs_url: "udp://@127.0.0.1:14550"      # QGroundControl connection
 
-# 🆔 System Identification  
+# System Identification  
 system_id: 1
 component_id: 1
 target_system_id: 1
 target_component_id: 1
 
-# 🛡️ Safety Parameters
+# Safety Parameters
 enable_heartbeat: true
 timeout_heartbeat: 5.0
 ```
 
-### 🎯 **Mission Parameters**
+### Mission Parameters
 
 Edit `config/competition_config.yaml`:
 ```yaml
-# 🏠 Indoor Mission Settings
+# Indoor Mission Settings
 mission:
   indoor_altitude: 1.5          # Meters
   outdoor_altitude: 3.0         # Meters
   mission_timeout: 900          # 15 minutes total
 
-# 📏 Sensor Thresholds
+# Sensor Thresholds
 sensors:
   tof:
     max_range: 4.0              # ToF sensor range
     detection_threshold: 1.5    # Obstacle detection
     
-# 🛰️ GPS Waypoints (🚨 UPDATE FOR YOUR VENUE!)
+# GPS Waypoints (UPDATE FOR YOUR VENUE!)
 waypoints:
   outdoor_pickup: 
-    latitude: -6.365000         # ⚠️ Set actual coordinates
-    longitude: 106.825000       # ⚠️ Set actual coordinates
+    latitude: -6.365000         # Set actual coordinates
+    longitude: 106.825000       # Set actual coordinates
     altitude: 30.0              # Meters above home
     
   outdoor_drop:
-    latitude: -6.364500         # ⚠️ Set actual coordinates  
-    longitude: 106.825500       # ⚠️ Set actual coordinates
+    latitude: -6.364500         # Set actual coordinates  
+    longitude: 106.825500       # Set actual coordinates
     altitude: 30.0              # Meters above home
 ```
 
@@ -527,108 +527,108 @@ safety:
 ### 📡 **MAVROS Connection Debug**
 
 ```bash
-# 🔍 Check USB devices
+# Check USB devices
 ls /dev/ttyUSB* /dev/ttyACM*
 
-# 🔧 Fix permissions  
+# Fix permissions  
 sudo chmod 666 /dev/ttyUSB0
 
-# 🧪 Test connection
+# Test connection
 ros2 topic echo /mavros/state --once
 
-# 🛠️ Manual MAVROS launch
+# Manual MAVROS launch
 ros2 launch mavros px4.launch.py fcu_url:="serial:///dev/ttyUSB0:57600"
 ```
 
-### 🛰️ **GPS Troubleshooting**
+### GPS Troubleshooting
 
 ```bash
-# 📊 Check GPS status
+# Check GPS status
 ros2 topic echo /mavros/global_position/global
 
-# 🎯 Monitor GPS quality
+# Monitor GPS quality
 ros2 topic echo /mavros/gpsstatus/gps1/raw
 
-# 🔍 Check satellite count
+# Check satellite count
 rostopic echo /mavros/global_position/compass_hdg
 ```
 
-### 👁️ **Vision System Debug**
+### Vision System Debug
 
 ```bash
-# 📹 List available cameras
+# List available cameras
 v4l2-ctl --list-devices
 
-# 🧪 Test individual camera
+# Test individual camera
 ros2 run drone_mvp vision_detector_node.py --camera front
 
-# 🎯 Check YOLOv8 model
+# Check YOLOv8 model
 python3 -c "from ultralytics import YOLO; YOLO('yolov8n.pt')"
 ```
 
 ---
 
-## 👥 **Support & Development**
+## Support & Development
 
 <div align="center">
 
-### 🏆 **Team Structure**
+### Team Structure
 
 | Role | Responsibility | Contact |
 |------|---------------|---------|
-| 🎯 **Mission Lead** | System integration & mission logic | mission@team.com |
-| ✈️ **Flight Control** | ArduPilot & MAVROS integration | flight@team.com |
-| 👁️ **Vision Engineer** | Computer vision & AI systems | vision@team.com |
-| ⚙️ **Hardware Lead** | Electronics & mechanical systems | hardware@team.com |
+| **Mission Lead** | System integration & mission logic | mission@team.com |
+| **Flight Control** | ArduPilot & MAVROS integration | flight@team.com |
+| **Vision Engineer** | Computer vision & AI systems | vision@team.com |
+| **Hardware Lead** | Electronics & mechanical systems | hardware@team.com |
 
 </div>
 
-### 📋 **Development Guidelines**
+### Development Guidelines
 
 ```bash
-# 🧪 Always test in simulation first
+# Always test in simulation first
 ./drone_manager.sh simulate
 
-# 🔍 Run hardware validation before flights  
+# Run hardware validation before flights  
 ./drone_manager.sh calibrate
 
-# 📊 Monitor system during development
+# Monitor system during development
 ./drone_manager.sh monitor
 ```
 
-### 📚 **Additional Resources**
+### Additional Resources
 
-- 📖 **ArduPilot Documentation**: https://ardupilot.org/copter/
-- 🤖 **ROS 2 Humble Docs**: https://docs.ros.org/en/humble/
-- 📡 **MAVROS Wiki**: http://wiki.ros.org/mavros
-- 🔥 **YOLOv8 Guide**: https://docs.ultralytics.com/
+- **ArduPilot Documentation**: https://ardupilot.org/copter/
+- **ROS 2 Humble Docs**: https://docs.ros.org/en/humble/
+- **MAVROS Wiki**: http://wiki.ros.org/mavros
+- **YOLOv8 Guide**: https://docs.ultralytics.com/
 
 ---
 
 <div align="center">
 
-## 🎉 **Ready for KAERTEI 2025 Competition!**
+## Ready for KAERTEI 2025 Competition!
 
 ![Competition Ready](https://img.shields.io/badge/Competition-Ready-brightgreen?style=for-the-badge&logo=drone&logoColor=white)
 
-### 🚁 **Launch Commands**
+### Launch Commands
 
 ```bash
-# 🎯 Full system check
+# Full system check
 ./drone_manager.sh calibrate
 
-# 🚀 Start mission  
+# Start mission  
 ./drone_manager.sh mission --camera front
 
-# 📊 Monitor system
+# Monitor system
 ./drone_manager.sh monitor
 ```
 
 ---
 
-**⚡ Built with passion for autonomous flight ⚡**
+**Built with passion for autonomous flight**
 
-**🏆 KAERTEI 2025 FAIO Division 🏆**
+**KAERTEI 2025 FAIO Division**
 
 *Last updated: August 2025*
 

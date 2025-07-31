@@ -28,7 +28,7 @@ class GPSMonitorNode(Node):
             ]
         )
         
-        # QoS profile for PX4 compatibility
+        # QoS profile for ArduPilot MAVROS compatibility
         qos_profile = QoSProfile(
             reliability=ReliabilityPolicy.BEST_EFFORT,
             history=HistoryPolicy.KEEP_LAST,

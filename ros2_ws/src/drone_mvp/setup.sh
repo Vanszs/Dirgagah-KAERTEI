@@ -176,7 +176,7 @@ EOF
 
 chmod +x "launch_drone.sh"
 
-# Create monitoring script
+# Update monitoring script untuk ArduPilot
 cat > "monitor_drone.sh" << 'EOF'
 #!/bin/bash
 # Monitoring script for KAERTEI 2025 Drone System
@@ -185,12 +185,13 @@ source /opt/ros/humble/setup.bash
 source install/setup.bash
 
 echo "Available monitoring commands:"
-echo "1. ros2 topic list                    - List all topics"
-echo "2. ros2 topic echo /mission/state     - Monitor mission state"
-echo "3. ros2 topic echo /sensors/status    - Monitor sensor status"
-echo "4. ros2 topic echo /gps/moving_status - Monitor GPS status"
-echo "5. rqt_console                        - Open log console"
-echo "6. rqt_graph                          - View node graph"
+echo "1. ros2 topic list                     - List all topics"
+echo "2. ros2 topic echo /mission/state      - Monitor mission state"
+echo "3. ros2 topic echo /mavros/state       - Monitor MAVROS state"
+echo "4. ros2 topic echo /sensors/status     - Monitor sensor status"
+echo "5. ros2 topic echo /gps/moving_status  - Monitor GPS status"
+echo "6. rqt_console                         - Open log console"
+echo "7. rqt_graph                           - View node graph"
 
 echo ""
 echo "Starting rqt_console for monitoring..."
