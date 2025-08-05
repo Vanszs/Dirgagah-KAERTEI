@@ -1,0 +1,89 @@
+[0.009s] Invoking command in '/home/vanszs/Documents/ros2/ros2_ws/build/drone_mvp': DEBUGINFOD_URLS=https://debuginfod.archlinux.org _=/usr/bin/env /usr/bin/cmake /home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp -DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/drone_mvp
+[0.022s] [0mCMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+[0.022s]   Compatibility with CMake < 3.10 will be removed from a future version of
+[0.022s]   CMake.
+[0.022s] 
+[0.022s]   Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+[0.022s]   to tell CMake that the project requires at least <min> but has been updated
+[0.022s]   to work with policies introduced by <max> or earlier.
+[0.022s] 
+[0.023s] [0m
+[0.058s] -- The C compiler identification is GNU 15.1.1
+[0.166s] -- The CXX compiler identification is GNU 15.1.1
+[0.177s] -- Detecting C compiler ABI info
+[0.269s] -- Detecting C compiler ABI info - done
+[0.284s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.284s] -- Detecting C compile features
+[0.285s] -- Detecting C compile features - done
+[0.301s] -- Detecting CXX compiler ABI info
+[0.425s] -- Detecting CXX compiler ABI info - done
+[0.441s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.441s] -- Detecting CXX compile features
+[0.441s] -- Detecting CXX compile features - done
+[0.451s] -- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.571s] -- Found Python3: /home/vanszs/Documents/ros2/ros2_env/bin/python3 (found version "3.13.5") found components: Interpreter
+[0.671s] -- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)
+[0.672s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.677s] -- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.710s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.741s] -- Found std_msgs: 4.8.0 (/opt/ros/humble/share/std_msgs/cmake)
+[0.777s] -- Found geometry_msgs: 4.8.0 (/opt/ros/humble/share/geometry_msgs/cmake)
+[0.792s] -- Found sensor_msgs: 4.8.0 (/opt/ros/humble/share/sensor_msgs/cmake)
+[0.954s] [31mCMake Error at /opt/ros/humble/share/rosidl_adapter/cmake/rosidl_adapt_interfaces.cmake:59 (message):
+[0.954s]   execute_process(/home/vanszs/Documents/ros2/ros2_env/bin/python3 -m
+[0.954s]   rosidl_adapter --package-name drone_mvp --arguments-file
+[0.954s]   /home/vanszs/Documents/ros2/ros2_ws/build/drone_mvp/rosidl_adapter__arguments__drone_mvp.json
+[0.954s]   --output-dir
+[0.954s]   /home/vanszs/Documents/ros2/ros2_ws/build/drone_mvp/rosidl_adapter/drone_mvp
+[0.954s]   --output-file
+[0.954s]   /home/vanszs/Documents/ros2/ros2_ws/build/drone_mvp/rosidl_adapter/drone_mvp.idls)
+[0.954s]   returned error code 1:
+[0.955s] 
+[0.955s]   AttributeError processing template 'msg.idl.em'
+[0.955s] 
+[0.955s]   Traceback (most recent call last):
+[0.955s] 
+[0.955s]     File "/opt/ros/humble/lib/python3.13/site-packages/rosidl_adapter/resource/__init__.py", line 51, in evaluate_template
+[0.955s]       em.BUFFERED_OPT: True,
+[0.955s]       ^^^^^^^^^^^^^^^
+[0.955s] 
+[0.955s]   AttributeError: module 'em' has no attribute 'BUFFERED_OPT'
+[0.955s] 
+[0.955s] 
+[0.955s] 
+[0.955s]   During handling of the above exception, another exception occurred:
+[0.955s] 
+[0.956s] 
+[0.956s] 
+[0.956s]   Traceback (most recent call last):
+[0.956s] 
+[0.956s]     File "<frozen runpy>", line 198, in _run_module_as_main
+[0.956s]     File "<frozen runpy>", line 88, in _run_code
+[0.956s]     File "/opt/ros/humble/lib/python3.13/site-packages/rosidl_adapter/__main__.py", line 19, in <module>
+[0.956s]       sys.exit(main())
+[0.956s]                ~~~~^^
+[0.956s]     File "/opt/ros/humble/lib/python3.13/site-packages/rosidl_adapter/main.py", line 53, in main
+[0.956s]       abs_idl_file = convert_to_idl(
+[0.956s]           pathlib.Path(basepath), args.package_name,
+[0.956s]           pathlib.Path(relative_path), output_dir)
+[0.956s]     File "/opt/ros/humble/lib/python3.13/site-packages/rosidl_adapter/__init__.py", line 19, in convert_to_idl
+[0.956s]       return convert_msg_to_idl(
+[0.957s]           package_dir, package_name, interface_file, output_dir / 'msg')
+[0.957s]     File "/opt/ros/humble/lib/python3.13/site-packages/rosidl_adapter/msg/__init__.py", line 39, in convert_msg_to_idl
+[0.957s]       expand_template('msg.idl.em', data, output_file, encoding='iso-8859-1')
+[0.957s]       ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0.957s]     File "/opt/ros/humble/lib/python3.13/site-packages/rosidl_adapter/resource/__init__.py", line 23, in expand_template
+[0.957s]       content = evaluate_template(template_name, data)
+[0.957s]     File "/opt/ros/humble/lib/python3.13/site-packages/rosidl_adapter/resource/__init__.py", line 69, in evaluate_template
+[0.957s]       _interpreter.shutdown()
+[0.957s]       ^^^^^^^^^^^^^^^^^^^^^
+[0.957s] 
+[0.957s]   AttributeError: 'NoneType' object has no attribute 'shutdown'
+[0.957s] 
+[0.957s] Call Stack (most recent call first):
+[0.957s]   /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:130 (rosidl_adapt_interfaces)
+[0.958s]   CMakeLists.txt:16 (rosidl_generate_interfaces)
+[0.958s] 
+[0.958s] [0m
+[0.958s] -- Configuring incomplete, errors occurred!
+[0.960s] Invoked command in '/home/vanszs/Documents/ros2/ros2_ws/build/drone_mvp' returned '1': DEBUGINFOD_URLS=https://debuginfod.archlinux.org _=/usr/bin/env /usr/bin/cmake /home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp -DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/drone_mvp

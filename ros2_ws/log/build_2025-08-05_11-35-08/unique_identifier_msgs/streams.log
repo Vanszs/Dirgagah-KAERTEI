@@ -1,0 +1,91 @@
+[0.010s] Invoking command in '/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs': DEBUGINFOD_URLS=https://debuginfod.archlinux.org _=/usr/bin/env /usr/bin/cmake /home/vanszs/Documents/ros2/ros2_ws/src/unique_identifier_msgs -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPYTHON_EXECUTABLE=/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3 -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/unique_identifier_msgs
+[0.017s] [0mCMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+[0.017s]   Compatibility with CMake < 3.10 will be removed from a future version of
+[0.017s]   CMake.
+[0.017s] 
+[0.017s]   Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+[0.017s]   to tell CMake that the project requires at least <min> but has been updated
+[0.017s]   to work with policies introduced by <max> or earlier.
+[0.017s] 
+[0.017s] [0m
+[0.060s] -- The C compiler identification is GNU 15.1.1
+[0.138s] -- The CXX compiler identification is GNU 15.1.1
+[0.144s] -- Detecting C compiler ABI info
+[0.203s] -- Detecting C compiler ABI info - done
+[0.212s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.212s] -- Detecting C compile features
+[0.212s] -- Detecting C compile features - done
+[0.223s] -- Detecting CXX compiler ABI info
+[0.329s] -- Detecting CXX compiler ABI info - done
+[0.343s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.343s] -- Detecting CXX compile features
+[0.344s] -- Detecting CXX compile features - done
+[0.352s] -- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.451s] -- Found Python3: /home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3 (found version "3.13.5") found components: Interpreter
+[0.513s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.532s] -- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)
+[0.534s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.538s] -- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.565s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.952s] -- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+[1.259s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.656s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.657s] [33mCMake Warning (dev) at /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:20 (find_package):
+[1.657s]   Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules
+[1.658s]   are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use
+[1.658s]   the cmake_policy command to set the policy and suppress this warning.
+[1.658s] 
+[1.658s] Call Stack (most recent call first):
+[1.658s]   /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)
+[1.658s]   /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)
+[1.658s]   CMakeLists.txt:21 (rosidl_generate_interfaces)
+[1.658s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[1.658s] [0m
+[1.671s] -- Found PythonInterp: /home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3 (found suitable version "3.13.5", minimum required is "3.6")
+[1.672s] -- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)
+[1.673s] [33mCMake Warning (dev) at /opt/ros/humble/share/python_cmake_module/cmake/Modules/FindPythonExtra.cmake:52 (find_package):
+[1.673s]   Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules
+[1.673s]   are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use
+[1.673s]   the cmake_policy command to set the policy and suppress this warning.
+[1.673s] 
+[1.673s] Call Stack (most recent call first):
+[1.674s]   /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:23 (find_package)
+[1.674s]   /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)
+[1.674s]   /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)
+[1.674s]   CMakeLists.txt:21 (rosidl_generate_interfaces)
+[1.674s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[1.674s] [0m
+[1.687s] [33mCMake Warning (dev) at /opt/ros/humble/share/python_cmake_module/cmake/Modules/FindPythonExtra.cmake:140 (find_package):
+[1.687s]   Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules
+[1.687s]   are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use
+[1.687s]   the cmake_policy command to set the policy and suppress this warning.
+[1.687s] 
+[1.687s] Call Stack (most recent call first):
+[1.687s]   /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:23 (find_package)
+[1.687s]   /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)
+[1.687s]   /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)
+[1.687s]   CMakeLists.txt:21 (rosidl_generate_interfaces)
+[1.687s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[1.687s] [0m
+[1.696s] -- Found PythonLibs: /usr/lib/libpython3.13.so (found suitable version "3.13.5", minimum required is "3.5")
+[1.696s] -- Using PYTHON_EXECUTABLE: /home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3
+[1.696s] -- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.13
+[1.696s] -- Using PYTHON_LIBRARIES: /usr/lib/libpython3.13.so
+[1.712s] -- Found PythonExtra: .so
+[1.757s] Traceback (most recent call last):
+[1.759s]   File "<string>", line 1, in <module>
+[1.759s]     import numpy;print(numpy.get_include())
+[1.759s]     ^^^^^^^^^^^^
+[1.759s] ModuleNotFoundError: No module named 'numpy'
+[1.764s] [31mCMake Error at /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:204 (message):
+[1.764s]   
+[1.764s]   execute_process(/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3
+[1.764s]   -c 'import numpy;print(numpy.get_include())') returned error code 1
+[1.764s] Call Stack (most recent call first):
+[1.764s]   /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)
+[1.764s]   /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)
+[1.764s]   CMakeLists.txt:21 (rosidl_generate_interfaces)
+[1.765s] 
+[1.765s] [0m
+[1.765s] -- Configuring incomplete, errors occurred!
+[1.773s] Invoked command in '/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs' returned '1': DEBUGINFOD_URLS=https://debuginfod.archlinux.org _=/usr/bin/env /usr/bin/cmake /home/vanszs/Documents/ros2/ros2_ws/src/unique_identifier_msgs -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPYTHON_EXECUTABLE=/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3 -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/unique_identifier_msgs

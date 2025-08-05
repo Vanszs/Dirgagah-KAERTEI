@@ -1,0 +1,2 @@
+Invoking command in '/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs': DEBUGINFOD_URLS=https://debuginfod.archlinux.org _=/usr/bin/env /usr/bin/cmake --build /home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs -- -j12 -l12
+Invoked command in '/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs' returned '2': DEBUGINFOD_URLS=https://debuginfod.archlinux.org _=/usr/bin/env /usr/bin/cmake --build /home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs -- -j12 -l12

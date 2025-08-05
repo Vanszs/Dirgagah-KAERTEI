@@ -1,0 +1,7 @@
+{
+  "package_name": "drone_mvp",
+  "non_idl_tuples": [
+    "/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp:msg/SensorStatus.msg",
+    "/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp:srv/MagnetControl.srv"
+  ]
+}

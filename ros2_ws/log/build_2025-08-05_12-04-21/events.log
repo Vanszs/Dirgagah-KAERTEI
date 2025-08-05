@@ -1,0 +1,131 @@
+[0.000000] (-) TimerEvent: {}
+[0.000594] (-) JobUnselected: {'identifier': 'drone_mvp'}
+[0.000728] (-) JobUnselected: {'identifier': 'geodesy'}
+[0.000887] (-) JobUnselected: {'identifier': 'geographic_info'}
+[0.000922] (-) JobUnselected: {'identifier': 'mavros_extras'}
+[0.000937] (libmavconn) JobQueued: {'identifier': 'libmavconn', 'dependencies': OrderedDict()}
+[0.000952] (unique_identifier_msgs) JobQueued: {'identifier': 'unique_identifier_msgs', 'dependencies': OrderedDict()}
+[0.000969] (geographic_msgs) JobQueued: {'identifier': 'geographic_msgs', 'dependencies': OrderedDict({'unique_identifier_msgs': '/home/vanszs/Documents/ros2/ros2_ws/install/unique_identifier_msgs'})}
+[0.000989] (mavros_msgs) JobQueued: {'identifier': 'mavros_msgs', 'dependencies': OrderedDict({'unique_identifier_msgs': '/home/vanszs/Documents/ros2/ros2_ws/install/unique_identifier_msgs', 'geographic_msgs': '/home/vanszs/Documents/ros2/ros2_ws/install/geographic_msgs'})}
+[0.001006] (mavros) JobQueued: {'identifier': 'mavros', 'dependencies': OrderedDict({'libmavconn': '/home/vanszs/Documents/ros2/ros2_ws/install/libmavconn', 'unique_identifier_msgs': '/home/vanszs/Documents/ros2/ros2_ws/install/unique_identifier_msgs', 'geographic_msgs': '/home/vanszs/Documents/ros2/ros2_ws/install/geographic_msgs', 'mavros_msgs': '/home/vanszs/Documents/ros2/ros2_ws/install/mavros_msgs'})}
+[0.001055] (unique_identifier_msgs) JobStarted: {'identifier': 'unique_identifier_msgs'}
+[0.007524] (libmavconn) JobStarted: {'identifier': 'libmavconn'}
+[0.012020] (unique_identifier_msgs) JobProgress: {'identifier': 'unique_identifier_msgs', 'progress': 'cmake'}
+[0.013056] (unique_identifier_msgs) Command: {'cmd': ['/usr/bin/cmake', '/home/vanszs/Documents/ros2/ros2_ws/src/unique_identifier_msgs', '-DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/unique_identifier_msgs'], 'cwd': '/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs', 'env': OrderedDict({'SHELL': '/usr/bin/fish', 'ROS_VERSION': '2', 'COLORTERM': 'truecolor', 'PYENV_SHELL': 'fish', 'HYPRLAND_CMD': 'Hyprland', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-53a94d34f8532e02.txt', 'XDG_SESSION_PATH': '/org/freedesktop/DisplayManager/Session1', 'TERM_PROGRAM_VERSION': '1.102.3', 'WLR_NO_HARDWARE_CURSORS': '1', 'XDG_BACKEND': 'wayland', 'PKG_CONFIG_PATH': '/opt/ros/humble/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'XDG_DATA_HOME': '/home/vanszs/.local/share', 'CUDA_CACHE_PATH': '/home/vanszs/.cache/nv', 'XDG_CONFIG_HOME': '/home/vanszs/.config', 'XCURSOR_PATH': '/usr/share/icons:/home/vanszs/.local/share/icons', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'LIBVA_DRIVER_NAME': 'nvidia', 'DESKTOP_SESSION': 'hyprland', 'REDISCLI_HISTFILE': '/home/vanszs/.local/share/redis/rediscli_history', 'HL_INITIAL_WORKSPACE_TOKEN': 'ee02d154-06db-4dbe-bde3-d160ba5edec2', 'NO_AT_BRIDGE': '1', 'EDITOR': 'micro', 'XDG_SEAT': 'seat0', 'PWD': '/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs', 'LOGNAME': 'vanszs', 'XDG_SESSION_DESKTOP': 'Hyprland', 'QT_QPA_PLATFORMTHEME': 'qt6ct', 'XDG_SESSION_TYPE': 'wayland', 'BUNDLED_DEBUGPY_PATH': '/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/libs/debugpy', 'VSCODE_GIT_ASKPASS_NODE': '/opt/visual-studio-code/code', 'MOTD_SHOWN': 'pam', 'VSCODE_INJECTION': '1', 'GTK2_RC_FILES': '/home/vanszs/.config/gtk-2.0/gtkrc', 'HOME': '/home/vanszs', 'LANG': 'en_US.UTF-8', '__GL_VRR_ALLOWED': '1', '_JAVA_AWT_WM_NONREPARENTING': '1', 'CARGO_HOME': '/home/vanszs/.local/share/cargo', 'XDG_CURRENT_DESKTOP': 'Hyprland', 'WAKATIME_HOME': '/home/vanszs/.config/wakatime', '_OLD_VIRTUAL_PATH': '/usr/bin:/home/vanszs/.pyenv/shims:/home/vanszs/.local/share/pyenv/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/tools:/opt/android-sdk/tools/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts:/home/vanszs/.config/Code/User/globalStorage/github.copilot-chat/debugCommand', 'VIRTUAL_ENV': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv', 'STARSHIP_SHELL': 'fish', 'WAYLAND_DISPLAY': 'wayland-1', 'AMENT_PREFIX_PATH': '/opt/ros/humble', 'GIT_ASKPASS': '/opt/visual-studio-code/resources/app/extensions/git/dist/askpass.sh', 'CMAKE_PREFIX_PATH': '/opt/ros/humble/opt/pybind11_vendor:/opt/ros/humble', 'XDG_SEAT_PATH': '/org/freedesktop/DisplayManager/Seat0', 'COLCON_PREFIX_PATH': '/opt/ros/humble', 'CHROME_DESKTOP': 'code.desktop', 'STARSHIP_SESSION_KEY': '1424317152526421', 'QT_QPA_PLATFORM': 'wayland;xcb', 'XDG_CACHE_HOME': '/home/vanszs/.cache', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PYTHON_EXECUTABLE': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3', 'XDG_SESSION_CLASS': 'user', 'ANDROID_HOME': '/opt/android-sdk', 'PYTHONPATH': '/build/ros2-humble/src/install/lib/python3.13/dist-packages:/opt/ros/humble/lib/python3.13/site-packages', 'COLCON': '1', 'TERM': 'xterm-256color', 'RUSTUP_HOME': '/home/vanszs/.local/share/rustup', 'USER': 'vanszs', 'GIT_PAGER': 'cat', 'JAVA_TOOL_OPTIONS': '-Dsun.java2d.xrender=true -Dsun.java2d.opengl=false', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-2ace83e08a.sock', 'HYPRLAND_INSTANCE_SIGNATURE': '4e242d086e20b32951fdc0ebcbfb4d41b5be8dcc_1754305270_1751409894', 'VISUAL': 'micro', 'DISPLAY': ':1', 'SHLVL': '3', 'MOZ_ENABLE_WAYLAND': '1', 'CHROME_EXECUTABLE': '/usr/bin/google-chrome-stable', 'ANDROID_SDK_ROOT': '/opt/android-sdk', 'XDG_VTNR': '1', 'XDG_SESSION_ID': '2', 'VIRTUAL_ENV_PROMPT': 'ros2_venv', 'WLR_DRM_NO_ATOMIC': '1', 'XDG_STATE_HOME': '/home/vanszs/.local/state', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/yaml_cpp_vendor/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib', 'XDG_RUNTIME_DIR': '/run/user/1000', 'ROS_LOCALHOST_ONLY': '0', 'PYENV_ROOT': '/home/vanszs/.pyenv', 'DEBUGINFOD_URLS': 'https://debuginfod.archlinux.org', 'VSCODE_GIT_ASKPASS_MAIN': '/opt/visual-studio-code/resources/app/extensions/git/dist/askpass-main.js', 'QT_AUTO_SCREEN_SCALE_FACTOR': '1', 'NODE_REPL_HISTORY': '/home/vanszs/.local/share/node_repl_history', 'XDG_DATA_DIRS': '/home/vanszs/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share', 'GDK_BACKEND': 'wayland', 'BROWSER': '/usr/bin/firefox', 'PATH': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin:/usr/bin:/home/vanszs/.pyenv/shims:/home/vanszs/.local/share/pyenv/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/tools:/opt/android-sdk/tools/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts:/home/vanszs/.config/Code/User/globalStorage/github.copilot-chat/debugCommand', '__GLX_VENDOR_LIBRARY_NAME': 'nvidia', 'GDK_SCALE': '1', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'Hyprland', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'MAIL': '/var/spool/mail/vanszs', 'ROS_DISTRO': 'humble', 'OLDPWD': '/home/vanszs/Documents/ros2/ros2_ws', 'MICRO_TRUECOLOR': '1', 'TERM_PROGRAM': 'vscode', '_': '/usr/bin/env'}), 'shell': False}
+[0.018513] (libmavconn) JobProgress: {'identifier': 'libmavconn', 'progress': 'cmake'}
+[0.020014] (libmavconn) Command: {'cmd': ['/usr/bin/cmake', '/home/vanszs/Documents/ros2/ros2_ws/src/mavros/libmavconn', '-DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/libmavconn'], 'cwd': '/home/vanszs/Documents/ros2/ros2_ws/build/libmavconn', 'env': OrderedDict({'SHELL': '/usr/bin/fish', 'ROS_VERSION': '2', 'COLORTERM': 'truecolor', 'PYENV_SHELL': 'fish', 'HYPRLAND_CMD': 'Hyprland', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-53a94d34f8532e02.txt', 'XDG_SESSION_PATH': '/org/freedesktop/DisplayManager/Session1', 'TERM_PROGRAM_VERSION': '1.102.3', 'WLR_NO_HARDWARE_CURSORS': '1', 'XDG_BACKEND': 'wayland', 'PKG_CONFIG_PATH': '/opt/ros/humble/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'XDG_DATA_HOME': '/home/vanszs/.local/share', 'CUDA_CACHE_PATH': '/home/vanszs/.cache/nv', 'XDG_CONFIG_HOME': '/home/vanszs/.config', 'XCURSOR_PATH': '/usr/share/icons:/home/vanszs/.local/share/icons', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'LIBVA_DRIVER_NAME': 'nvidia', 'DESKTOP_SESSION': 'hyprland', 'REDISCLI_HISTFILE': '/home/vanszs/.local/share/redis/rediscli_history', 'HL_INITIAL_WORKSPACE_TOKEN': 'ee02d154-06db-4dbe-bde3-d160ba5edec2', 'NO_AT_BRIDGE': '1', 'EDITOR': 'micro', 'XDG_SEAT': 'seat0', 'PWD': '/home/vanszs/Documents/ros2/ros2_ws/build/libmavconn', 'LOGNAME': 'vanszs', 'XDG_SESSION_DESKTOP': 'Hyprland', 'QT_QPA_PLATFORMTHEME': 'qt6ct', 'XDG_SESSION_TYPE': 'wayland', 'BUNDLED_DEBUGPY_PATH': '/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/libs/debugpy', 'VSCODE_GIT_ASKPASS_NODE': '/opt/visual-studio-code/code', 'MOTD_SHOWN': 'pam', 'VSCODE_INJECTION': '1', 'GTK2_RC_FILES': '/home/vanszs/.config/gtk-2.0/gtkrc', 'HOME': '/home/vanszs', 'LANG': 'en_US.UTF-8', '__GL_VRR_ALLOWED': '1', '_JAVA_AWT_WM_NONREPARENTING': '1', 'CARGO_HOME': '/home/vanszs/.local/share/cargo', 'XDG_CURRENT_DESKTOP': 'Hyprland', 'WAKATIME_HOME': '/home/vanszs/.config/wakatime', '_OLD_VIRTUAL_PATH': '/usr/bin:/home/vanszs/.pyenv/shims:/home/vanszs/.local/share/pyenv/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/tools:/opt/android-sdk/tools/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts:/home/vanszs/.config/Code/User/globalStorage/github.copilot-chat/debugCommand', 'VIRTUAL_ENV': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv', 'STARSHIP_SHELL': 'fish', 'WAYLAND_DISPLAY': 'wayland-1', 'AMENT_PREFIX_PATH': '/opt/ros/humble', 'GIT_ASKPASS': '/opt/visual-studio-code/resources/app/extensions/git/dist/askpass.sh', 'CMAKE_PREFIX_PATH': '/opt/ros/humble/opt/pybind11_vendor:/opt/ros/humble', 'XDG_SEAT_PATH': '/org/freedesktop/DisplayManager/Seat0', 'COLCON_PREFIX_PATH': '/opt/ros/humble', 'CHROME_DESKTOP': 'code.desktop', 'STARSHIP_SESSION_KEY': '1424317152526421', 'QT_QPA_PLATFORM': 'wayland;xcb', 'XDG_CACHE_HOME': '/home/vanszs/.cache', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PYTHON_EXECUTABLE': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3', 'XDG_SESSION_CLASS': 'user', 'ANDROID_HOME': '/opt/android-sdk', 'PYTHONPATH': '/build/ros2-humble/src/install/lib/python3.13/dist-packages:/opt/ros/humble/lib/python3.13/site-packages', 'COLCON': '1', 'TERM': 'xterm-256color', 'RUSTUP_HOME': '/home/vanszs/.local/share/rustup', 'USER': 'vanszs', 'GIT_PAGER': 'cat', 'JAVA_TOOL_OPTIONS': '-Dsun.java2d.xrender=true -Dsun.java2d.opengl=false', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-2ace83e08a.sock', 'HYPRLAND_INSTANCE_SIGNATURE': '4e242d086e20b32951fdc0ebcbfb4d41b5be8dcc_1754305270_1751409894', 'VISUAL': 'micro', 'DISPLAY': ':1', 'SHLVL': '3', 'MOZ_ENABLE_WAYLAND': '1', 'CHROME_EXECUTABLE': '/usr/bin/google-chrome-stable', 'ANDROID_SDK_ROOT': '/opt/android-sdk', 'XDG_VTNR': '1', 'XDG_SESSION_ID': '2', 'VIRTUAL_ENV_PROMPT': 'ros2_venv', 'WLR_DRM_NO_ATOMIC': '1', 'XDG_STATE_HOME': '/home/vanszs/.local/state', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/yaml_cpp_vendor/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib', 'XDG_RUNTIME_DIR': '/run/user/1000', 'ROS_LOCALHOST_ONLY': '0', 'PYENV_ROOT': '/home/vanszs/.pyenv', 'DEBUGINFOD_URLS': 'https://debuginfod.archlinux.org', 'VSCODE_GIT_ASKPASS_MAIN': '/opt/visual-studio-code/resources/app/extensions/git/dist/askpass-main.js', 'QT_AUTO_SCREEN_SCALE_FACTOR': '1', 'NODE_REPL_HISTORY': '/home/vanszs/.local/share/node_repl_history', 'XDG_DATA_DIRS': '/home/vanszs/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share', 'GDK_BACKEND': 'wayland', 'BROWSER': '/usr/bin/firefox', 'PATH': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin:/usr/bin:/home/vanszs/.pyenv/shims:/home/vanszs/.local/share/pyenv/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/tools:/opt/android-sdk/tools/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts:/home/vanszs/.config/Code/User/globalStorage/github.copilot-chat/debugCommand', '__GLX_VENDOR_LIBRARY_NAME': 'nvidia', 'GDK_SCALE': '1', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'Hyprland', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'MAIL': '/var/spool/mail/vanszs', 'ROS_DISTRO': 'humble', 'OLDPWD': '/home/vanszs/Documents/ros2/ros2_ws', 'MICRO_TRUECOLOR': '1', 'TERM_PROGRAM': 'vscode', '_': '/usr/bin/env'}), 'shell': False}
+[0.030337] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[0mCMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):\n'}
+[0.030562] (unique_identifier_msgs) StderrLine: {'line': b'  Compatibility with CMake < 3.10 will be removed from a future version of\n'}
+[0.030642] (unique_identifier_msgs) StderrLine: {'line': b'  CMake.\n'}
+[0.030715] (unique_identifier_msgs) StderrLine: {'line': b'\n'}
+[0.030798] (unique_identifier_msgs) StderrLine: {'line': b'  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax\n'}
+[0.030871] (unique_identifier_msgs) StderrLine: {'line': b'  to tell CMake that the project requires at least <min> but has been updated\n'}
+[0.030939] (unique_identifier_msgs) StderrLine: {'line': b'  to work with policies introduced by <max> or earlier.\n'}
+[0.031008] (unique_identifier_msgs) StderrLine: {'line': b'\n'}
+[0.031078] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[0m\n'}
+[0.032511] (libmavconn) StderrLine: {'line': b'\x1b[0mCMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):\n'}
+[0.032714] (libmavconn) StderrLine: {'line': b'  Compatibility with CMake < 3.10 will be removed from a future version of\n'}
+[0.032819] (libmavconn) StderrLine: {'line': b'  CMake.\n'}
+[0.032903] (libmavconn) StderrLine: {'line': b'\n'}
+[0.032983] (libmavconn) StderrLine: {'line': b'  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax\n'}
+[0.033068] (libmavconn) StderrLine: {'line': b'  to tell CMake that the project requires at least <min> but has been updated\n'}
+[0.033151] (libmavconn) StderrLine: {'line': b'  to work with policies introduced by <max> or earlier.\n'}
+[0.033234] (libmavconn) StderrLine: {'line': b'\n'}
+[0.033316] (libmavconn) StderrLine: {'line': b'\x1b[0m\n'}
+[0.037733] (unique_identifier_msgs) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.039157] (libmavconn) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.099348] (-) TimerEvent: {}
+[0.199656] (-) TimerEvent: {}
+[0.254607] (unique_identifier_msgs) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[0.259848] (unique_identifier_msgs) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)\n'}
+[0.260839] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.262827] (unique_identifier_msgs) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[0.276386] (libmavconn) StderrLine: {'line': b'\x1b[31mCMake Error at CMakeLists.txt:33 (find_package):\n'}
+[0.276559] (libmavconn) StderrLine: {'line': b'  By not providing "Findmavlink.cmake" in CMAKE_MODULE_PATH this project has\n'}
+[0.276613] (libmavconn) StderrLine: {'line': b'  asked CMake to find a package configuration file provided by "mavlink", but\n'}
+[0.276660] (libmavconn) StderrLine: {'line': b'  CMake did not find one.\n'}
+[0.276713] (libmavconn) StderrLine: {'line': b'\n'}
+[0.276805] (libmavconn) StderrLine: {'line': b'  Could not find a package configuration file provided by "mavlink" with any\n'}
+[0.276860] (libmavconn) StderrLine: {'line': b'  of the following names:\n'}
+[0.276909] (libmavconn) StderrLine: {'line': b'\n'}
+[0.276980] (libmavconn) StderrLine: {'line': b'    mavlinkConfig.cmake\n'}
+[0.277065] (libmavconn) StderrLine: {'line': b'    mavlink-config.cmake\n'}
+[0.277120] (libmavconn) StderrLine: {'line': b'\n'}
+[0.277174] (libmavconn) StderrLine: {'line': b'  Add the installation prefix of "mavlink" to CMAKE_PREFIX_PATH or set\n'}
+[0.277234] (libmavconn) StderrLine: {'line': b'  "mavlink_DIR" to a directory containing one of the above files.  If\n'}
+[0.277313] (libmavconn) StderrLine: {'line': b'  "mavlink" provides a separate development package or SDK, be sure it has\n'}
+[0.277374] (libmavconn) StderrLine: {'line': b'  been installed.\n'}
+[0.277431] (libmavconn) StderrLine: {'line': b'\n'}
+[0.277497] (libmavconn) StderrLine: {'line': b'\x1b[0m\n'}
+[0.277553] (libmavconn) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[0.279536] (libmavconn) CommandEnded: {'returncode': 1}
+[0.288164] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.297332] (libmavconn) JobEnded: {'identifier': 'libmavconn', 'rc': 1}
+[0.299796] (-) TimerEvent: {}
+[0.400025] (-) TimerEvent: {}
+[0.500408] (-) TimerEvent: {}
+[0.600800] (-) TimerEvent: {}
+[0.637210] (unique_identifier_msgs) StdoutLine: {'line': b'-- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)\n'}
+[0.700958] (-) TimerEvent: {}
+[0.801234] (-) TimerEvent: {}
+[0.901464] (-) TimerEvent: {}
+[0.936083] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.001580] (-) TimerEvent: {}
+[1.101847] (-) TimerEvent: {}
+[1.202122] (-) TimerEvent: {}
+[1.302378] (-) TimerEvent: {}
+[1.358521] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.360058] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[33mCMake Warning (dev) at /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:20 (find_package):\n'}
+[1.360162] (unique_identifier_msgs) StderrLine: {'line': b'  Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules\n'}
+[1.360210] (unique_identifier_msgs) StderrLine: {'line': b'  are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use\n'}
+[1.360261] (unique_identifier_msgs) StderrLine: {'line': b'  the cmake_policy command to set the policy and suppress this warning.\n'}
+[1.360303] (unique_identifier_msgs) StderrLine: {'line': b'\n'}
+[1.360345] (unique_identifier_msgs) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[1.360385] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)\n'}
+[1.360424] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)\n'}
+[1.360467] (unique_identifier_msgs) StderrLine: {'line': b'  CMakeLists.txt:21 (rosidl_generate_interfaces)\n'}
+[1.360517] (unique_identifier_msgs) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[1.360570] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[0m\n'}
+[1.372544] (unique_identifier_msgs) StdoutLine: {'line': b'-- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)\n'}
+[1.372769] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[33mCMake Warning (dev) at /opt/ros/humble/share/python_cmake_module/cmake/Modules/FindPythonExtra.cmake:52 (find_package):\n'}
+[1.372857] (unique_identifier_msgs) StderrLine: {'line': b'  Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules\n'}
+[1.372900] (unique_identifier_msgs) StderrLine: {'line': b'  are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use\n'}
+[1.372941] (unique_identifier_msgs) StderrLine: {'line': b'  the cmake_policy command to set the policy and suppress this warning.\n'}
+[1.372983] (unique_identifier_msgs) StderrLine: {'line': b'\n'}
+[1.373024] (unique_identifier_msgs) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[1.373063] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:23 (find_package)\n'}
+[1.373102] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)\n'}
+[1.373141] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)\n'}
+[1.373180] (unique_identifier_msgs) StderrLine: {'line': b'  CMakeLists.txt:21 (rosidl_generate_interfaces)\n'}
+[1.373221] (unique_identifier_msgs) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[1.373260] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[0m\n'}
+[1.384537] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[33mCMake Warning (dev) at /opt/ros/humble/share/python_cmake_module/cmake/Modules/FindPythonExtra.cmake:140 (find_package):\n'}
+[1.384691] (unique_identifier_msgs) StderrLine: {'line': b'  Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules\n'}
+[1.384737] (unique_identifier_msgs) StderrLine: {'line': b'  are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use\n'}
+[1.384788] (unique_identifier_msgs) StderrLine: {'line': b'  the cmake_policy command to set the policy and suppress this warning.\n'}
+[1.384832] (unique_identifier_msgs) StderrLine: {'line': b'\n'}
+[1.384875] (unique_identifier_msgs) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[1.384917] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:23 (find_package)\n'}
+[1.384966] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)\n'}
+[1.385008] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)\n'}
+[1.385049] (unique_identifier_msgs) StderrLine: {'line': b'  CMakeLists.txt:21 (rosidl_generate_interfaces)\n'}
+[1.385089] (unique_identifier_msgs) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[1.385128] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[0m\n'}
+[1.385658] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3\n'}
+[1.385709] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.13\n'}
+[1.385758] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using PYTHON_LIBRARIES: /usr/lib/libpython3.13.so\n'}
+[1.402489] (-) TimerEvent: {}
+[1.483036] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using numpy include directory: /home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/lib/python3.13/site-packages/numpy/_core/include\n'}
+[1.489564] (unique_identifier_msgs) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.12 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[1.499825] (unique_identifier_msgs) StdoutLine: {'line': b"-- Added test 'copyright' to check source files copyright and LICENSE\n"}
+[1.502571] (-) TimerEvent: {}
+[1.503209] (unique_identifier_msgs) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[1.504911] (unique_identifier_msgs) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[1.506846] (unique_identifier_msgs) StdoutLine: {'line': b'-- Configuring done (1.5s)\n'}
+[1.530870] (unique_identifier_msgs) StdoutLine: {'line': b'-- Generating done (0.0s)\n'}
+[1.536536] (unique_identifier_msgs) StdoutLine: {'line': b'-- Build files have been written to: /home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs\n'}
+[1.542181] (unique_identifier_msgs) JobEnded: {'identifier': 'unique_identifier_msgs', 'rc': 'SIGINT'}
+[1.552820] (geographic_msgs) JobSkipped: {'identifier': 'geographic_msgs'}
+[1.552889] (mavros_msgs) JobSkipped: {'identifier': 'mavros_msgs'}
+[1.552901] (mavros) JobSkipped: {'identifier': 'mavros'}
+[1.552911] (-) EventReactorShutdown: {}

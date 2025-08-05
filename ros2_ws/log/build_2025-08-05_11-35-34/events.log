@@ -1,0 +1,139 @@
+[0.000000] (-) TimerEvent: {}
+[0.000241] (-) JobUnselected: {'identifier': 'drone_mvp'}
+[0.000462] (-) JobUnselected: {'identifier': 'geodesy'}
+[0.000545] (-) JobUnselected: {'identifier': 'geographic_info'}
+[0.000558] (-) JobUnselected: {'identifier': 'geographic_msgs'}
+[0.000568] (-) JobUnselected: {'identifier': 'libmavconn'}
+[0.000577] (-) JobUnselected: {'identifier': 'mavros'}
+[0.000586] (-) JobUnselected: {'identifier': 'mavros_extras'}
+[0.000594] (-) JobUnselected: {'identifier': 'mavros_msgs'}
+[0.000605] (unique_identifier_msgs) JobQueued: {'identifier': 'unique_identifier_msgs', 'dependencies': OrderedDict()}
+[0.000619] (unique_identifier_msgs) JobStarted: {'identifier': 'unique_identifier_msgs'}
+[0.008328] (unique_identifier_msgs) JobProgress: {'identifier': 'unique_identifier_msgs', 'progress': 'cmake'}
+[0.008713] (unique_identifier_msgs) Command: {'cmd': ['/usr/bin/cmake', '/home/vanszs/Documents/ros2/ros2_ws/src/unique_identifier_msgs', '-DCMAKE_BUILD_TYPE=RelWithDebInfo', '-DPYTHON_EXECUTABLE=/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/unique_identifier_msgs'], 'cwd': '/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs', 'env': OrderedDict({'SHELL': '/usr/bin/fish', 'ROS_VERSION': '2', 'COLORTERM': 'truecolor', 'PYENV_SHELL': 'fish', 'HYPRLAND_CMD': 'Hyprland', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-53a94d34f8532e02.txt', 'XDG_SESSION_PATH': '/org/freedesktop/DisplayManager/Session1', 'TERM_PROGRAM_VERSION': '1.102.3', 'WLR_NO_HARDWARE_CURSORS': '1', 'XDG_BACKEND': 'wayland', 'PKG_CONFIG_PATH': '/opt/ros/humble/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'XDG_DATA_HOME': '/home/vanszs/.local/share', 'CUDA_CACHE_PATH': '/home/vanszs/.cache/nv', 'XDG_CONFIG_HOME': '/home/vanszs/.config', 'XCURSOR_PATH': '/usr/share/icons:/home/vanszs/.local/share/icons', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'LIBVA_DRIVER_NAME': 'nvidia', 'DESKTOP_SESSION': 'hyprland', 'REDISCLI_HISTFILE': '/home/vanszs/.local/share/redis/rediscli_history', 'HL_INITIAL_WORKSPACE_TOKEN': 'ee02d154-06db-4dbe-bde3-d160ba5edec2', 'NO_AT_BRIDGE': '1', 'EDITOR': 'micro', 'XDG_SEAT': 'seat0', 'PWD': '/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs', 'LOGNAME': 'vanszs', 'XDG_SESSION_DESKTOP': 'Hyprland', 'QT_QPA_PLATFORMTHEME': 'qt6ct', 'XDG_SESSION_TYPE': 'wayland', 'BUNDLED_DEBUGPY_PATH': '/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/libs/debugpy', 'VSCODE_GIT_ASKPASS_NODE': '/opt/visual-studio-code/code', 'MOTD_SHOWN': 'pam', 'VSCODE_INJECTION': '1', 'GTK2_RC_FILES': '/home/vanszs/.config/gtk-2.0/gtkrc', 'HOME': '/home/vanszs', 'LANG': 'en_US.UTF-8', '__GL_VRR_ALLOWED': '1', '_JAVA_AWT_WM_NONREPARENTING': '1', 'XDG_CURRENT_DESKTOP': 'Hyprland', 'CARGO_HOME': '/home/vanszs/.local/share/cargo', 'WAKATIME_HOME': '/home/vanszs/.config/wakatime', '_OLD_VIRTUAL_PATH': '/usr/bin:/home/vanszs/.pyenv/shims:/home/vanszs/.local/share/pyenv/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/tools:/opt/android-sdk/tools/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts:/home/vanszs/.config/Code/User/globalStorage/github.copilot-chat/debugCommand', 'VIRTUAL_ENV': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv', 'STARSHIP_SHELL': 'fish', 'WAYLAND_DISPLAY': 'wayland-1', 'AMENT_PREFIX_PATH': '/opt/ros/humble', 'GIT_ASKPASS': '/opt/visual-studio-code/resources/app/extensions/git/dist/askpass.sh', 'CMAKE_PREFIX_PATH': '/opt/ros/humble/opt/pybind11_vendor:/opt/ros/humble', 'XDG_SEAT_PATH': '/org/freedesktop/DisplayManager/Seat0', 'COLCON_PREFIX_PATH': '/opt/ros/humble', 'CHROME_DESKTOP': 'code.desktop', 'STARSHIP_SESSION_KEY': '1424317152526421', 'QT_QPA_PLATFORM': 'wayland;xcb', 'XDG_CACHE_HOME': '/home/vanszs/.cache', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PYTHON_EXECUTABLE': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3', 'XDG_SESSION_CLASS': 'user', 'ANDROID_HOME': '/opt/android-sdk', 'PYTHONPATH': '/build/ros2-humble/src/install/lib/python3.13/dist-packages:/opt/ros/humble/lib/python3.13/site-packages', 'COLCON': '1', 'TERM': 'xterm-256color', 'RUSTUP_HOME': '/home/vanszs/.local/share/rustup', 'USER': 'vanszs', 'GIT_PAGER': 'cat', 'JAVA_TOOL_OPTIONS': '-Dsun.java2d.xrender=true -Dsun.java2d.opengl=false', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-2ace83e08a.sock', 'HYPRLAND_INSTANCE_SIGNATURE': '4e242d086e20b32951fdc0ebcbfb4d41b5be8dcc_1754305270_1751409894', 'VISUAL': 'micro', 'DISPLAY': ':1', 'SHLVL': '4', 'MOZ_ENABLE_WAYLAND': '1', 'CHROME_EXECUTABLE': '/usr/bin/google-chrome-stable', 'ANDROID_SDK_ROOT': '/opt/android-sdk', 'XDG_VTNR': '1', 'XDG_SESSION_ID': '2', 'VIRTUAL_ENV_PROMPT': 'ros2_venv', 'WLR_DRM_NO_ATOMIC': '1', 'XDG_STATE_HOME': '/home/vanszs/.local/state', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/yaml_cpp_vendor/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib', 'XDG_RUNTIME_DIR': '/run/user/1000', 'ROS_LOCALHOST_ONLY': '0', 'PYENV_ROOT': '/home/vanszs/.pyenv', 'DEBUGINFOD_URLS': 'https://debuginfod.archlinux.org', 'VSCODE_GIT_ASKPASS_MAIN': '/opt/visual-studio-code/resources/app/extensions/git/dist/askpass-main.js', 'QT_AUTO_SCREEN_SCALE_FACTOR': '1', 'NODE_REPL_HISTORY': '/home/vanszs/.local/share/node_repl_history', 'XDG_DATA_DIRS': '/home/vanszs/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share', 'GDK_BACKEND': 'wayland', 'BROWSER': '/usr/bin/firefox', 'PATH': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin:/usr/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/tools:/opt/android-sdk/tools/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl', '__GLX_VENDOR_LIBRARY_NAME': 'nvidia', 'GDK_SCALE': '1', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'Hyprland', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'MAIL': '/var/spool/mail/vanszs', 'ROS_DISTRO': 'humble', 'OLDPWD': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp', 'MICRO_TRUECOLOR': '1', 'TERM_PROGRAM': 'vscode', '_': '/usr/bin/env'}), 'shell': False}
+[0.017021] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[0mCMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):\n'}
+[0.017232] (unique_identifier_msgs) StderrLine: {'line': b'  Compatibility with CMake < 3.10 will be removed from a future version of\n'}
+[0.017310] (unique_identifier_msgs) StderrLine: {'line': b'  CMake.\n'}
+[0.017379] (unique_identifier_msgs) StderrLine: {'line': b'\n'}
+[0.017447] (unique_identifier_msgs) StderrLine: {'line': b'  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax\n'}
+[0.017512] (unique_identifier_msgs) StderrLine: {'line': b'  to tell CMake that the project requires at least <min> but has been updated\n'}
+[0.017575] (unique_identifier_msgs) StderrLine: {'line': b'  to work with policies introduced by <max> or earlier.\n'}
+[0.017638] (unique_identifier_msgs) StderrLine: {'line': b'\n'}
+[0.017701] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[0m\n'}
+[0.021503] (unique_identifier_msgs) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.099807] (-) TimerEvent: {}
+[0.180968] (unique_identifier_msgs) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[0.185332] (unique_identifier_msgs) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)\n'}
+[0.186203] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.187909] (unique_identifier_msgs) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[0.199927] (-) TimerEvent: {}
+[0.207292] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.300040] (-) TimerEvent: {}
+[0.400319] (-) TimerEvent: {}
+[0.500577] (-) TimerEvent: {}
+[0.558836] (unique_identifier_msgs) StdoutLine: {'line': b'-- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)\n'}
+[0.600682] (-) TimerEvent: {}
+[0.700922] (-) TimerEvent: {}
+[0.801164] (-) TimerEvent: {}
+[0.843263] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.901253] (-) TimerEvent: {}
+[1.001520] (-) TimerEvent: {}
+[1.101754] (-) TimerEvent: {}
+[1.202004] (-) TimerEvent: {}
+[1.225070] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.225465] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[33mCMake Warning (dev) at /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:20 (find_package):\n'}
+[1.225564] (unique_identifier_msgs) StderrLine: {'line': b'  Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules\n'}
+[1.225634] (unique_identifier_msgs) StderrLine: {'line': b'  are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use\n'}
+[1.225702] (unique_identifier_msgs) StderrLine: {'line': b'  the cmake_policy command to set the policy and suppress this warning.\n'}
+[1.225765] (unique_identifier_msgs) StderrLine: {'line': b'\n'}
+[1.225827] (unique_identifier_msgs) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[1.225892] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)\n'}
+[1.225975] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)\n'}
+[1.226045] (unique_identifier_msgs) StderrLine: {'line': b'  CMakeLists.txt:21 (rosidl_generate_interfaces)\n'}
+[1.226109] (unique_identifier_msgs) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[1.226170] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[0m\n'}
+[1.240222] (unique_identifier_msgs) StdoutLine: {'line': b'-- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)\n'}
+[1.240546] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[33mCMake Warning (dev) at /opt/ros/humble/share/python_cmake_module/cmake/Modules/FindPythonExtra.cmake:52 (find_package):\n'}
+[1.240637] (unique_identifier_msgs) StderrLine: {'line': b'  Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules\n'}
+[1.240695] (unique_identifier_msgs) StderrLine: {'line': b'  are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use\n'}
+[1.240741] (unique_identifier_msgs) StderrLine: {'line': b'  the cmake_policy command to set the policy and suppress this warning.\n'}
+[1.240784] (unique_identifier_msgs) StderrLine: {'line': b'\n'}
+[1.240828] (unique_identifier_msgs) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[1.240872] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:23 (find_package)\n'}
+[1.240950] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)\n'}
+[1.241021] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)\n'}
+[1.241133] (unique_identifier_msgs) StderrLine: {'line': b'  CMakeLists.txt:21 (rosidl_generate_interfaces)\n'}
+[1.241221] (unique_identifier_msgs) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[1.241300] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[0m\n'}
+[1.252765] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[33mCMake Warning (dev) at /opt/ros/humble/share/python_cmake_module/cmake/Modules/FindPythonExtra.cmake:140 (find_package):\n'}
+[1.252932] (unique_identifier_msgs) StderrLine: {'line': b'  Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules\n'}
+[1.252992] (unique_identifier_msgs) StderrLine: {'line': b'  are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use\n'}
+[1.253041] (unique_identifier_msgs) StderrLine: {'line': b'  the cmake_policy command to set the policy and suppress this warning.\n'}
+[1.253091] (unique_identifier_msgs) StderrLine: {'line': b'\n'}
+[1.253133] (unique_identifier_msgs) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[1.253185] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:23 (find_package)\n'}
+[1.253227] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)\n'}
+[1.253267] (unique_identifier_msgs) StderrLine: {'line': b'  /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)\n'}
+[1.253307] (unique_identifier_msgs) StderrLine: {'line': b'  CMakeLists.txt:21 (rosidl_generate_interfaces)\n'}
+[1.253347] (unique_identifier_msgs) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[1.253386] (unique_identifier_msgs) StderrLine: {'line': b'\x1b[0m\n'}
+[1.253795] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3\n'}
+[1.253857] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.13\n'}
+[1.253901] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using PYTHON_LIBRARIES: /usr/lib/libpython3.13.so\n'}
+[1.302173] (-) TimerEvent: {}
+[1.351919] (unique_identifier_msgs) StdoutLine: {'line': b'-- Using numpy include directory: /home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/lib/python3.13/site-packages/numpy/_core/include\n'}
+[1.360392] (unique_identifier_msgs) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.12 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[1.386395] (unique_identifier_msgs) StdoutLine: {'line': b"-- Added test 'copyright' to check source files copyright and LICENSE\n"}
+[1.390070] (unique_identifier_msgs) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[1.391952] (unique_identifier_msgs) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[1.394746] (unique_identifier_msgs) StdoutLine: {'line': b'-- Configuring done (1.4s)\n'}
+[1.402261] (-) TimerEvent: {}
+[1.414381] (unique_identifier_msgs) StdoutLine: {'line': b'-- Generating done (0.0s)\n'}
+[1.419573] (unique_identifier_msgs) StdoutLine: {'line': b'-- Build files have been written to: /home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs\n'}
+[1.425582] (unique_identifier_msgs) CommandEnded: {'returncode': 0}
+[1.426179] (unique_identifier_msgs) JobProgress: {'identifier': 'unique_identifier_msgs', 'progress': 'build'}
+[1.426779] (unique_identifier_msgs) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs', '--', '-j12', '-l12'], 'cwd': '/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs', 'env': OrderedDict({'SHELL': '/usr/bin/fish', 'ROS_VERSION': '2', 'COLORTERM': 'truecolor', 'PYENV_SHELL': 'fish', 'HYPRLAND_CMD': 'Hyprland', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-53a94d34f8532e02.txt', 'XDG_SESSION_PATH': '/org/freedesktop/DisplayManager/Session1', 'TERM_PROGRAM_VERSION': '1.102.3', 'WLR_NO_HARDWARE_CURSORS': '1', 'XDG_BACKEND': 'wayland', 'PKG_CONFIG_PATH': '/opt/ros/humble/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'XDG_DATA_HOME': '/home/vanszs/.local/share', 'CUDA_CACHE_PATH': '/home/vanszs/.cache/nv', 'XDG_CONFIG_HOME': '/home/vanszs/.config', 'XCURSOR_PATH': '/usr/share/icons:/home/vanszs/.local/share/icons', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'LIBVA_DRIVER_NAME': 'nvidia', 'DESKTOP_SESSION': 'hyprland', 'REDISCLI_HISTFILE': '/home/vanszs/.local/share/redis/rediscli_history', 'HL_INITIAL_WORKSPACE_TOKEN': 'ee02d154-06db-4dbe-bde3-d160ba5edec2', 'NO_AT_BRIDGE': '1', 'EDITOR': 'micro', 'XDG_SEAT': 'seat0', 'PWD': '/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs', 'LOGNAME': 'vanszs', 'XDG_SESSION_DESKTOP': 'Hyprland', 'QT_QPA_PLATFORMTHEME': 'qt6ct', 'XDG_SESSION_TYPE': 'wayland', 'BUNDLED_DEBUGPY_PATH': '/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/libs/debugpy', 'VSCODE_GIT_ASKPASS_NODE': '/opt/visual-studio-code/code', 'MOTD_SHOWN': 'pam', 'VSCODE_INJECTION': '1', 'GTK2_RC_FILES': '/home/vanszs/.config/gtk-2.0/gtkrc', 'HOME': '/home/vanszs', 'LANG': 'en_US.UTF-8', '__GL_VRR_ALLOWED': '1', '_JAVA_AWT_WM_NONREPARENTING': '1', 'XDG_CURRENT_DESKTOP': 'Hyprland', 'CARGO_HOME': '/home/vanszs/.local/share/cargo', 'WAKATIME_HOME': '/home/vanszs/.config/wakatime', '_OLD_VIRTUAL_PATH': '/usr/bin:/home/vanszs/.pyenv/shims:/home/vanszs/.local/share/pyenv/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/tools:/opt/android-sdk/tools/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts:/home/vanszs/.config/Code/User/globalStorage/github.copilot-chat/debugCommand', 'VIRTUAL_ENV': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv', 'STARSHIP_SHELL': 'fish', 'WAYLAND_DISPLAY': 'wayland-1', 'AMENT_PREFIX_PATH': '/opt/ros/humble', 'GIT_ASKPASS': '/opt/visual-studio-code/resources/app/extensions/git/dist/askpass.sh', 'CMAKE_PREFIX_PATH': '/opt/ros/humble/opt/pybind11_vendor:/opt/ros/humble', 'XDG_SEAT_PATH': '/org/freedesktop/DisplayManager/Seat0', 'COLCON_PREFIX_PATH': '/opt/ros/humble', 'CHROME_DESKTOP': 'code.desktop', 'STARSHIP_SESSION_KEY': '1424317152526421', 'QT_QPA_PLATFORM': 'wayland;xcb', 'XDG_CACHE_HOME': '/home/vanszs/.cache', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PYTHON_EXECUTABLE': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3', 'XDG_SESSION_CLASS': 'user', 'ANDROID_HOME': '/opt/android-sdk', 'PYTHONPATH': '/build/ros2-humble/src/install/lib/python3.13/dist-packages:/opt/ros/humble/lib/python3.13/site-packages', 'COLCON': '1', 'TERM': 'xterm-256color', 'RUSTUP_HOME': '/home/vanszs/.local/share/rustup', 'USER': 'vanszs', 'GIT_PAGER': 'cat', 'JAVA_TOOL_OPTIONS': '-Dsun.java2d.xrender=true -Dsun.java2d.opengl=false', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-2ace83e08a.sock', 'HYPRLAND_INSTANCE_SIGNATURE': '4e242d086e20b32951fdc0ebcbfb4d41b5be8dcc_1754305270_1751409894', 'VISUAL': 'micro', 'DISPLAY': ':1', 'SHLVL': '4', 'MOZ_ENABLE_WAYLAND': '1', 'CHROME_EXECUTABLE': '/usr/bin/google-chrome-stable', 'ANDROID_SDK_ROOT': '/opt/android-sdk', 'XDG_VTNR': '1', 'XDG_SESSION_ID': '2', 'VIRTUAL_ENV_PROMPT': 'ros2_venv', 'WLR_DRM_NO_ATOMIC': '1', 'XDG_STATE_HOME': '/home/vanszs/.local/state', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/yaml_cpp_vendor/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib', 'XDG_RUNTIME_DIR': '/run/user/1000', 'ROS_LOCALHOST_ONLY': '0', 'PYENV_ROOT': '/home/vanszs/.pyenv', 'DEBUGINFOD_URLS': 'https://debuginfod.archlinux.org', 'VSCODE_GIT_ASKPASS_MAIN': '/opt/visual-studio-code/resources/app/extensions/git/dist/askpass-main.js', 'QT_AUTO_SCREEN_SCALE_FACTOR': '1', 'NODE_REPL_HISTORY': '/home/vanszs/.local/share/node_repl_history', 'XDG_DATA_DIRS': '/home/vanszs/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share', 'GDK_BACKEND': 'wayland', 'BROWSER': '/usr/bin/firefox', 'PATH': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin:/usr/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/tools:/opt/android-sdk/tools/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl', '__GLX_VENDOR_LIBRARY_NAME': 'nvidia', 'GDK_SCALE': '1', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'Hyprland', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'MAIL': '/var/spool/mail/vanszs', 'ROS_DISTRO': 'humble', 'OLDPWD': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp', 'MICRO_TRUECOLOR': '1', 'TERM_PROGRAM': 'vscode', '_': '/usr/bin/env'}), 'shell': False}
+[1.462973] (unique_identifier_msgs) StdoutLine: {'line': b'[  3%] \x1b[34m\x1b[1mGenerating C code for ROS interfaces\x1b[0m\n'}
+[1.471063] (unique_identifier_msgs) StdoutLine: {'line': b'[  6%] \x1b[34m\x1b[1mGenerating C++ code for ROS interfaces\x1b[0m\n'}
+[1.477314] (unique_identifier_msgs) StdoutLine: {'line': b'[  6%] Built target ament_cmake_python_symlink_unique_identifier_msgs\n'}
+[1.502374] (-) TimerEvent: {}
+[1.503017] (unique_identifier_msgs) StderrLine: {'line': b'Traceback (most recent call last):\n'}
+[1.503393] (unique_identifier_msgs) StderrLine: {'line': b'  File \x1b[35m"/opt/ros/humble/share/rosidl_generator_c/cmake/../../../lib/rosidl_generator_c/rosidl_generator_c"\x1b[0m, line \x1b[35m8\x1b[0m, in \x1b[35m<module>\x1b[0m\n'}
+[1.503546] (unique_identifier_msgs) StderrLine: {'line': b'    from rosidl_generator_c import generate_c\n'}
+[1.503635] (unique_identifier_msgs) StderrLine: {'line': b'  File \x1b[35m"/opt/ros/humble/lib/python3.13/site-packages/rosidl_generator_c/__init__.py"\x1b[0m, line \x1b[35m15\x1b[0m, in \x1b[35m<module>\x1b[0m\n'}
+[1.503713] (unique_identifier_msgs) StderrLine: {'line': b'    from rosidl_cmake import convert_camel_case_to_lower_case_underscore\n'}
+[1.503801] (unique_identifier_msgs) StderrLine: {'line': b'  File \x1b[35m"/opt/ros/humble/lib/python3.13/site-packages/rosidl_cmake/__init__.py"\x1b[0m, line \x1b[35m24\x1b[0m, in \x1b[35m<module>\x1b[0m\n'}
+[1.503890] (unique_identifier_msgs) StderrLine: {'line': b'    from rosidl_parser.parser import parse_idl_file\n'}
+[1.504019] (unique_identifier_msgs) StderrLine: {'line': b'  File \x1b[35m"/opt/ros/humble/lib/python3.13/site-packages/rosidl_parser/parser.py"\x1b[0m, line \x1b[35m20\x1b[0m, in \x1b[35m<module>\x1b[0m\n'}
+[1.504110] (unique_identifier_msgs) StderrLine: {'line': b'    from lark import Lark\n'}
+[1.504204] (unique_identifier_msgs) StderrLine: {'line': b"\x1b[1;35mModuleNotFoundError\x1b[0m: \x1b[35mNo module named 'lark'\x1b[0m\n"}
+[1.512678] (unique_identifier_msgs) StderrLine: {'line': b'Traceback (most recent call last):\n'}
+[1.513090] (unique_identifier_msgs) StderrLine: {'line': b'  File \x1b[35m"/opt/ros/humble/share/rosidl_generator_cpp/cmake/../../../lib/rosidl_generator_cpp/rosidl_generator_cpp"\x1b[0m, line \x1b[35m8\x1b[0m, in \x1b[35m<module>\x1b[0m\n'}
+[1.513277] (unique_identifier_msgs) StderrLine: {'line': b'    from rosidl_generator_cpp import generate_cpp\n'}
+[1.513406] (unique_identifier_msgs) StderrLine: {'line': b'  File \x1b[35m"/opt/ros/humble/lib/python3.13/site-packages/rosidl_generator_cpp/__init__.py"\x1b[0m, line \x1b[35m17\x1b[0m, in \x1b[35m<module>\x1b[0m\n'}
+[1.513526] (unique_identifier_msgs) StderrLine: {'line': b'    from rosidl_cmake import generate_files\n'}
+[1.513635] (unique_identifier_msgs) StderrLine: {'line': b'  File \x1b[35m"/opt/ros/humble/lib/python3.13/site-packages/rosidl_cmake/__init__.py"\x1b[0m, line \x1b[35m24\x1b[0m, in \x1b[35m<module>\x1b[0m\n'}
+[1.513785] (unique_identifier_msgs) StderrLine: {'line': b'    from rosidl_parser.parser import parse_idl_file\n'}
+[1.513887] (unique_identifier_msgs) StderrLine: {'line': b'  File \x1b[35m"/opt/ros/humble/lib/python3.13/site-packages/rosidl_parser/parser.py"\x1b[0m, line \x1b[35m20\x1b[0m, in \x1b[35m<module>\x1b[0m\n'}
+[1.514061] (unique_identifier_msgs) StderrLine: {'line': b'    from lark import Lark\n'}
+[1.514159] (unique_identifier_msgs) StderrLine: {'line': b"\x1b[1;35mModuleNotFoundError\x1b[0m: \x1b[35mNo module named 'lark'\x1b[0m\n"}
+[1.518030] (unique_identifier_msgs) StderrLine: {'line': b'make[2]: *** [CMakeFiles/unique_identifier_msgs__rosidl_generator_c.dir/build.make:87: rosidl_generator_c/unique_identifier_msgs/msg/uuid.h] Error 1\n'}
+[1.518388] (unique_identifier_msgs) StderrLine: {'line': b'make[1]: *** [CMakeFiles/Makefile2:257: CMakeFiles/unique_identifier_msgs__rosidl_generator_c.dir/all] Error 2\n'}
+[1.518521] (unique_identifier_msgs) StderrLine: {'line': b'make[1]: *** Waiting for unfinished jobs....\n'}
+[1.523524] (unique_identifier_msgs) StderrLine: {'line': b'make[2]: *** [CMakeFiles/unique_identifier_msgs__cpp.dir/build.make:93: rosidl_generator_cpp/unique_identifier_msgs/msg/uuid.hpp] Error 1\n'}
+[1.524244] (unique_identifier_msgs) StderrLine: {'line': b'make[1]: *** [CMakeFiles/Makefile2:386: CMakeFiles/unique_identifier_msgs__cpp.dir/all] Error 2\n'}
+[1.602568] (-) TimerEvent: {}
+[1.659996] (unique_identifier_msgs) StdoutLine: {'line': b'running egg_info\n'}
+[1.673036] (unique_identifier_msgs) StdoutLine: {'line': b'creating unique_identifier_msgs.egg-info\n'}
+[1.673251] (unique_identifier_msgs) StdoutLine: {'line': b'writing unique_identifier_msgs.egg-info/PKG-INFO\n'}
+[1.673647] (unique_identifier_msgs) StdoutLine: {'line': b'writing dependency_links to unique_identifier_msgs.egg-info/dependency_links.txt\n'}
+[1.673795] (unique_identifier_msgs) StdoutLine: {'line': b'writing top-level names to unique_identifier_msgs.egg-info/top_level.txt\n'}
+[1.673891] (unique_identifier_msgs) StdoutLine: {'line': b"writing manifest file 'unique_identifier_msgs.egg-info/SOURCES.txt'\n"}
+[1.702666] (-) TimerEvent: {}
+[1.704198] (unique_identifier_msgs) StdoutLine: {'line': b"reading manifest file 'unique_identifier_msgs.egg-info/SOURCES.txt'\n"}
+[1.704824] (unique_identifier_msgs) StdoutLine: {'line': b"writing manifest file 'unique_identifier_msgs.egg-info/SOURCES.txt'\n"}
+[1.736108] (unique_identifier_msgs) StdoutLine: {'line': b'[  6%] Built target ament_cmake_python_build_unique_identifier_msgs_egg\n'}
+[1.736714] (unique_identifier_msgs) StderrLine: {'line': b'make: *** [Makefile:146: all] Error 2\n'}
+[1.738297] (unique_identifier_msgs) CommandEnded: {'returncode': 2}
+[1.746479] (unique_identifier_msgs) JobEnded: {'identifier': 'unique_identifier_msgs', 'rc': 2}
+[1.757005] (-) EventReactorShutdown: {}

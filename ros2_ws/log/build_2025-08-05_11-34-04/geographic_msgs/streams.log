@@ -1,0 +1,13 @@
+[0.017s] Invoking command in '/home/vanszs/Documents/ros2/ros2_ws/build/geographic_msgs': DEBUGINFOD_URLS=https://debuginfod.archlinux.org _=/usr/bin/env /usr/bin/cmake /home/vanszs/Documents/ros2/ros2_ws/src/geographic_info/geographic_msgs -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPYTHON_EXECUTABLE=/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3 -DCATKIN_INSTALL_INTO_PREFIX_ROOT=0 -DCATKIN_SYMLINK_INSTALL=ON -DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/geographic_msgs
+[0.028s] [31mCMake Error at CMakeLists.txt:1 (cmake_minimum_required):
+[0.028s]   Compatibility with CMake < 3.5 has been removed from CMake.
+[0.028s] 
+[0.028s]   Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+[0.028s]   to tell CMake that the project requires at least <min> but has been updated
+[0.028s]   to work with policies introduced by <max> or earlier.
+[0.028s] 
+[0.028s]   Or, add -DCMAKE_POLICY_VERSION_MINIMUM=3.5 to try configuring anyway.
+[0.028s] 
+[0.028s] [0m
+[0.028s] -- Configuring incomplete, errors occurred!
+[0.030s] Invoked command in '/home/vanszs/Documents/ros2/ros2_ws/build/geographic_msgs' returned '1': DEBUGINFOD_URLS=https://debuginfod.archlinux.org _=/usr/bin/env /usr/bin/cmake /home/vanszs/Documents/ros2/ros2_ws/src/geographic_info/geographic_msgs -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPYTHON_EXECUTABLE=/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3 -DCATKIN_INSTALL_INTO_PREFIX_ROOT=0 -DCATKIN_SYMLINK_INSTALL=ON -DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/geographic_msgs

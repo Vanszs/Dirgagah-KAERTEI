@@ -1,0 +1,116 @@
+[0.000000] (-) TimerEvent: {}
+[0.000725] (-) JobUnselected: {'identifier': 'drone_mvp'}
+[0.000963] (-) JobUnselected: {'identifier': 'geodesy'}
+[0.001190] (-) JobUnselected: {'identifier': 'geographic_info'}
+[0.001247] (-) JobUnselected: {'identifier': 'geographic_msgs'}
+[0.001259] (-) JobUnselected: {'identifier': 'mavros'}
+[0.001272] (-) JobUnselected: {'identifier': 'mavros_extras'}
+[0.001284] (-) JobUnselected: {'identifier': 'unique_identifier_msgs'}
+[0.001298] (libmavconn) JobQueued: {'identifier': 'libmavconn', 'dependencies': OrderedDict()}
+[0.001316] (mavros_msgs) JobQueued: {'identifier': 'mavros_msgs', 'dependencies': OrderedDict({'unique_identifier_msgs': '/home/vanszs/Documents/ros2/ros2_ws/install/unique_identifier_msgs', 'geographic_msgs': '/home/vanszs/Documents/ros2/ros2_ws/install/geographic_msgs'})}
+[0.001339] (libmavconn) JobStarted: {'identifier': 'libmavconn'}
+[0.008452] (mavros_msgs) JobStarted: {'identifier': 'mavros_msgs'}
+[0.015302] (libmavconn) JobProgress: {'identifier': 'libmavconn', 'progress': 'cmake'}
+[0.015841] (libmavconn) Command: {'cmd': ['/usr/bin/cmake', '/home/vanszs/Documents/ros2/ros2_ws/src/mavros/libmavconn', '-DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/libmavconn'], 'cwd': '/home/vanszs/Documents/ros2/ros2_ws/build/libmavconn', 'env': OrderedDict({'SHELL': '/usr/bin/fish', 'ROS_VERSION': '2', 'COLORTERM': 'truecolor', 'PYENV_SHELL': 'fish', 'HYPRLAND_CMD': 'Hyprland', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-53a94d34f8532e02.txt', 'XDG_SESSION_PATH': '/org/freedesktop/DisplayManager/Session1', 'TERM_PROGRAM_VERSION': '1.102.3', 'WLR_NO_HARDWARE_CURSORS': '1', 'XDG_BACKEND': 'wayland', 'PKG_CONFIG_PATH': '/opt/ros/humble/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'XDG_DATA_HOME': '/home/vanszs/.local/share', 'CUDA_CACHE_PATH': '/home/vanszs/.cache/nv', 'XDG_CONFIG_HOME': '/home/vanszs/.config', 'XCURSOR_PATH': '/usr/share/icons:/home/vanszs/.local/share/icons', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'LIBVA_DRIVER_NAME': 'nvidia', 'DESKTOP_SESSION': 'hyprland', 'REDISCLI_HISTFILE': '/home/vanszs/.local/share/redis/rediscli_history', 'HL_INITIAL_WORKSPACE_TOKEN': 'ee02d154-06db-4dbe-bde3-d160ba5edec2', 'NO_AT_BRIDGE': '1', 'EDITOR': 'micro', 'XDG_SEAT': 'seat0', 'PWD': '/home/vanszs/Documents/ros2/ros2_ws/build/libmavconn', 'XDG_SESSION_DESKTOP': 'Hyprland', 'LOGNAME': 'vanszs', 'QT_QPA_PLATFORMTHEME': 'qt6ct', 'XDG_SESSION_TYPE': 'wayland', 'BUNDLED_DEBUGPY_PATH': '/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/libs/debugpy', 'VSCODE_GIT_ASKPASS_NODE': '/opt/visual-studio-code/code', 'MOTD_SHOWN': 'pam', 'VSCODE_INJECTION': '1', 'GTK2_RC_FILES': '/home/vanszs/.config/gtk-2.0/gtkrc', 'HOME': '/home/vanszs', 'LANG': 'en_US.UTF-8', '__GL_VRR_ALLOWED': '1', '_JAVA_AWT_WM_NONREPARENTING': '1', 'XDG_CURRENT_DESKTOP': 'Hyprland', 'CARGO_HOME': '/home/vanszs/.local/share/cargo', 'WAKATIME_HOME': '/home/vanszs/.config/wakatime', '_OLD_VIRTUAL_PATH': '/usr/bin:/home/vanszs/.pyenv/shims:/home/vanszs/.local/share/pyenv/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/tools:/opt/android-sdk/tools/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts:/home/vanszs/.config/Code/User/globalStorage/github.copilot-chat/debugCommand', 'VIRTUAL_ENV': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv', 'STARSHIP_SHELL': 'fish', 'WAYLAND_DISPLAY': 'wayland-1', 'AMENT_PREFIX_PATH': '/opt/ros/humble', 'GIT_ASKPASS': '/opt/visual-studio-code/resources/app/extensions/git/dist/askpass.sh', 'CMAKE_PREFIX_PATH': '/opt/ros/humble/opt/pybind11_vendor:/opt/ros/humble', 'XDG_SEAT_PATH': '/org/freedesktop/DisplayManager/Seat0', 'COLCON_PREFIX_PATH': '/opt/ros/humble', 'CHROME_DESKTOP': 'code.desktop', 'STARSHIP_SESSION_KEY': '1424317152526421', 'QT_QPA_PLATFORM': 'wayland;xcb', 'XDG_CACHE_HOME': '/home/vanszs/.cache', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PYTHON_EXECUTABLE': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3', 'XDG_SESSION_CLASS': 'user', 'ANDROID_HOME': '/opt/android-sdk', 'PYTHONPATH': '/build/ros2-humble/src/install/lib/python3.13/dist-packages:/opt/ros/humble/lib/python3.13/site-packages', 'COLCON': '1', 'TERM': 'xterm-256color', 'RUSTUP_HOME': '/home/vanszs/.local/share/rustup', 'USER': 'vanszs', 'GIT_PAGER': 'cat', 'JAVA_TOOL_OPTIONS': '-Dsun.java2d.xrender=true -Dsun.java2d.opengl=false', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-2ace83e08a.sock', 'HYPRLAND_INSTANCE_SIGNATURE': '4e242d086e20b32951fdc0ebcbfb4d41b5be8dcc_1754305270_1751409894', 'VISUAL': 'micro', 'DISPLAY': ':1', 'SHLVL': '3', 'MOZ_ENABLE_WAYLAND': '1', 'CHROME_EXECUTABLE': '/usr/bin/google-chrome-stable', 'ANDROID_SDK_ROOT': '/opt/android-sdk', 'XDG_VTNR': '1', 'XDG_SESSION_ID': '2', 'VIRTUAL_ENV_PROMPT': 'ros2_venv', 'WLR_DRM_NO_ATOMIC': '1', 'XDG_STATE_HOME': '/home/vanszs/.local/state', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/yaml_cpp_vendor/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib', 'XDG_RUNTIME_DIR': '/run/user/1000', 'ROS_LOCALHOST_ONLY': '0', 'PYENV_ROOT': '/home/vanszs/.pyenv', 'DEBUGINFOD_URLS': 'https://debuginfod.archlinux.org', 'VSCODE_GIT_ASKPASS_MAIN': '/opt/visual-studio-code/resources/app/extensions/git/dist/askpass-main.js', 'QT_AUTO_SCREEN_SCALE_FACTOR': '1', 'NODE_REPL_HISTORY': '/home/vanszs/.local/share/node_repl_history', 'XDG_DATA_DIRS': '/home/vanszs/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share', 'GDK_BACKEND': 'wayland', 'BROWSER': '/usr/bin/firefox', 'PATH': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin:/usr/bin:/home/vanszs/.pyenv/shims:/home/vanszs/.local/share/pyenv/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/tools:/opt/android-sdk/tools/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts:/home/vanszs/.config/Code/User/globalStorage/github.copilot-chat/debugCommand', '__GLX_VENDOR_LIBRARY_NAME': 'nvidia', 'GDK_SCALE': '1', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'Hyprland', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'MAIL': '/var/spool/mail/vanszs', 'ROS_DISTRO': 'humble', 'OLDPWD': '/home/vanszs/Documents/ros2/ros2_ws', 'MICRO_TRUECOLOR': '1', 'TERM_PROGRAM': 'vscode', '_': '/usr/bin/env'}), 'shell': False}
+[0.019584] (mavros_msgs) JobProgress: {'identifier': 'mavros_msgs', 'progress': 'cmake'}
+[0.020010] (mavros_msgs) Command: {'cmd': ['/usr/bin/cmake', '/home/vanszs/Documents/ros2/ros2_ws/src/mavros/mavros_msgs', '-DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/mavros_msgs'], 'cwd': '/home/vanszs/Documents/ros2/ros2_ws/build/mavros_msgs', 'env': OrderedDict({'SHELL': '/usr/bin/fish', 'ROS_VERSION': '2', 'COLORTERM': 'truecolor', 'PYENV_SHELL': 'fish', 'HYPRLAND_CMD': 'Hyprland', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-53a94d34f8532e02.txt', 'XDG_SESSION_PATH': '/org/freedesktop/DisplayManager/Session1', 'TERM_PROGRAM_VERSION': '1.102.3', 'WLR_NO_HARDWARE_CURSORS': '1', 'XDG_BACKEND': 'wayland', 'PKG_CONFIG_PATH': '/opt/ros/humble/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'XDG_DATA_HOME': '/home/vanszs/.local/share', 'CUDA_CACHE_PATH': '/home/vanszs/.cache/nv', 'XDG_CONFIG_HOME': '/home/vanszs/.config', 'XCURSOR_PATH': '/usr/share/icons:/home/vanszs/.local/share/icons', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'LIBVA_DRIVER_NAME': 'nvidia', 'DESKTOP_SESSION': 'hyprland', 'REDISCLI_HISTFILE': '/home/vanszs/.local/share/redis/rediscli_history', 'HL_INITIAL_WORKSPACE_TOKEN': 'ee02d154-06db-4dbe-bde3-d160ba5edec2', 'NO_AT_BRIDGE': '1', 'EDITOR': 'micro', 'XDG_SEAT': 'seat0', 'PWD': '/home/vanszs/Documents/ros2/ros2_ws/build/mavros_msgs', 'XDG_SESSION_DESKTOP': 'Hyprland', 'LOGNAME': 'vanszs', 'QT_QPA_PLATFORMTHEME': 'qt6ct', 'XDG_SESSION_TYPE': 'wayland', 'BUNDLED_DEBUGPY_PATH': '/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/libs/debugpy', 'VSCODE_GIT_ASKPASS_NODE': '/opt/visual-studio-code/code', 'MOTD_SHOWN': 'pam', 'VSCODE_INJECTION': '1', 'GTK2_RC_FILES': '/home/vanszs/.config/gtk-2.0/gtkrc', 'HOME': '/home/vanszs', 'LANG': 'en_US.UTF-8', '__GL_VRR_ALLOWED': '1', '_JAVA_AWT_WM_NONREPARENTING': '1', 'XDG_CURRENT_DESKTOP': 'Hyprland', 'CARGO_HOME': '/home/vanszs/.local/share/cargo', 'WAKATIME_HOME': '/home/vanszs/.config/wakatime', '_OLD_VIRTUAL_PATH': '/usr/bin:/home/vanszs/.pyenv/shims:/home/vanszs/.local/share/pyenv/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/tools:/opt/android-sdk/tools/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts:/home/vanszs/.config/Code/User/globalStorage/github.copilot-chat/debugCommand', 'VIRTUAL_ENV': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv', 'STARSHIP_SHELL': 'fish', 'WAYLAND_DISPLAY': 'wayland-1', 'AMENT_PREFIX_PATH': '/opt/ros/humble', 'GIT_ASKPASS': '/opt/visual-studio-code/resources/app/extensions/git/dist/askpass.sh', 'CMAKE_PREFIX_PATH': '/opt/ros/humble/opt/pybind11_vendor:/opt/ros/humble', 'XDG_SEAT_PATH': '/org/freedesktop/DisplayManager/Seat0', 'COLCON_PREFIX_PATH': '/opt/ros/humble', 'CHROME_DESKTOP': 'code.desktop', 'STARSHIP_SESSION_KEY': '1424317152526421', 'QT_QPA_PLATFORM': 'wayland;xcb', 'XDG_CACHE_HOME': '/home/vanszs/.cache', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PYTHON_EXECUTABLE': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3', 'XDG_SESSION_CLASS': 'user', 'ANDROID_HOME': '/opt/android-sdk', 'PYTHONPATH': '/build/ros2-humble/src/install/lib/python3.13/dist-packages:/opt/ros/humble/lib/python3.13/site-packages', 'COLCON': '1', 'TERM': 'xterm-256color', 'RUSTUP_HOME': '/home/vanszs/.local/share/rustup', 'USER': 'vanszs', 'GIT_PAGER': 'cat', 'JAVA_TOOL_OPTIONS': '-Dsun.java2d.xrender=true -Dsun.java2d.opengl=false', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-2ace83e08a.sock', 'HYPRLAND_INSTANCE_SIGNATURE': '4e242d086e20b32951fdc0ebcbfb4d41b5be8dcc_1754305270_1751409894', 'VISUAL': 'micro', 'DISPLAY': ':1', 'SHLVL': '3', 'MOZ_ENABLE_WAYLAND': '1', 'CHROME_EXECUTABLE': '/usr/bin/google-chrome-stable', 'ANDROID_SDK_ROOT': '/opt/android-sdk', 'XDG_VTNR': '1', 'XDG_SESSION_ID': '2', 'VIRTUAL_ENV_PROMPT': 'ros2_venv', 'WLR_DRM_NO_ATOMIC': '1', 'XDG_STATE_HOME': '/home/vanszs/.local/state', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/yaml_cpp_vendor/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib', 'XDG_RUNTIME_DIR': '/run/user/1000', 'ROS_LOCALHOST_ONLY': '0', 'PYENV_ROOT': '/home/vanszs/.pyenv', 'DEBUGINFOD_URLS': 'https://debuginfod.archlinux.org', 'VSCODE_GIT_ASKPASS_MAIN': '/opt/visual-studio-code/resources/app/extensions/git/dist/askpass-main.js', 'QT_AUTO_SCREEN_SCALE_FACTOR': '1', 'NODE_REPL_HISTORY': '/home/vanszs/.local/share/node_repl_history', 'XDG_DATA_DIRS': '/home/vanszs/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share', 'GDK_BACKEND': 'wayland', 'BROWSER': '/usr/bin/firefox', 'PATH': '/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin:/usr/bin:/home/vanszs/.pyenv/shims:/home/vanszs/.local/share/pyenv/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/tools:/opt/android-sdk/tools/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/vanszs/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts:/home/vanszs/.config/Code/User/globalStorage/github.copilot-chat/debugCommand', '__GLX_VENDOR_LIBRARY_NAME': 'nvidia', 'GDK_SCALE': '1', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'Hyprland', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'MAIL': '/var/spool/mail/vanszs', 'ROS_DISTRO': 'humble', 'OLDPWD': '/home/vanszs/Documents/ros2/ros2_ws', 'MICRO_TRUECOLOR': '1', 'TERM_PROGRAM': 'vscode', '_': '/usr/bin/env'}), 'shell': False}
+[0.027659] (libmavconn) StderrLine: {'line': b'\x1b[0mCMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):\n'}
+[0.027883] (libmavconn) StderrLine: {'line': b'  Compatibility with CMake < 3.10 will be removed from a future version of\n'}
+[0.027961] (libmavconn) StderrLine: {'line': b'  CMake.\n'}
+[0.028030] (libmavconn) StderrLine: {'line': b'\n'}
+[0.028095] (libmavconn) StderrLine: {'line': b'  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax\n'}
+[0.029167] (libmavconn) StderrLine: {'line': b'  to tell CMake that the project requires at least <min> but has been updated\n'}
+[0.029247] (libmavconn) StderrLine: {'line': b'  to work with policies introduced by <max> or earlier.\n'}
+[0.029310] (libmavconn) StderrLine: {'line': b'\n'}
+[0.029375] (libmavconn) StderrLine: {'line': b'\x1b[0m\n'}
+[0.029441] (mavros_msgs) StderrLine: {'line': b'\x1b[0mCMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):\n'}
+[0.029525] (mavros_msgs) StderrLine: {'line': b'  Compatibility with CMake < 3.10 will be removed from a future version of\n'}
+[0.029594] (mavros_msgs) StderrLine: {'line': b'  CMake.\n'}
+[0.029660] (mavros_msgs) StderrLine: {'line': b'\n'}
+[0.029723] (mavros_msgs) StderrLine: {'line': b'  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax\n'}
+[0.029792] (mavros_msgs) StderrLine: {'line': b'  to tell CMake that the project requires at least <min> but has been updated\n'}
+[0.029857] (mavros_msgs) StderrLine: {'line': b'  to work with policies introduced by <max> or earlier.\n'}
+[0.029924] (mavros_msgs) StderrLine: {'line': b'\n'}
+[0.029988] (mavros_msgs) StderrLine: {'line': b'\x1b[0m\n'}
+[0.069946] (mavros_msgs) StdoutLine: {'line': b'-- The C compiler identification is GNU 15.1.1\n'}
+[0.070898] (libmavconn) StdoutLine: {'line': b'-- The C compiler identification is GNU 15.1.1\n'}
+[0.099853] (-) TimerEvent: {}
+[0.200204] (-) TimerEvent: {}
+[0.201211] (mavros_msgs) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 15.1.1\n'}
+[0.206760] (libmavconn) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 15.1.1\n'}
+[0.207434] (mavros_msgs) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.212851] (libmavconn) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.280450] (mavros_msgs) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.286581] (libmavconn) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.289959] (mavros_msgs) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.290167] (mavros_msgs) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.290442] (mavros_msgs) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.298176] (libmavconn) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.298492] (libmavconn) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.298931] (libmavconn) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.300271] (-) TimerEvent: {}
+[0.303374] (mavros_msgs) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.309369] (libmavconn) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.400394] (-) TimerEvent: {}
+[0.445219] (mavros_msgs) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.452977] (libmavconn) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.461511] (mavros_msgs) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.461759] (mavros_msgs) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.462449] (mavros_msgs) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.463085] (libmavconn) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.463257] (libmavconn) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.463716] (libmavconn) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.468906] (mavros_msgs) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.469437] (libmavconn) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.500541] (-) TimerEvent: {}
+[0.574360] (libmavconn) StdoutLine: {'line': b'-- Found Python3: /home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3 (found version "3.13.5") found components: Interpreter\n'}
+[0.574537] (mavros_msgs) StdoutLine: {'line': b'-- Found Python3: /home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3 (found version "3.13.5") found components: Interpreter\n'}
+[0.600636] (-) TimerEvent: {}
+[0.673117] (mavros_msgs) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)\n'}
+[0.674817] (mavros_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.676405] (libmavconn) StdoutLine: {'line': b'-- Found ASIO: /usr/include\n'}
+[0.678699] (mavros_msgs) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[0.685441] (libmavconn) StderrLine: {'line': b'\x1b[31mCMake Error at CMakeLists.txt:33 (find_package):\n'}
+[0.685598] (libmavconn) StderrLine: {'line': b'  By not providing "Findmavlink.cmake" in CMAKE_MODULE_PATH this project has\n'}
+[0.685643] (libmavconn) StderrLine: {'line': b'  asked CMake to find a package configuration file provided by "mavlink", but\n'}
+[0.685684] (libmavconn) StderrLine: {'line': b'  CMake did not find one.\n'}
+[0.685724] (libmavconn) StderrLine: {'line': b'\n'}
+[0.685765] (libmavconn) StderrLine: {'line': b'  Could not find a package configuration file provided by "mavlink" with any\n'}
+[0.685819] (libmavconn) StderrLine: {'line': b'  of the following names:\n'}
+[0.685858] (libmavconn) StderrLine: {'line': b'\n'}
+[0.685900] (libmavconn) StderrLine: {'line': b'    mavlinkConfig.cmake\n'}
+[0.685943] (libmavconn) StderrLine: {'line': b'    mavlink-config.cmake\n'}
+[0.685985] (libmavconn) StderrLine: {'line': b'\n'}
+[0.686027] (libmavconn) StderrLine: {'line': b'  Add the installation prefix of "mavlink" to CMAKE_PREFIX_PATH or set\n'}
+[0.686068] (libmavconn) StderrLine: {'line': b'  "mavlink_DIR" to a directory containing one of the above files.  If\n'}
+[0.686111] (libmavconn) StderrLine: {'line': b'  "mavlink" provides a separate development package or SDK, be sure it has\n'}
+[0.686152] (libmavconn) StderrLine: {'line': b'  been installed.\n'}
+[0.686192] (libmavconn) StderrLine: {'line': b'\n'}
+[0.686234] (libmavconn) StderrLine: {'line': b'\x1b[0m\n'}
+[0.686275] (libmavconn) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[0.689240] (libmavconn) CommandEnded: {'returncode': 1}
+[0.701014] (-) TimerEvent: {}
+[0.704607] (libmavconn) JobEnded: {'identifier': 'libmavconn', 'rc': 1}
+[0.706134] (mavros_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.731333] (mavros_msgs) StdoutLine: {'line': b'-- Found builtin_interfaces: 1.2.1 (/opt/ros/humble/share/builtin_interfaces/cmake)\n'}
+[0.740490] (mavros_msgs) StdoutLine: {'line': b'-- Found rcl_interfaces: 1.2.1 (/opt/ros/humble/share/rcl_interfaces/cmake)\n'}
+[0.757580] (mavros_msgs) StderrLine: {'line': b'\x1b[31mCMake Error at CMakeLists.txt:18 (find_package):\n'}
+[0.757739] (mavros_msgs) StderrLine: {'line': b'  By not providing "Findgeographic_msgs.cmake" in CMAKE_MODULE_PATH this\n'}
+[0.757799] (mavros_msgs) StderrLine: {'line': b'  project has asked CMake to find a package configuration file provided by\n'}
+[0.757842] (mavros_msgs) StderrLine: {'line': b'  "geographic_msgs", but CMake did not find one.\n'}
+[0.757880] (mavros_msgs) StderrLine: {'line': b'\n'}
+[0.757918] (mavros_msgs) StderrLine: {'line': b'  Could not find a package configuration file provided by "geographic_msgs"\n'}
+[0.757955] (mavros_msgs) StderrLine: {'line': b'  with any of the following names:\n'}
+[0.757992] (mavros_msgs) StderrLine: {'line': b'\n'}
+[0.758031] (mavros_msgs) StderrLine: {'line': b'    geographic_msgsConfig.cmake\n'}
+[0.758070] (mavros_msgs) StderrLine: {'line': b'    geographic_msgs-config.cmake\n'}
+[0.758109] (mavros_msgs) StderrLine: {'line': b'\n'}
+[0.758149] (mavros_msgs) StderrLine: {'line': b'  Add the installation prefix of "geographic_msgs" to CMAKE_PREFIX_PATH or\n'}
+[0.758190] (mavros_msgs) StderrLine: {'line': b'  set "geographic_msgs_DIR" to a directory containing one of the above files.\n'}
+[0.758229] (mavros_msgs) StderrLine: {'line': b'  If "geographic_msgs" provides a separate development package or SDK, be\n'}
+[0.758269] (mavros_msgs) StderrLine: {'line': b'  sure it has been installed.\n'}
+[0.758307] (mavros_msgs) StderrLine: {'line': b'\n'}
+[0.758345] (mavros_msgs) StderrLine: {'line': b'\x1b[0m\n'}
+[0.758384] (mavros_msgs) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[0.763054] (mavros_msgs) JobEnded: {'identifier': 'mavros_msgs', 'rc': 'SIGINT'}
+[0.774468] (-) EventReactorShutdown: {}

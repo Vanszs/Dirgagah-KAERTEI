@@ -1,0 +1,1 @@
+['-DCMAKE_BUILD_TYPE=RelWithDebInfo', '-DPYTHON_EXECUTABLE=/home/vanszs/Documents/ros2/ros2_ws/src/drone_mvp/ros2_venv/bin/python3', '-DCATKIN_INSTALL_INTO_PREFIX_ROOT=0', '-DCATKIN_SYMLINK_INSTALL=ON']

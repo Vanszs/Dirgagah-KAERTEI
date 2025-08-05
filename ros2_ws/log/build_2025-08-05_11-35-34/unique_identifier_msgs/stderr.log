@@ -1,0 +1,70 @@
+[0mCMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+[0m
+[33mCMake Warning (dev) at /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:20 (find_package):
+  Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules
+  are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+
+Call Stack (most recent call first):
+  /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)
+  /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)
+  CMakeLists.txt:21 (rosidl_generate_interfaces)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+[0m
+[33mCMake Warning (dev) at /opt/ros/humble/share/python_cmake_module/cmake/Modules/FindPythonExtra.cmake:52 (find_package):
+  Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules
+  are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+
+Call Stack (most recent call first):
+  /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:23 (find_package)
+  /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)
+  /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)
+  CMakeLists.txt:21 (rosidl_generate_interfaces)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+[0m
+[33mCMake Warning (dev) at /opt/ros/humble/share/python_cmake_module/cmake/Modules/FindPythonExtra.cmake:140 (find_package):
+  Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules
+  are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+
+Call Stack (most recent call first):
+  /opt/ros/humble/share/rosidl_generator_py/cmake/rosidl_generator_py_generate_interfaces.cmake:23 (find_package)
+  /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_execute_extensions.cmake:48 (include)
+  /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:286 (ament_execute_extensions)
+  CMakeLists.txt:21 (rosidl_generate_interfaces)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+[0m
+Traceback (most recent call last):
+  File [35m"/opt/ros/humble/share/rosidl_generator_c/cmake/../../../lib/rosidl_generator_c/rosidl_generator_c"[0m, line [35m8[0m, in [35m<module>[0m
+    from rosidl_generator_c import generate_c
+  File [35m"/opt/ros/humble/lib/python3.13/site-packages/rosidl_generator_c/__init__.py"[0m, line [35m15[0m, in [35m<module>[0m
+    from rosidl_cmake import convert_camel_case_to_lower_case_underscore
+  File [35m"/opt/ros/humble/lib/python3.13/site-packages/rosidl_cmake/__init__.py"[0m, line [35m24[0m, in [35m<module>[0m
+    from rosidl_parser.parser import parse_idl_file
+  File [35m"/opt/ros/humble/lib/python3.13/site-packages/rosidl_parser/parser.py"[0m, line [35m20[0m, in [35m<module>[0m
+    from lark import Lark
+[1;35mModuleNotFoundError[0m: [35mNo module named 'lark'[0m
+Traceback (most recent call last):
+  File [35m"/opt/ros/humble/share/rosidl_generator_cpp/cmake/../../../lib/rosidl_generator_cpp/rosidl_generator_cpp"[0m, line [35m8[0m, in [35m<module>[0m
+    from rosidl_generator_cpp import generate_cpp
+  File [35m"/opt/ros/humble/lib/python3.13/site-packages/rosidl_generator_cpp/__init__.py"[0m, line [35m17[0m, in [35m<module>[0m
+    from rosidl_cmake import generate_files
+  File [35m"/opt/ros/humble/lib/python3.13/site-packages/rosidl_cmake/__init__.py"[0m, line [35m24[0m, in [35m<module>[0m
+    from rosidl_parser.parser import parse_idl_file
+  File [35m"/opt/ros/humble/lib/python3.13/site-packages/rosidl_parser/parser.py"[0m, line [35m20[0m, in [35m<module>[0m
+    from lark import Lark
+[1;35mModuleNotFoundError[0m: [35mNo module named 'lark'[0m
+make[2]: *** [CMakeFiles/unique_identifier_msgs__rosidl_generator_c.dir/build.make:87: rosidl_generator_c/unique_identifier_msgs/msg/uuid.h] Error 1
+make[1]: *** [CMakeFiles/Makefile2:257: CMakeFiles/unique_identifier_msgs__rosidl_generator_c.dir/all] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make[2]: *** [CMakeFiles/unique_identifier_msgs__cpp.dir/build.make:93: rosidl_generator_cpp/unique_identifier_msgs/msg/uuid.hpp] Error 1
+make[1]: *** [CMakeFiles/Makefile2:386: CMakeFiles/unique_identifier_msgs__cpp.dir/all] Error 2
+make: *** [Makefile:146: all] Error 2
