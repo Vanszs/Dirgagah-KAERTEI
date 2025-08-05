@@ -25,6 +25,9 @@ ament_python_install_package(${PROJECT_NAME})
 # Install Python executables
 install(PROGRAMS
   drone_mvp/mission_node.py
+  drone_mvp/checkpoint_mission_node.py
+  drone_mvp/camera_control_node.py
+  drone_mvp/magnet_control_node.py
   drone_mvp/vision_detector_node.py
   drone_mvp/sensor_monitor.py
   drone_mvp/kalibrasi_navigator.py

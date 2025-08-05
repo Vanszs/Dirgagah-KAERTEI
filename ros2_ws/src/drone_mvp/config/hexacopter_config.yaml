@@ -1,0 +1,26 @@
+# KAERTEI 2025 Hexacopter Configuration
+hexacopter:
+  motors: 6
+  cameras: 3
+  magnets: 2
+  
+hardware:
+  flight_controller:
+    primary: "/dev/ttyACM0"
+    backup: "/dev/ttyUSB0"
+    baudrate: 57600
+    
+  cameras:
+    front: "/dev/video0"
+    back: "/dev/video1" 
+    top: "/dev/video2"
+    
+  sensors:
+    i2c_bus: 1
+    relay_pins: [18, 19]
+    
+mission:
+  checkpoints: 26
+  indoor_altitude: 1.5
+  outdoor_altitude: 10.0
+  safety_distance: 2.0

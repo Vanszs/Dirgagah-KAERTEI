@@ -1,0 +1,92 @@
+services:
+  kaertei-hexacopter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kaertei2025_hexacopter
+    image: kaertei2025:latest
+    
+    # Environment variables for hexacopter
+    environment:
+      - ROS_DISTRO=humble
+      - PYTHONUNBUFFERED=1
+      - DISPLAY=${DISPLAY:-:0}
+      - HEXACOPTER_MODE=true
+      - MOTOR_COUNT=6
+      - CAMERA_COUNT=3
+      - MAGNET_RELAY_COUNT=2
+      - ROS_DOMAIN_ID=42
+      
+    # Volume mappings
+    volumes:
+      - ./src:/workspace/ros2_ws/src:rw
+      - ./logs:/workspace/ros2_ws/logs:rw
+      - ./config:/workspace/ros2_ws/config:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /dev:/dev:ro
+      - /sys:/sys:ro
+      - /proc:/proc:ro
+      
+    # Network configuration
+    network_mode: host
+    
+    # Device access for hexacopter hardware (only existing devices)
+    devices:
+      - /dev/video0:/dev/video0    # Front camera (if exists)
+      - /dev/video1:/dev/video1    # Back camera (if exists)
+    
+    # Device control rules for hardware access
+    device_cgroup_rules:
+      - 'c 81:* rmw'   # Video devices
+      - 'c 166:* rmw'  # Serial devices (ACM)
+      - 'c 188:* rmw'  # USB devices
+      - 'c 89:* rmw'   # I2C devices
+      - 'c 4:* rmw'    # TTY devices
+    
+    # Privileged mode for full hardware access
+    privileged: true
+    
+    # Working directory
+    working_dir: /workspace/ros2_ws
+    
+    # Command to run with hardware detection
+    command: >
+      /bin/bash -c "
+        source setup_env.sh && 
+        echo '🚁 KAERTEI 2025 Hexacopter Docker Environment Ready!' &&
+        echo '📊 Container running successfully!' &&
+        echo '✅ Ready for hardware detection and mission operations!' &&
+        tail -f /dev/null
+      "
+    
+    # Remove interactive mode to fix console permission
+    stdin_open: false
+    tty: false
+    
+    # Health check for hexacopter systems
+    healthcheck:
+      test: ["CMD", "bash", "-c", "source setup_env.sh && ros2 topic list && python3 -c 'import pymavlink; print(\"MAVLink OK\")'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Restart policy
+    restart: unless-stopped
+
+  # Database for mission logging
+  database:
+    image: postgres:13
+    container_name: kaertei2025_db
+    environment:
+      - POSTGRES_DB=kaertei_logs
+      - POSTGRES_USER=kaertei
+      - POSTGRES_PASSWORD=kaertei2025
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

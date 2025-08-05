@@ -6,7 +6,13 @@
 
 ### *Fully Autonomous Indoor-Outdoor Competition Ready*
 
-[![ROS 2 Humble](https://img.shields.io/badge/ROS_2-Humble-blue?logo=ros&logoColor=white)](https://docs.ros.org/en/humble/)
+[![ROS 2 Humble](https://img.shields.io/badge/ROS_2-Humble-blue?logo=ros&logoColor=white)](https:/    F --> B
+    
+    style A fill:#000000,color:#ffffff
+    style B fill:#000000,color:#ffffff
+    style C fill:#000000,color:#ffffff
+    style D fill:#000000,color:#ffffff
+    style F fill:#000000,color:#ffffffrg/en/humble/)
 [![ArduPilot](https://img.shields.io/badge/ArduPilot-4.4+-green?logo=drone&logoColor=white)](https://ardupilot.org/)
 [![Python](https://img.shields.io/badge/Python-3.8+-yellow?logo=python&logoColor=white)](https://python.org/)
 [![License](https://img.shields.io/badge/License-MIT-red)](LICENSE)
@@ -19,15 +25,239 @@
 
 ---
 
-## Deskripsi
+## 📝 Deskripsi
 
-Sistem drone VTOL autonomous yang komprehensif dan siap kompetisi untuk KAERTEI 2025 Divisi Fully Autonomous Indoor-Outdoor (FAIO). Dibangun dengan teknologi terdepan dan arsitektur yang robust untuk menjamin performa maksimal.
+Sistem drone hexacopter autonomous yang komprehensif dan siap kompetisi untuk KAERTEI 2025 Divisi Fully Autonomous Indoor-Outdoor (FAIO). Dibangun dengan teknologi terdepan dan arsitektur yang robust untuk menjamin performa maksimal dalam misi pickup & delivery.
 
-### Tech Stack Unggulan
+### 🎯 Features Utama
+- **✅ Cleaned & Optimized**: File struktur yang rapi dan terorganisir
+- **✅ Multi-Platform**: Ubuntu native, Docker container, Arch Linux support
+- **✅ Docker Integration**: Complete containerized deployment
+- **✅ Hexacopter Ready**: 6-motor configuration dengan auto-detection
+- **✅ Vision System**: 3-camera setup (front, back, top) dengan YOLOv8
+- **✅ Hardware Integration**: ToF sensors, electromagnets, GPS/IMU
+
+### 🔧 Tech Stack Unggulan
 - **Hardware**: Pixhawk 2.1 Cube Orange (Industrial Grade)
-- **Firmware**: ArduPilot (Proven & Reliable)  
-- **Communication**: MAVROS Bridge ke ROS 2
-- **GCS**: QGroundControl (Professional Mission Planning)
+- **Firmware**: ArduPilot 4.4+ (Proven & Reliable)  
+- **Communication**: MAVROS Bridge ke ROS 2 Humble
+- **Computer Vision**: OpenCV + YOLOv8 Multi-Camera System
+- **Sensors**: ToF, GPS, IMU, 3x Camera modules
+- **Control**: Electromagnet relay system untuk pickup/drop
+- **Platform**: ROS 2 Humble + Python 3.8+
+
+---
+
+## 🚀 Quick Start
+
+Sistem telah dioptimalkan dengan 3 opsi deployment untuk fleksibilitas maksimal:
+
+### 1. Ubuntu Native (Recommended)
+```bash
+cd ros2_ws/src/drone_mvp
+./setup.sh ubuntu
+./kaertei_master.sh setup
+```
+
+### 2. Docker Container (Universal)
+```bash
+cd ros2_ws/src/drone_mvp
+./docker_runner.sh build
+./docker_runner.sh run
+```
+
+### 3. Arch Linux (Unstable/Experimental)
+```bash
+cd ros2_ws/src/drone_mvp
+./setup.sh arch
+./kaertei_master.sh setup
+```
+
+---
+
+## 🛠️ Tutorial Setup Lengkap
+
+### 📋 Prasyarat Umum
+
+Sebelum memulai, pastikan sistem Anda memiliki:
+- **Hardware**: CPU dual-core+, RAM 4GB+, Storage 20GB+
+- **Network**: Koneksi internet stabil untuk download dependencies
+- **User privileges**: Sudo access untuk instalasi system packages
+
+---
+
+### 🐧 Ubuntu Native Setup (Recommended)
+
+**Tested on: Ubuntu 20.04 LTS, 22.04 LTS**
+
+#### Step 1: Clone Repository
+```bash
+git clone https://github.com/Vanszs/Dirgagah-KAERTEI.git
+cd Dirgagah-KAERTEI/ros2_ws/src/drone_mvp
+```
+
+#### Step 2: Automated Setup
+```bash
+# Setup system dependencies & ROS 2 Humble
+./setup.sh ubuntu
+
+# Setup drone system
+./kaertei_master.sh setup
+
+# Verify installation
+./kaertei_master.sh status
+```
+
+#### Step 3: Hardware Connection
+```bash
+# Connect Pixhawk via USB/Serial
+# Default: /dev/ttyUSB0 atau /dev/ttyACM0
+
+# Test MAVROS connection
+./kaertei_master.sh test mavros
+
+# Calibrate hardware (if needed)
+./kaertei_master.sh calibrate
+```
+
+#### Step 4: Run Mission
+```bash
+# Debug mode (step-by-step)
+./run_checkpoint_mission.sh debug
+
+# Auto mode (full autonomous)
+./run_checkpoint_mission.sh auto
+```
+
+---
+
+### 🐳 Docker Container Setup (Universal)
+
+**Compatible: Any Linux with Docker, Windows WSL2, macOS**
+
+#### Step 1: Install Docker
+```bash
+# Ubuntu/Debian
+sudo apt update && sudo apt install docker.io docker-compose
+
+# Arch Linux
+sudo pacman -S docker docker-compose
+
+# Start Docker service
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+
+#### Step 2: Clone & Build
+```bash
+git clone https://github.com/Vanszs/Dirgagah-KAERTEI.git
+cd Dirgagah-KAERTEI/ros2_ws/src/drone_mvp
+
+# Build Docker image
+./docker_runner.sh build
+```
+
+#### Step 3: Run Container
+```bash
+# Interactive mode with hardware access
+./docker_runner.sh run
+
+# Inside container, run:
+source /opt/ros/humble/setup.bash
+./kaertei_master.sh setup
+./run_checkpoint_mission.sh debug
+```
+
+#### Docker Advantages:
+- ✅ **Isolated environment** - No system pollution
+- ✅ **Consistent behavior** - Same across all platforms
+- ✅ **Easy cleanup** - Remove container when done
+- ✅ **Hardware passthrough** - Full device access
+
+---
+
+### 🏴‍☠️ Arch Linux Setup (Unstable/Experimental)
+
+**⚠️ Warning: Experimental support. May require manual fixes.**
+
+#### Step 1: Base System
+```bash
+# Update system
+sudo pacman -Syu
+
+# Install base dependencies
+sudo pacman -S base-devel git python python-pip
+
+# Clone repository
+git clone https://github.com/Vanszs/Dirgagah-KAERTEI.git
+cd Dirgagah-KAERTEI/ros2_ws/src/drone_mvp
+```
+
+#### Step 2: ROS 2 Installation
+```bash
+# Automated Arch setup (experimental)
+./setup.sh arch
+
+# Or manual AUR installation:
+# yay -S ros2-humble-desktop
+```
+
+#### Step 3: Package Dependencies
+```bash
+# Install Python packages
+pip install -r requirements.txt
+
+# Install additional Arch packages
+sudo pacman -S opencv python-opencv python-numpy
+```
+
+#### Step 4: System Setup
+```bash
+# Setup drone system
+./kaertei_master.sh setup
+
+# Test installation
+./kaertei_master.sh status
+```
+
+#### Known Arch Issues:
+- 🔧 **GeographicLib datasets** - May need manual download
+- 🔧 **MAVROS plugins** - Some plugins may not build
+- 🔧 **Python paths** - Virtual environment recommended
+
+---
+
+## 🔧 Post-Installation Verification
+
+Untuk semua platform, jalankan tes ini untuk memastikan instalasi berhasil:
+
+```bash
+# Test 1: ROS 2 Environment
+source /opt/ros/humble/setup.bash
+ros2 --version
+
+# Test 2: Python Dependencies
+python3 -c "import cv2, numpy as np, pymavlink; print('✅ Python deps OK')"
+
+# Test 3: MAVROS Connection
+./kaertei_master.sh test mavros
+
+# Test 4: Hardware Detection
+./kaertei_master.sh calibrate
+
+# Test 5: Full System
+./run_checkpoint_mission.sh debug
+```
+
+### 🚨 Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| **ROS 2 not found** | `source /opt/ros/humble/setup.bash` |
+| **Permission denied** | `sudo usermod -a -G dialout $USER` (logout/login) |
+| **MAVROS timeout** | Check USB connection, try different port |
+| **OpenCV missing** | `pip install opencv-python` |
+| **Docker permission** | `sudo usermod -a -G docker $USER` |
 
 ---
 
@@ -37,9 +267,9 @@ Sistem drone VTOL autonomous yang komprehensif dan siap kompetisi untuk KAERTEI 
 
 ```mermaid
 graph TB
-    A[QGroundControl] --> B[MAVROS Bridge]
+    A[QGroundControl] --> B[MAVLink Bridge]
     B --> C[ArduPilot Firmware]
-    C --> D[Pixhawk 2.1 Cube Orange]
+    C --> D[Pixhawk PX4]
     
     E[Vision System] --> F[ROS 2 Nodes]
     G[ToF Sensors] --> F
@@ -47,7 +277,16 @@ graph TB
     I[Electromagnets] --> F
     
     F --> B
+<<<<<<< HEAD
 
+=======
+    
+    style A fill:#000000,color:#ffffff
+    style B fill:#000000,color:#ffffff
+    style C fill:#000000,color:#ffffff
+    style D fill:#000000,color:#ffffff
+    style F fill:#000000,color:#ffffff
+>>>>>>> 4ea4f67 (�� KAERTEI 2025 FAIO: Major System Cleanup & 26-Checkpoint Integration)
 ```
 
 </div>
@@ -57,7 +296,7 @@ graph TB
 | Komponen | Spesifikasi | Fungsi |
 |----------|-------------|---------|
 | **Drone Platform** | Hexacopter VTOL | Stabilitas & Redundancy |
-| **Flight Controller** | Pixhawk 2.1 Cube Orange | Kontrol penerbangan presisi |
+| **Flight Controller** | Pixhawk PX4 Standard | Kontrol penerbangan presisi |
 | **Vision System** | 3x Kamera (Depan/Belakang/Atas) | Computer vision & navigasi |
 | **Distance Sensors** | 3x ToF (Kiri/Kanan/Depan) | Obstacle avoidance |
 | **Actuators** | 2x Electromagnet + Relay | Pickup & drop mechanism |
@@ -70,15 +309,15 @@ graph TB
 
 ```ascii
 ┌─────────────────────────────────────────┐
-│     Mission Control (Python)           │ ← Your Application Layer
+│     Mission Control (Python)           │ ← Checkpoint System
 ├─────────────────────────────────────────┤
 │        ROS 2 Nodes Network             │ ← Intelligent Coordination  
 ├─────────────────────────────────────────┤
-│           MAVROS Bridge                │ ← Protocol Translation
+│           MAVLink Bridge               │ ← Direct PX4 Communication
 ├─────────────────────────────────────────┤
-│        ArduPilot Firmware              │ ← Flight Control Logic
+│        PX4 Firmware                    │ ← Flight Control Logic
 ├─────────────────────────────────────────┤
-│      Pixhawk 2.1 Cube Orange           │ ← Hardware Abstraction
+│      Pixhawk PX4 Standard              │ ← Hardware Control
 └─────────────────────────────────────────┘
 ```
 
@@ -90,16 +329,21 @@ graph TB
 
 <div align="center">
 
-### Core Mission Intelligence
+### Core Mission Intelligence - Checkpoint System
 ```
 ┌─────────────────────────────────────┐
-│        mission_node.py              │
-│     (Finite State Machine)         │
+│    checkpoint_mission_node.py      │
+│     (Interactive FSM)              │
 │   ┌─────────────────────────────┐   │
-│   │ 22 States Mission Flow      │   │
-│   │ • Indoor → Outdoor phases   │   │
-│   │ • Intelligent decision      │   │
-│   │ • Safety monitoring         │   │
+│   │ 26 Checkpoint System        │   │
+│   │ • Manual progression        │   │
+│   │ • Debug each step           │   │
+│   │ • "next" command required   │   │
+│   │ • Real-time status          │   │
+│   │ • Altitude: 0.6m indoor     │   │
+│   │ • Turn direction config     │   │
+│   │ • Sequential drop system    │   │
+│   │ • 3-waypoint outdoor cycle  │   │
 │   └─────────────────────────────┘   │
 └─────────────────────────────────────┘
 ```
@@ -110,6 +354,7 @@ graph TB
 
 | Node | Teknologi | Fungsi Spesifik |
 |------|-----------|-----------------|
+| `camera_control_node.py` | **OpenCV Multi-Camera** | Dynamic camera switching & detection |
 | `vision_detector_node.py` | **YOLOv8** | Multi-camera object detection |
 | `exit_detector.py` | **OpenCV** | Exit gate detection (top camera) |
 | `dropzone_detector.py` | **Computer Vision** | Basket detection (indoor/outdoor) |
@@ -118,17 +363,65 @@ graph TB
 
 | Node | Capability | Advanced Features |
 |------|------------|-------------------|
+| `checkpoint_mission_node.py` | **MAVLink Direct** | PX4 direct communication |
 | `sensor_monitor.py` | **ToF Integration** | Real-time obstacle avoidance |
 | `kalibrasi_navigator.py` | **Auto-centering** | Drift correction algorithm |
 | `gps_monitor.py` | **GPS Analytics** | Movement detection & quality |
 | `waypoint_controller.py` | **Path Planning** | Outdoor waypoint navigation |
-| `flight_mode_switcher.py` | **MAVROS Control** | ArduPilot mode management |
 
 ### Hardware Interface Layer
 
 | Node | Hardware Control | Safety Features |
 |------|------------------|-----------------|
-| `magnet_control.py` | **Electromagnetic Relays** | Auto-release on disarm |
+| `magnet_control_node.py` | **GPIO Electromagnets** | Raspberry Pi GPIO control |
+
+---
+
+## Checkpoint Mission System
+
+### Interactive Debugging Features
+
+🔧 **Step-by-Step Execution**
+- Every checkpoint requires manual confirmation
+- Type `next` to proceed to next step
+- Perfect for debugging and testing
+
+🎯 **26 Mission Checkpoints (Updated System)**
+1. `INIT` - Initialize systems and arm drone
+2. `TAKEOFF` - Takeoff to **0.6m altitude** (lowered from 1.5m)
+3. `SEARCH_ITEM_1_FRONT` - Move forward, activate front camera
+4. `ALIGN_ITEM_1` - Center item 1 in camera view
+5. `PICKUP_ITEM_1` - Descend and pickup with front magnet
+6. `SEARCH_ITEM_2_BACK` - Move forward, activate back camera
+7. `ALIGN_ITEM_2` - Center item 2 in camera view
+8. `PICKUP_ITEM_2` - Descend and pickup with back magnet
+9. `NAVIGATE_TURN_DIRECTION` - **Configurable turn** (left/right via config)
+10. `SEARCH_DROPZONE` - Search for dropzone baskets
+11. `DROP_ITEM_1_FRONT` - **Drop front item first**
+12. `ASCEND_AFTER_DROP_1` - Ascend after first drop
+13. `ALIGN_DROP_2_BACK` - Switch to back camera, align for second drop
+14. `DROP_ITEM_2_BACK` - Drop back item
+15. `FIND_EXIT` - Find exit gate with top camera
+16. `ASCEND_TO_OUTDOOR` - **Ascend to 3m** for outdoor phase
+17. `AUTO_WAYPOINT_1` - **AUTO mode** to waypoint 1
+18. `MANUAL_SEARCH_OUTDOOR` - **MANUAL mode** search for outdoor item
+19. `PICKUP_OUTDOOR` - Pickup with **front magnet only**
+20. `ASCEND_TO_WAYPOINT_2` - Ascend to 3m
+21. `AUTO_WAYPOINT_2` - **AUTO mode** to waypoint 2
+22. `MANUAL_SEARCH_DROP_OUTDOOR` - **MANUAL mode** search for dropzone
+23. `DROP_OUTDOOR` - Drop outdoor item
+24. `ASCEND_TO_WAYPOINT_3` - Ascend to 3m
+25. `AUTO_WAYPOINT_3_LANDING` - **AUTO mode** to waypoint 3 + landing
+26. `COMPLETED` - Mission completed!
+
+### Debug Commands
+
+| Command | Function |
+|---------|----------|
+| `next` | Proceed to next checkpoint |
+| `status` | Show system status |
+| `help` | Show available commands |
+| `abort` | Emergency abort and land |
 
 ---
 
@@ -281,10 +574,10 @@ Hardware Interface
 | Component | Version | Installation Command |
 |-----------|---------|---------------------|
 | **ROS 2** | Humble | `sudo apt install ros-humble-desktop` |
-| **MAVROS** | Latest | `sudo apt install ros-humble-mavros*` |
 | **Python** | 3.8+ | Pre-installed with ROS 2 |
 | **OpenCV** | 4.5+ | `pip3 install opencv-python` |
-| **YOLOv8** | Latest | `pip3 install ultralytics` |
+| **MAVLink** | 2.4+ | `pip3 install pymavlink` |
+| **RPi.GPIO** | Latest | `pip3 install RPi.GPIO` (for Raspberry Pi) |
 
 </div>
 
@@ -308,19 +601,19 @@ source install/setup.bash
 
 <div align="center">
 
-#### **Recommended: All-in-One Manager**
+#### **🎯 Recommended: Checkpoint Mission (Debug Mode)**
 ```bash
-./src/drone_mvp/drone_manager.sh mission --camera front
+./src/drone_mvp/start_checkpoint_mission.sh [/dev/ttyUSB0:57600]
 ```
 
-#### **Direct Launch**
+#### **🚀 Original Mission (Auto Mode)**
 ```bash
 ros2 launch drone_mvp drone.launch.py
 ```
 
-#### **Custom FCU Connection**
+#### **🔧 Custom PX4 Connection**
 ```bash
-ros2 launch drone_mvp drone.launch.py fcu_url:="serial:///dev/ttyACM0:115200"
+ros2 launch drone_mvp checkpoint_mission.launch.py px4_connection:="/dev/ttyACM0:115200"
 ```
 
 </div>
@@ -329,302 +622,116 @@ ros2 launch drone_mvp drone.launch.py fcu_url:="serial:///dev/ttyACM0:115200"
 
 ## Configuration
 
-### MAVROS Connection Settings
+### Hardware Configuration (Centralized)
 
-Edit `config/mavros_config.yaml`:
-```yaml
-# Flight Controller Connection
-fcu_url: "serial:///dev/ttyUSB0:57600"  # Adjust for your Pixhawk
-gcs_url: "udp://@127.0.0.1:14550"      # QGroundControl connection
+**🎯 All hardware settings managed in ONE file:** `config/hardware_config.conf`
 
-# System Identification  
-system_id: 1
-component_id: 1
-target_system_id: 1
-target_component_id: 1
+```bash
+# Quick hardware setup & testing
+./src/drone_mvp/hardware_setup.sh
 
-# Safety Parameters
-enable_heartbeat: true
-timeout_heartbeat: 5.0
+# Edit configuration
+nano src/drone_mvp/config/hardware_config.conf
+```
+
+**Key settings to adjust:**
+- PX4 connection port (`/dev/ttyUSB0` or `/dev/ttyACM0`)
+- Camera device indices (`0, 2, 4` for front/back/top)
+- GPIO pins for electromagnets (default: `18, 19`)
+- GPS coordinates for competition venue ⚠️ **CRITICAL**
+- Flight altitude limits (indoor: 1.5m, outdoor: 3.0m)
+
+### MAVLink Connection Settings
+
+**Direct PX4 communication (no MAVROS):**
+```ini
+[flight_controller]
+connection_port = "/dev/ttyUSB0"
+baud_rate = 57600
+connection_timeout = 10
 ```
 
 ### Mission Parameters
 
-Edit `config/competition_config.yaml`:
-```yaml
-# Indoor Mission Settings
-mission:
-  indoor_altitude: 1.5          # Meters
-  outdoor_altitude: 3.0         # Meters
-  mission_timeout: 900          # 15 minutes total
+**Competition-specific settings:**
+```ini
+[flight]
+takeoff_altitude = 1.5          # Takeoff height
+indoor_cruise_altitude = 1.5    # Indoor max (≤2m rule)
+outdoor_cruise_altitude = 3.0   # Outdoor cruise
 
-# Sensor Thresholds
-sensors:
-  tof:
-    max_range: 4.0              # ToF sensor range
-    detection_threshold: 1.5    # Obstacle detection
-    
-# GPS Waypoints (UPDATE FOR YOUR VENUE!)
-waypoints:
-  outdoor_pickup: 
-    latitude: -6.365000         # Set actual coordinates
-    longitude: 106.825000       # Set actual coordinates
-    altitude: 30.0              # Meters above home
-    
-  outdoor_drop:
-    latitude: -6.364500         # Set actual coordinates  
-    longitude: 106.825500       # Set actual coordinates
-    altitude: 30.0              # Meters above home
+[waypoints]
+# ⚠️ UPDATE FOR YOUR COMPETITION VENUE!
+outdoor_pickup_latitude = -6.365000    # CHANGE THIS
+outdoor_pickup_longitude = 106.825000  # CHANGE THIS
+outdoor_drop_latitude = -6.364500      # CHANGE THIS
+outdoor_drop_longitude = 106.825500    # CHANGE THIS
 ```
 
 ---
 
-## 📊 **Monitoring & Debugging**
+## 📅 Update History
 
-### 🖥️ **Real-time System Monitor**
-
-<div align="center">
-
-```bash
-# 🎯 Launch comprehensive monitoring dashboard
-./src/drone_mvp/drone_manager.sh monitor
-```
-
-**Features:**
-- ✅ Live MAVROS connection status
-- ✅ GPS fix quality & position  
-- ✅ Mission state & progress
-- ✅ Vision detection results
-- ✅ Sensor readings (ToF)
-- ✅ Hardware status (magnets)
-- ✅ Flight position & velocity
-
-</div>
-
-### 🔧 **Development Tools**
-
-| Tool | Command | Purpose |
-|------|---------|---------|
-| 🧪 **Hardware Test** | `./drone_manager.sh calibrate` | Test all hardware components |
-| 🎮 **Mission Simulator** | `./drone_manager.sh simulate` | Test mission logic (no hardware) |
-| 📡 **MAVROS Test** | `./drone_manager.sh test-mavros` | Test flight controller connection |
-| 📊 **System Status** | `./drone_manager.sh status` | Quick system health check |
-
-### 🔍 **Manual Monitoring Commands**
-
-```bash
-# 🎯 Mission State
-ros2 topic echo /mission/state
-
-# 📡 MAVROS Connection  
-ros2 topic echo /mavros/state
-
-# 🛰️ GPS Status
-ros2 topic echo /mavros/global_position/global
-
-# 📏 Sensor Readings
-ros2 topic echo /sensors/status
-
-# 👁️ Vision Detections
-ros2 topic echo /vision/detection
-```
+- **August 5, 2025**: Major cleanup & consolidation
+  - ✅ Removed redundant files (archive folder deleted)  
+  - ✅ Consolidated 32+ shell scripts to 4 essential scripts
+  - ✅ Added Docker integration with hexacopter support
+  - ✅ Updated multi-platform setup guides
+  - ✅ Cleaned project structure for better maintainability
 
 ---
 
-## 🛡️ **Safety Features**
+## 🔧 Testing & Debug Modes
 
-<div align="center">
+**Debug Mode Options:**
+```bash
+# Full debug with "next" command controls
+./run_checkpoint_mission.sh debug
 
-### 🚨 **Emergency Procedures**
+# Autonomous execution (competition mode)
+./run_checkpoint_mission.sh auto
 
-| Emergency | Command | Description |
-|-----------|---------|-------------|
-| 🛑 **Emergency Stop** | `./drone_manager.sh emergency` | Immediate system shutdown |
-| 🏁 **Emergency Land** | `ros2 topic pub /mission/command std_msgs/String "data: 'EMERGENCY_LAND'"` | Force landing |
-| 🎮 **Manual Control** | Switch to **STABILIZE** in QGroundControl | Human takeover |
-
-</div>
-
-### ⚠️ **Autonomous Failsafe System**
-
-| Condition | Response | Backup Action |
-|-----------|----------|---------------|
-| 🛰️ **GPS Loss** | Dead reckoning navigation | Continue with IMU |
-| 📡 **MAVROS Disconnect** | Mission pause | Wait for reconnection |
-| 👁️ **Vision Timeout** | Continue with time limits | Use last known position |
-| 🔋 **Low Battery** | Return to land immediately | Force landing |
-| 🧲 **Magnet Failure** | Auto-release all magnets | Continue mission |
-
-### 🔐 **Built-in Safety Limits**
-
-```yaml
-# ⛔ Hard Safety Limits (Non-configurable)
-safety:
-  max_altitude: 10.0      # Maximum flight height
-  max_velocity: 5.0       # Maximum speed
-  geofence_enabled: true  # Automatic boundary enforcement
-  battery_failsafe: 15%   # Critical battery level
+# Hardware testing without USB connections
+python3 dummy_hardware.py
 ```
+
+**Dummy Hardware Support:**
+- ✅ **Simulated MAVLink** - Test without flight controller
+- ✅ **Virtual Cameras** - Test vision algorithms 
+- ✅ **Mock ToF Sensors** - Test navigation logic
+- ✅ **Simulated GPS** - Test outdoor waypoints
+- ✅ **Debug Electromagnets** - Test pickup/drop logic
+
+**Runtime Debug Commands:**
+- `next` - Proceed to next checkpoint (debug mode)
+- `status` - Show current system status
+- `debug` - Toggle debug mode ON/OFF during mission
+- `help` - Show available commands
+- `abort` - Emergency abort and land safely
 
 ---
 
-## 🏆 **Competition Compliance**
+## 📞 Support & Contribute
 
-<div align="center">
+- **Repository**: [github.com/Vanszs/Dirgagah-KAERTEI](https://github.com/Vanszs/Dirgagah-KAERTEI)
+- **Issues**: Report bugs via GitHub Issues
+- **Wiki**: Documentation tersedia di repository wiki
+- **Team**: KAERTEI 2025 Development Team
 
-### ✅ **KAERTEI 2025 FAIO Requirements**
-
-| Requirement | Status | Implementation |
-|-------------|--------|----------------|
-| 🤖 **Fully Autonomous** | ✅ **COMPLETE** | Zero human intervention |
-| 🏠➡️🌍 **Indoor-Outdoor** | ✅ **COMPLETE** | Seamless phase transition |
-| 📦 **Object Pickup** | ✅ **COMPLETE** | Electromagnetic system |
-| 🎯 **Precision Drop** | ✅ **COMPLETE** | Vision-guided targeting |
-| 🛰️ **GPS Navigation** | ✅ **COMPLETE** | Waypoint-based flight |
-| 👁️ **Computer Vision** | ✅ **COMPLETE** | YOLOv8 + OpenCV |
-| 🧠 **Real-time AI** | ✅ **COMPLETE** | ROS 2 FSM system |
-| 🛡️ **Safety Systems** | ✅ **COMPLETE** | Multi-layer failsafes |
-
-</div>
-
-### 🎯 **Hardware Validation**
-
-<div align="center">
-
-| Component | Requirement | Our Implementation |
-|-----------|-------------|-------------------|
-| 🎛️ **Flight Controller** | ArduPilot Compatible | ✅ Pixhawk 2.1 Cube Orange |
-| 👁️ **Vision System** | Multi-camera | ✅ 3x Camera array (Front/Back/Top) |
-| 📏 **Sensors** | Distance measurement | ✅ 3x ToF sensors + GPS + IMU |
-| 🧲 **Manipulation** | Object pickup | ✅ Dual electromagnet system |
-| 📡 **Communication** | Real-time telemetry | ✅ MAVROS + QGroundControl |
-
-</div>
-
----
-
-## 🔧 **Troubleshooting Guide**
-
-<div align="center">
-
-### 🚨 **Common Issues & Solutions**
-
-</div>
-
-| Issue | Symptoms | Solution |
-|-------|----------|----------|
-| 📡 **MAVROS Not Connecting** | No `/mavros/state` topic | `./drone_manager.sh test-mavros` |
-| 🛰️ **GPS Not Working** | Poor fix quality | Check antenna placement & wait outdoors |
-| 👁️ **Vision Detection Failing** | No detections | Test cameras: `v4l2-ctl --list-devices` |
-| ⚡ **Hardware Not Responding** | Component failures | Run: `./drone_manager.sh calibrate` |
-| 🔋 **Power Issues** | Unexpected shutdowns | Check battery voltage & connections |
-
-### 📡 **MAVROS Connection Debug**
-
-```bash
-# Check USB devices
-ls /dev/ttyUSB* /dev/ttyACM*
-
-# Fix permissions  
-sudo chmod 666 /dev/ttyUSB0
-
-# Test connection
-ros2 topic echo /mavros/state --once
-
-# Manual MAVROS launch
-ros2 launch mavros apm.launch.py fcu_url:="serial:///dev/ttyUSB0:57600"
-```
-
-### GPS Troubleshooting
-
-```bash
-# Check GPS status
-ros2 topic echo /mavros/global_position/global
-
-# Monitor GPS quality
-ros2 topic echo /mavros/gpsstatus/gps1/raw
-
-# Check satellite count
-rostopic echo /mavros/global_position/compass_hdg
-```
-
-### Vision System Debug
-
-```bash
-# List available cameras
-v4l2-ctl --list-devices
-
-# Test individual camera
-ros2 run drone_mvp vision_detector_node.py --camera front
-
-# Check YOLOv8 model
-python3 -c "from ultralytics import YOLO; YOLO('yolov8n.pt')"
-```
-
----
-
-## Support & Development
-
-<div align="center">
-
-### Team Structure
-
-| Role | Responsibility | Contact |
-|------|---------------|---------|
-| **Mission Lead** | System integration & mission logic | mission@team.com |
-| **Flight Control** | ArduPilot & MAVROS integration | flight@team.com |
-| **Vision Engineer** | Computer vision & AI systems | vision@team.com |
-| **Hardware Lead** | Electronics & mechanical systems | hardware@team.com |
-
-</div>
-
-### Development Guidelines
-
-```bash
-# Always test in simulation first
-./drone_manager.sh simulate
-
-# Run hardware validation before flights  
-./drone_manager.sh calibrate
-
-# Monitor system during development
-./drone_manager.sh monitor
-```
-
-### Additional Resources
-
-- **ArduPilot Documentation**: https://ardupilot.org/copter/
-- **ROS 2 Humble Docs**: https://docs.ros.org/en/humble/
-- **MAVROS Wiki**: http://wiki.ros.org/mavros
-- **YOLOv8 Guide**: https://docs.ultralytics.com/
+### 🤝 Contributing Guidelines
+1. Fork repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
 
 ---
 
 <div align="center">
 
-## Ready for KAERTEI 2025 Competition!
+### 🏆 KAERTEI 2025 FAIO
+**Ready for Competition**
 
-![Competition Ready](https://img.shields.io/badge/Competition-Ready-brightgreen?style=for-the-badge&logo=drone&logoColor=white)
-
-### Launch Commands
-
-```bash
-# Full system check
-./drone_manager.sh calibrate
-
-# Start mission  
-./drone_manager.sh mission --camera front
-
-# Monitor system
-./drone_manager.sh monitor
-```
-
----
-
-**Built with passion for autonomous flight**
-
-**KAERTEI 2025 FAIO Division**
-
-*Last updated: August 2025*
+*Built with ❤️ by Indonesian Drone Enthusiasts*
 
 </div>

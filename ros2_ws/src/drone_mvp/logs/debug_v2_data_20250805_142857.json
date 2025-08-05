@@ -1,0 +1,84 @@
+{
+  "timestamp": "2025-08-05T14:28:55.102999",
+  "system": "debug_v2",
+  "checks": {
+    "usb_devices": {
+      "flight_controller": {
+        "available": [],
+        "count": 0,
+        "status": false
+      },
+      "cameras": {
+        "available": [
+          "/dev/video0",
+          "/dev/video1"
+        ],
+        "count": 2,
+        "status": true
+      },
+      "permissions": {
+        "issues": [],
+        "status": true
+      }
+    },
+    "usb_permissions": {
+      "status": false
+    },
+    "flight_controller": {
+      "status": false,
+      "error": "Dummy FC failed: 'DummyMsg' object has no attribute 'armed'"
+    },
+    "cameras": {
+      "cameras": [
+        {
+          "id": 0,
+          "device": "/dev/video0",
+          "status": true,
+          "mode": "usb"
+        }
+      ],
+      "working_count": 1,
+      "status": true
+    },
+    "legacy": {
+      "ros2_topics": {
+        "total": 2,
+        "mavros": 0,
+        "status": true
+      },
+      "ros2_nodes": {
+        "count": 0,
+        "status": true
+      }
+    },
+    "python_deps": {
+      "pymavlink": {
+        "status": false,
+        "available": false
+      },
+      "opencv": {
+        "status": true,
+        "available": true
+      },
+      "numpy": {
+        "status": true,
+        "available": true
+      },
+      "ultralytics": {
+        "status": false,
+        "available": false
+      }
+    },
+    "ros2_workspace": {
+      "status": true,
+      "checks": {
+        "workspace_exists": true,
+        "src_exists": true,
+        "build_exists": true,
+        "install_exists": true,
+        "drone_mvp_exists": true,
+        "drone_mvp_built": true
+      }
+    }
+  }
+}

@@ -7,14 +7,12 @@ geometry_msgs
 sensor_msgs
 nav_msgs
 
-# NOTE: MAVROS must be installed via apt, not pip:
-# sudo apt install ros-humble-mavros ros-humble-mavros-extras
-# MAVROS packages are not available via pip
+# MAVLink for direct PX4 communication (no MAVROS needed)
+pymavlink>=2.4.0
 
 # Computer Vision
 opencv-python>=4.5.0
 cv-bridge
-ultralytics>=8.0.0  # YOLOv8
 numpy>=1.20.0
 Pillow>=8.0.0
 
