@@ -1,0 +1,187 @@
+# KAERTEI 2025 FAIO - Git Ignore File
+# ====================================
+
+# ROS 2 Build System
+build/
+*/build/
+**/build/
+install/
+*/install/
+**/install/
+log/
+*/log/
+**/log/
+.colcon_ws
+devel/
+*/devel/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+ros2_venv/
+*.egg-info/
+dist/
+.eggs/
+
+# Virtual Environments
+ros2_env/
+.venv/
+pyvenv.cfg
+
+# IDE and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# CMake
+CMakeCache.txt
+*/CMakeCache.txt
+CMakeFiles/
+*/CMakeFiles/
+**/CMakeFiles/
+cmake_install.cmake
+*/cmake_install.cmake
+Makefile
+*/Makefile
+*.cmake
+!CMakeLists.txt
+CTestTestfile.cmake
+compile_commands.json
+
+# C/C++ Build artifacts
+*.o
+*.lo
+*.la
+*.al
+*.libs
+*.so
+*.so.*
+*.a
+*.pyc
+*.pyo
+
+# ROS specific
+*.bag
+*.db3
+rosbag2_*
+*.yaml~
+*.launch~
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+.*.tmp
+.*.temp
+
+# Hardware configuration backups
+*.conf.bak
+*.conf.backup
+config/*.bak
+
+# Docker
+.dockerignore.bak
+
+# System files
+Thumbs.db
+.DS_Store
+*.pid
+
+# Gazebo
+.gazebo/
+
+# MAVROS/MAVLink
+*.mavlink
+*.tlog
+
+# Camera calibration
+*.yaml
+!launch/*.yaml
+!config/*.yaml
+
+# Archive and compressed files (but keep essential ones)
+*.tar.gz
+*.zip
+*.rar
+*.7z
+archive/
+backup/
+old/
+deprecated/
+
+# Generated documentation
+docs/_build/
+*.html
+*.pdf
+!README.md
+
+# Test results
+test_results/
+coverage/
+.coverage
+*.cover
+htmlcov/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Development files
+*.dev
+*.debug
+.test/
+experiments/
+
+# Network and configuration
+*.pem
+*.key
+*.crt
+secrets/
+.env
+.env.local
+
+# OS generated files
+.Trash-*
+.nfs*
+
+# Temporary Python test files
+dummy_*.py
+test_*.py
+!test_docker.py
+
+# Large data files
+*.bin
+*.dat
+models/
+weights/
+datasets/
+
+# Competition specific
+competition_logs/
+flight_data/
+telemetry/
+
+# Keep important files (negative patterns)
+!requirements.txt
+!package.xml
+!CMakeLists.txt
+!launch/
+!config/
+!msg/
+!srv/
+!drone_mvp/
+!docker*
+!*.md
+!*.sh

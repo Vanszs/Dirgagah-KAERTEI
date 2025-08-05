@@ -50,11 +50,6 @@ fi
 
 echo ""
 
-# Setup environment
-setup_environment
-
-echo "=============================================================="
-
 # Auto-detect shell and setup environment
 setup_environment() {
     local current_shell=$(basename "$SHELL")
@@ -83,6 +78,10 @@ setup_environment() {
     fi
 }
 
+# Call setup_environment function
+setup_environment
+
+echo "=============================================================="
 # Source ROS 2 environment
 source /opt/ros/humble/setup.bash
 

@@ -55,8 +55,8 @@ run_container() {
         --privileged \
         --network host \
         -v /dev:/dev \
-        -v $(pwd):/workspace \
-        -w /workspace \
+        -v $(pwd):/workspace/host \
+        -w /workspace/ros2_ws \
         kaertei-2025-faio
 }
 

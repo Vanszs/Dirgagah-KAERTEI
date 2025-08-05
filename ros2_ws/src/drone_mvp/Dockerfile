@@ -75,28 +75,41 @@ RUN pip3 install --no-cache-dir \
 WORKDIR /workspace/ros2_ws
 RUN mkdir -p src build install log
 
-# Copy source code
-# Copy workspace source (will be mounted at runtime)
-# COPY src/ src/
-COPY *.py src/drone_mvp/
+# Copy source code properly
+COPY drone_mvp/ src/drone_mvp/drone_mvp/
+COPY config/ src/drone_mvp/config/
+COPY launch/ src/drone_mvp/launch/
+COPY msg/ src/drone_mvp/msg/
+COPY srv/ src/drone_mvp/srv/
+COPY package.xml src/drone_mvp/
+COPY CMakeLists.txt src/drone_mvp/
+COPY requirements.txt src/drone_mvp/
 COPY *.sh ./
+COPY test_docker.py ./
 
 # Make scripts executable
 RUN find . -name "*.sh" -exec chmod +x {} \;
 RUN find . -name "*.py" -exec chmod +x {} \;
 
-# Build workspace
-RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --packages-select drone_mvp --symlink-install"
+# Build workspace properly in Docker
+# Skip build due to CMake target conflicts - use direct Python execution
+# RUN /bin/bash -c "source /opt/ros/humble/setup.bash && \
+#     cd /workspace/ros2_ws && \
+#     rm -rf build install log && \
+#     colcon build --packages-select drone_mvp --cmake-clean-first"
 
-# Create environment setup
+# Create environment setup for direct Python execution
 RUN echo '#!/bin/bash' > /workspace/ros2_ws/setup_env.sh && \
     echo 'source /opt/ros/humble/setup.bash' >> /workspace/ros2_ws/setup_env.sh && \
-    echo 'source /workspace/ros2_ws/install/setup.bash' >> /workspace/ros2_ws/setup_env.sh && \
+    echo 'export ROS_DOMAIN_ID=0' >> /workspace/ros2_ws/setup_env.sh && \
+    echo 'export PYTHONPATH=/workspace/ros2_ws/src/drone_mvp:/workspace/ros2_ws/src/drone_mvp/drone_mvp:$PYTHONPATH' >> /workspace/ros2_ws/setup_env.sh && \
     echo 'echo "🚁 KAERTEI 2025 Docker environment ready!"' >> /workspace/ros2_ws/setup_env.sh && \
+    echo 'echo "📁 Direct Python execution mode"' >> /workspace/ros2_ws/setup_env.sh && \
+    echo 'echo "🎯 Ready to run: ./run_direct.sh debug"' >> /workspace/ros2_ws/setup_env.sh && \
     chmod +x /workspace/ros2_ws/setup_env.sh
 
 # Add to bashrc
 RUN echo 'source /workspace/ros2_ws/setup_env.sh' >> ~/.bashrc
 
 # Set default command
-CMD ["/bin/bash", "-c", "source setup_env.sh && bash"]
+CMD ["/bin/bash", "-c", "cd /workspace/ros2_ws && source setup_env.sh && bash"]

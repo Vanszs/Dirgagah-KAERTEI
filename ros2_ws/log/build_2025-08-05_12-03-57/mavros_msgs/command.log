@@ -1,1 +1,0 @@
-Invoking command in '/home/vanszs/Documents/ros2/ros2_ws/build/mavros_msgs': DEBUGINFOD_URLS=https://debuginfod.archlinux.org _=/usr/bin/env /usr/bin/cmake /home/vanszs/Documents/ros2/ros2_ws/src/mavros/mavros_msgs -DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/mavros_msgs

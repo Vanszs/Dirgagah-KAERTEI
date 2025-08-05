@@ -1,8 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs/cmake_install.cmake",
-		"/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs/unique_identifier_msgs__py/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

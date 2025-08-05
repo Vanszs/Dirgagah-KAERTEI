@@ -1,1 +1,0 @@
-Invoking command in '/home/vanszs/Documents/ros2/ros2_ws/build/unique_identifier_msgs': DEBUGINFOD_URLS=https://debuginfod.archlinux.org _=/usr/bin/env /usr/bin/cmake /home/vanszs/Documents/ros2/ros2_ws/src/unique_identifier_msgs -DCMAKE_INSTALL_PREFIX=/home/vanszs/Documents/ros2/ros2_ws/install/unique_identifier_msgs
