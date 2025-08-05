@@ -1,23 +1,17 @@
 <div align="center">
 
-<img src="logo-krti25.png" alt="KAERTEI 2025" width="500"/>
+<img src="logo-kaertei25.png" alt="KAERTEI 2025" width="200"/>
 
 # KAERTEI 2025 FAIO Drone System
 
 ### *Fully Autonomous Indoor-Outdoor Competition Ready*
 
-[![ROS 2 Humble](https://img.shields.io/badge/ROS_2-Humble-blue?logo=ros&logoColor=white)](https:/    F --> B
-    
-    style A fill:#000000,color:#ffffff
-    style B fill:#000000,color:#ffffff
-    style C fill:#000000,color:#ffffff
-    style D fill:#000000,color:#ffffff
-    style F fill:#000000,color:#ffffffrg/en/humble/)
+[![ROS 2 Humble](https://img.shields.io/badge/ROS_2-Humble-blue?logo=ros&logoColor=white)](https://docs.ros.org/en/humble/)
 [![ArduPilot](https://img.shields.io/badge/ArduPilot-4.4+-green?logo=drone&logoColor=white)](https://ardupilot.org/)
 [![Python](https://img.shields.io/badge/Python-3.8+-yellow?logo=python&logoColor=white)](https://python.org/)
 [![License](https://img.shields.io/badge/License-MIT-red)](LICENSE)
 
-<img src="HumbleHawksbill_TransparentBG-NoROS.png" alt="ROS 2 Humble" width="350"/>
+<img src="HumbleHawksbill_TransparentBG-NoROS.png" alt="ROS 2 Humble" width="150"/>
 
 *Powered by ROS 2 Humble Hawksbill*
 
@@ -277,16 +271,12 @@ graph TB
     I[Electromagnets] --> F
     
     F --> B
-<<<<<<< HEAD
-
-=======
     
     style A fill:#000000,color:#ffffff
     style B fill:#000000,color:#ffffff
     style C fill:#000000,color:#ffffff
     style D fill:#000000,color:#ffffff
     style F fill:#000000,color:#ffffff
->>>>>>> 4ea4f67 (�� KAERTEI 2025 FAIO: Major System Cleanup & 26-Checkpoint Integration)
 ```
 
 </div>
