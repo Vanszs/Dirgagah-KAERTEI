@@ -5,8 +5,8 @@
 
 # Project root detection
 PROJECT_ROOT := `git rev-parse --show-toplevel 2>/dev/null || pwd`
-WORKSPACE_ROOT := PROJECT_ROOT / "ros2_ws"
-DRONE_MVP_DIR := PROJECT_ROOT / "ros2_ws/src/drone_mvp"
+KAERTEI_DRONE_DIR := PROJECT_ROOT / "kaertei_drone"
+SCRIPTS_DIR := KAERTEI_DRONE_DIR / "scripts"
 
 # Show available commands
 default:
@@ -37,12 +37,12 @@ setup:
 
 # Build ROS 2 workspace
 build:
-    cd {{WORKSPACE_ROOT}} && bash -c "source /opt/ros/humble/setup.bash && colcon build"
+    cd {{KAERTEI_DRONE_DIR}} && bash -c "source /opt/ros/humble/setup.bash && ./build_kaertei.sh"
 
 # Clean and rebuild
 rebuild:
     @echo "🧹 Clean and rebuild workspace..."
-    @cd "{{WORKSPACE_ROOT}}" && rm -rf build/ install/ log/
+    @cd "{{KAERTEI_DRONE_DIR}}" && rm -rf build/ install/ log/
     @just build
 
 # ===================
@@ -53,13 +53,13 @@ rebuild:
 test:
     @echo "🧪 Ubuntu System Validation"
     @echo "============================"
-    @cd "{{DRONE_MVP_DIR}}" && /usr/bin/python3 validate_ubuntu22.py
+    @cd "{{KAERTEI_DRONE_DIR}}" && python3 src/validate_ubuntu22.py
 
 # Complete hardware validation for Pi 5
 test-hardware:
     @echo "🔍 Pi 5 + Pixhawk4 Hardware Test"
     @echo "================================="
-    @cd "{{DRONE_MVP_DIR}}" && ./test_hardware_pi5.sh
+    @cd "{{KAERTEI_DRONE_DIR}}" && chmod +x scripts/test_hardware_pi5.sh && ./scripts/test_hardware_pi5.sh
 
 # Quick hardware check
 hardware:
@@ -126,7 +126,7 @@ status:
     @echo "🤖 ROS 2: $(test -f /opt/ros/humble/setup.bash && echo 'Humble ✅' || echo 'Not installed ❌')"
     @echo "🔧 Hardware: $(ls /dev/tty{ACM,USB}* 2>/dev/null | wc -l) device(s)"
     @echo "📷 Cameras: $(ls /dev/video* 2>/dev/null | wc -l) camera(s)"
-    @echo "💾 Workspace: $(test -d '../../../install' && echo 'Built ✅' || echo 'Not built ❌')"
+    @echo "💾 Workspace: $(test -d '{{KAERTEI_DRONE_DIR}}/install' && echo 'Built ✅' || echo 'Not built ❌')"
 
 # ===================
 # 🏆 MISSION COMMANDS
@@ -134,47 +134,23 @@ status:
 
 # Debug mission (step-by-step with manual control)
 debug:
-    #!/usr/bin/env bash
-    echo "🔍 Starting DEBUG Mission (26 checkpoints)"
-    echo "=========================================="
-    echo "⚙️  Mode: Manual step-by-step"
-    echo "📝 Instructions: Type 'next' + Enter to proceed"
-    echo ""
-    
-    # Build workspace if needed
-    if [ ! -d "{{WORKSPACE_ROOT}}/install" ]; then 
-        echo "🔨 Building workspace first..."
-        just build
-    fi
-    
-    # Source environments
-    source /opt/ros/humble/setup.bash
-    source "{{WORKSPACE_ROOT}}/install/setup.bash"
-    
-    echo "✅ ROS 2 workspace sourced"
-    cd "{{DRONE_MVP_DIR}}" && ./run_checkpoint_mission.sh debug
+    @echo "🔍 Starting DEBUG Mission (12 checkpoints)"
+    @echo "=========================================="
+    @echo "⚙️  Mode: Manual step-by-step"
+    @echo "📝 Instructions: Type 'next' + Enter to proceed"
+    @echo ""
+    @bash -c 'if [ ! -d "{{KAERTEI_DRONE_DIR}}/install" ]; then echo "🔨 Building workspace first..."; just build; fi'
+    @bash -c 'cd "{{KAERTEI_DRONE_DIR}}" && source install/setup.bash && echo "✅ KAERTEI workspace sourced" && ./run_kaertei.sh debug'
 
 # Autonomous mission (full competition mode)
 run:
-    #!/usr/bin/env bash
-    echo "🚁 Starting AUTONOMOUS Mission"
-    echo "============================="
-    echo "⚙️  Mode: Fully autonomous"
-    echo "⚠️  WARNING: No manual intervention!"
-    echo ""
-    
-    # Build workspace if needed
-    if [ ! -d "{{WORKSPACE_ROOT}}/install" ]; then 
-        echo "🔨 Building workspace first..."
-        just build
-    fi
-    
-    # Source environments
-    source /opt/ros/humble/setup.bash
-    source "{{WORKSPACE_ROOT}}/install/setup.bash"
-    
-    echo "✅ ROS 2 workspace sourced"
-    cd "{{DRONE_MVP_DIR}}" && ./run_checkpoint_mission.sh auto
+    @echo "🚁 Starting AUTONOMOUS Mission"
+    @echo "============================="
+    @echo "⚙️  Mode: Fully autonomous"
+    @echo "⚠️  WARNING: No manual intervention!"
+    @echo ""
+    @bash -c 'if [ ! -d "{{KAERTEI_DRONE_DIR}}/install" ]; then echo "🔨 Building workspace first..."; just build; fi'
+    @bash -c 'cd "{{KAERTEI_DRONE_DIR}}" && source install/setup.bash && echo "✅ KAERTEI workspace sourced" && ./run_kaertei.sh auto'
 
 # Simulation test (safe testing)
 simulate:
@@ -183,7 +159,7 @@ simulate:
     @echo "⚙️  Mode: Software simulation only"
     @echo "🔒 Safe: No hardware required"
     @echo ""
-    @cd "{{DRONE_MVP_DIR}}" && python3 simulate_mission.py
+    @cd "{{KAERTEI_DRONE_DIR}}" && python3 src/mission/simulate_mission.py
 
 # ===================
 # 🛠️ DEVELOPMENT
@@ -240,7 +216,7 @@ emergency:
 doctor:
     @echo "🏥 KAERTEI System Diagnostics"
     @echo "============================"
-    @cd "{{DRONE_MVP_DIR}}" && python3 doctor_ubuntu.py 2>/dev/null || echo "⚠️  Doctor script not available"
+    @cd "{{SCRIPTS_DIR}}" && ./validate_system.sh 2>/dev/null || echo "⚠️  Doctor script not available"
 
 # ===================
 # 📚 HELP & LOGS
@@ -287,7 +263,7 @@ info:
     @echo "ℹ️  KAERTEI 2025 FAIO Information"
     @echo "==============================="
     @echo "Project: Autonomous Hexacopter Drone"
-    @echo "Mission: 26-Checkpoint Indoor/Outdoor Navigation"
+    @echo "Mission: 12-Checkpoint Indoor/Outdoor Navigation"
     @echo "Platform: Ubuntu 22.04 LTS + ROS 2 Humble"
     @echo "Hardware: Pixhawk PX4 + Multi-Camera System"
     @echo "AI: YOLOv8 Object Detection + OpenCV"

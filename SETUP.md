@@ -27,7 +27,7 @@ Sistem drone hexacopter autonomous yang komprehensif untuk KAERTEI 2025 Divisi F
 ### 🎯 **Key Features**
 - **✅ Ubuntu 22.04 Optimized**: Instalasi otomatis ROS 2 Humble + MAVROS
 - **✅ Zero to Competition**: 3 langkah setup dari sistem kosong hingga siap lomba  
-- **✅ 26 Checkpoint System**: Sistem debug lengkap dengan validasi otomatis
+- **✅ 12 Checkpoint System**: Sistem debug lengkap dengan validasi otomatis
 - **✅ Docker Support**: Universal deployment di semua platform
 - **✅ Just Commands**: Interface sederhana untuk semua operasi
 - **✅ Hardware Integration**: Auto-detection Pixhawk, kamera, sensor
@@ -35,34 +35,10 @@ Sistem drone hexacopter autonomous yang komprehensif untuk KAERTEI 2025 Divisi F
 
 ---
 
-## 🚀 **Quick Start (3 Steps)**
+## 🚀 **Cara Jalankan (Quick Start)**
 
-### **Option 1: Ubuntu 22.04 (Recommended)**
 ```bash
-# Step 1: Clone & Setup
-git clone https://github.com/Vanszs/Dirgagah-KAERTEI.git
-cd Dirgagah-KAERTEI/ros2_ws/src/drone_mvp
-./setup_ubuntu22.sh
-
-# Step 2: Validate System
-just test-all
-
-# Step 3: Run Competition
-just mission-debug    # Debug mode with checkpoints
-just mission-auto     # Full autonomous mode
-```
-
-### **Option 2: Docker (Universal)**
-```bash
-# Step 1: Clone & Build
-git clone https://github.com/Vanszs/Dirgagah-KAERTEI.git
-cd Dirgagah-KAERTEI/ros2_ws/src/drone_mvp
-docker-compose up --build
-
-# Step 2: Run Mission
-docker exec -it kaertei2025_hexacopter bash
-just mission-debug
-```
+cd Dirgagah-KAERTEI/kaertei_drone
 
 ---
 
@@ -107,11 +83,11 @@ sudo apt install -y git curl wget build-essential
 ```bash
 # Clone repository
 git clone https://github.com/Vanszs/Dirgagah-KAERTEI.git
-cd Dirgagah-KAERTEI/ros2_ws/src/drone_mvp
+cd Dirgagah-KAERTEI/kaertei_drone
 
 # Run complete setup (installs everything)
-chmod +x setup_ubuntu22.sh
-./setup_ubuntu22.sh
+chmod +x setup_kaertei.sh
+./setup_kaertei.sh
 
 # What this installs:
 # ✅ ROS 2 Humble Hawksbill
@@ -156,7 +132,7 @@ sudo apt install -y docker-compose
 ```bash
 # Clone repository
 git clone https://github.com/Vanszs/Dirgagah-KAERTEI.git
-cd Dirgagah-KAERTEI/ros2_ws/src/drone_mvp
+cd Dirgagah-KAERTEI/kaertei_drone
 
 # Build Docker environment
 docker-compose build
@@ -220,8 +196,8 @@ KAERTEI 2025 menggunakan **Just** command runner untuk mempermudah operasi:
 
 ## 🎯 **Mission System Overview**
 
-### **26-Checkpoint Competition System**
-Sistem mission menggunakan FSM (Finite State Machine) dengan 26 checkpoint yang dapat di-debug satu per satu:
+### **12-Checkpoint Competition System**
+Sistem mission menggunakan FSM (Finite State Machine) dengan 12 checkpoint yang dapat di-debug satu per satu:
 
 #### **Indoor Phase (Checkpoints 1-15)**
 1. **INIT** - Initialize systems and arm drone
@@ -240,7 +216,7 @@ Sistem mission menggunakan FSM (Finite State Machine) dengan 26 checkpoint yang 
 14. **DROP_ITEM_2_BACK** - Drop back item
 15. **FIND_EXIT** - Find exit gate with top camera
 
-#### **Outdoor Phase (Checkpoints 16-26)**
+#### **Outdoor Phase (Checkpoints 7-12)**
 16. **ASCEND_TO_OUTDOOR** - Ascend to 3m for outdoor phase
 17. **AUTO_WAYPOINT_1** - AUTO mode to waypoint 1
 18. **MANUAL_SEARCH_OUTDOOR** - MANUAL mode search for outdoor item
@@ -251,7 +227,7 @@ Sistem mission menggunakan FSM (Finite State Machine) dengan 26 checkpoint yang 
 23. **DROP_OUTDOOR** - Drop outdoor item
 24. **ASCEND_TO_WAYPOINT_3** - Ascend to 3m
 25. **AUTO_WAYPOINT_3_LANDING** - AUTO mode to waypoint 3 + landing
-26. **COMPLETED** - Mission completed!
+12. **COMPLETED** - Mission completed!
 
 ### **Debug Commands During Mission**
 - `next` - Proceed to next checkpoint
@@ -433,7 +409,7 @@ camera_top = 4                   # Top camera index
 ### **Software Stack**
 | Layer | Technology | Purpose |
 |-------|------------|---------|
-| **Mission Control** | Python FSM | 26-checkpoint system |
+| **Mission Control** | Python FSM | 12-checkpoint system |
 | **ROS 2 Network** | Humble Hawksbill | Node coordination |
 | **MAVLink Bridge** | MAVROS | Flight controller communication |
 | **Computer Vision** | OpenCV + YOLOv8 | Object detection |

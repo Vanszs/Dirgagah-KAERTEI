@@ -1,0 +1,51 @@
+# KAERTEI 2025 FAIO - Optimized Dependencies
+# Auto-optimized for Ubuntu 22.04 LTS + Python 3.10
+# Raspberry Pi 5 & Desktop compatible
+# ================================================
+
+# Flight Controller Communication (Essential)
+pymavlink>=2.4.37
+pyserial>=3.5
+empy>=3.3.4
+
+# Computer Vision (Optimized)
+# opencv-python for desktop, opencv-python-headless for Pi
+opencv-python>=4.6.0; platform_machine != "aarch64"
+opencv-python-headless>=4.6.0; platform_machine == "aarch64"
+numpy>=1.21.5
+Pillow>=9.0.1
+
+# AI/ML (Optional for Raspberry Pi - install manually if needed)
+# ultralytics>=8.0.196; platform_machine != "aarch64"
+# torch>=1.13.1; platform_machine != "aarch64" 
+# torchvision>=0.14.1; platform_machine != "aarch64"
+
+# Raspberry Pi Hardware (Conditional)
+RPi.GPIO>=0.7.1; platform_machine == "aarch64"
+gpiozero>=1.6.2; platform_machine == "aarch64"
+
+# USB Hardware Interface
+pyusb>=1.2.1
+
+# Scientific Computing (Lightweight)
+scipy>=1.8.0
+matplotlib>=3.5.1
+
+# Configuration & Data
+PyYAML>=6.0
+python-dotenv>=0.19.2
+transforms3d>=0.4.1
+
+# System Utilities
+psutil>=5.9.0
+netifaces>=0.11.0
+colorama>=0.4.4
+rich>=12.0.0
+tqdm>=4.63.0
+
+# GPS & Navigation
+geopy>=2.2.0
+pyproj>=3.3.0
+
+# Development & Debugging
+setuptools>=59.6.0

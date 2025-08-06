@@ -17,7 +17,7 @@ find_project_root() {
     
     # Search up the directory tree for indicators
     while [[ "$current_dir" != "/" ]]; do
-        if [[ -f "$current_dir/Justfile" ]] && [[ -d "$current_dir/ros2_ws" ]]; then
+        if [[ -f "$current_dir/Justfile" ]] && [[ -d "$current_dir/kaertei_drone" ]]; then
             echo "$current_dir"
             return 0
         fi

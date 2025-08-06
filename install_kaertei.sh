@@ -415,7 +415,7 @@ build_workspace() {
     # Navigate to workspace
     WORKSPACE_DIR="$(pwd)/../../.."
     if [ ! -d "$WORKSPACE_DIR" ]; then
-        WORKSPACE_DIR="/home/vanszs/ros/Dirgagah-KAERTEI/ros2_ws"
+        WORKSPACE_DIR="/home/vanszs/ros/Dirgagah-KAERTEI/kaertei_drone"
     fi
     
     # Check if workspace exists
@@ -439,7 +439,7 @@ build_workspace() {
     rm -rf build/ install/ log/
     
     # Build with optimizations
-    local BUILD_ARGS="--packages-select drone_mvp"
+    local BUILD_ARGS="--packages-select kaertei_drone"
     if $IS_RASPBERRY_PI; then
         # Reduce parallel jobs for Raspberry Pi
         BUILD_ARGS+=" --parallel-workers 2"

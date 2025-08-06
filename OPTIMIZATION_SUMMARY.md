@@ -27,7 +27,7 @@ Repository telah dioptimalkan untuk publikasi dan siap kompetisi dengan fokus pa
 - ✅ **Streamlined from 328 to 150 lines**
 - ✅ **Essential commands only**:
   - `just setup` - Complete Ubuntu 22.04 setup
-  - `just mission-debug` - Debug mission (26 checkpoints)
+  - `just mission-debug` - Debug mission (12 checkpoints)
   - `just mission-auto` - Autonomous competition
   - `just test-all` - Complete validation
   - `just status` - System health check
@@ -57,7 +57,7 @@ Dirgagah-KAERTEI/
 ├── README.md                    # Clean project overview
 ├── SETUP.md                     # Complete installation guide
 ├── .gitignore                   # Production-ready git rules
-└── ros2_ws/src/drone_mvp/
+└── kaertei_drone/
     ├── setup_ubuntu22.sh        # Main Ubuntu 22.04 installer
     ├── Justfile                 # Optimized command interface
     ├── docker-compose.yml       # Clean Docker configuration
@@ -100,17 +100,17 @@ Dirgagah-KAERTEI/
 ```bash
 # Ubuntu 22.04
 git clone https://github.com/Vanszs/Dirgagah-KAERTEI.git
-cd Dirgagah-KAERTEI/ros2_ws/src/drone_mvp
-./setup_ubuntu22.sh && just test-all && just mission-debug
+cd Dirgagah-KAERTEI/kaertei_drone
+./setup_kaertei.sh && just test-all && just mission-debug
 
 # Docker (Universal)
 git clone https://github.com/Vanszs/Dirgagah-KAERTEI.git
-cd Dirgagah-KAERTEI/ros2_ws/src/drone_mvp
+cd Dirgagah-KAERTEI/kaertei_drone
 docker-compose up --build && docker exec -it kaertei2025_hexacopter bash
 ```
 
 ### **Essential Commands Only**
-- `just mission-debug` - Step-by-step 26 checkpoints
+- `just mission-debug` - Step-by-step 12 checkpoints
 - `just mission-auto` - Full autonomous competition
 - `just status` - Quick system check
 - `just emergency-stop` - Competition day safety
@@ -153,7 +153,7 @@ Repository **KAERTEI 2025 FAIO** telah berhasil dioptimalkan dan siap untuk:
 ✅ **Public Release**: Clean, professional, no ambiguity
 ✅ **Ubuntu 22.04**: Complete automated setup
 ✅ **Docker Support**: Universal deployment  
-✅ **Competition Ready**: 26-checkpoint mission system
+✅ **Competition Ready**: 12-checkpoint mission system
 ✅ **Easy Installation**: 3-step setup process
 ✅ **Clear Commands**: Simple Just interface
 

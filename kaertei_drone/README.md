@@ -114,7 +114,7 @@ cd /home/vanszs/ros/Dirgagah-KAERTEI/kaertei_drone
 
 **❌ OLD MESSY STRUCTURE:**
 ```
-ros2_ws/src/drone_mvp/
+kaertei_drone/
 ├── drone_mvp/          # Nested confusion
 │   ├── vision/         # More nesting
 │   ├── config/         # Duplicate configs

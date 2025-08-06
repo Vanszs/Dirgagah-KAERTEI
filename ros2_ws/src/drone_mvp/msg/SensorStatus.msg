@@ -1,5 +1,0 @@
-float32 distance_left
-float32 distance_right
-float32 distance_front
-bool is_centered
-string status

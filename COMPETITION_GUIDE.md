@@ -8,11 +8,11 @@
 
 ## 🎯 **Overview Kompetisi FAIO**
 
-**FAIO (Festival Aeromodelling Indonesia Open)** adalah kompetisi drone terbesar di Indonesia. KAERTEI 2025 adalah sistem drone hexacopter otonom yang dibuat khusus untuk misi 26-checkpoint.
+**FAIO (Festival Aeromodelling Indonesia Open)** adalah kompetisi drone terbesar di Indonesia. KAERTEI 2025 adalah sistem drone hexacopter otonom yang dibuat khusus untuk misi 12-checkpoint.
 
 ### **Misi Utama:**
 1. **Takeoff otomatis** dari start point
-2. **Navigasi 26 checkpoint** secara berurutan
+2. **Navigasi 12 checkpoint** secara berurutan
 3. **Object detection & pickup** dengan AI + magnet
 4. **Transport & drop** object ke dropzone
 5. **Return to launch** dan landing otomatis
@@ -209,7 +209,7 @@ just performance-monitor
 
 ---
 
-## 🎯 **26-Checkpoint Mission Details**
+## 🎯 **12-Checkpoint Mission Details**
 
 ### **Checkpoint Categories:**
 
@@ -225,7 +225,7 @@ just performance-monitor
 - **Approach planning:** Safe approach to objects
 - **Pickup preparation:** Magnet system activation
 
-#### **Mission Task Checkpoints (23-26):**
+#### **Mission Task Checkpoints (9-12):**
 - **Object pickup:** Electromagnet control
 - **Transport phase:** Secure object transport
 - **Dropzone navigation:** Precise positioning
@@ -247,7 +247,7 @@ Start Position
     ↓
 23-24: TRANSPORT → DROPZONE_NAV → DROP_SEQ  
     ↓
-25-26: RTL → LANDING
+11-12: RTL → LANDING
     ↓
 Mission Complete
 ```
@@ -272,7 +272,7 @@ just live-telemetry
 ```
 
 ### **Performance Metrics:**
-- **Mission Progress:** X/26 checkpoints completed
+- **Mission Progress:** X/12 checkpoints completed
 - **Flight Time:** Elapsed time vs estimated
 - **System Health:** All subsystems status
 - **Position Accuracy:** GPS/Vision positioning error
@@ -338,7 +338,7 @@ just emergency-shutdown
 - **Clean object pickup:** First-try success
 
 #### **Completion Bonus:**
-- **All 26 checkpoints:** Major point bonus
+- **All 12 checkpoints:** Major point bonus
 - **No manual intervention:** Autonomy bonus
 - **Clean mission:** No emergency stops
 
@@ -368,7 +368,7 @@ just optimization-report
 ```
 
 ### **Competition Debrief:**
-- **Mission completion rate:** X/26 checkpoints
+- **Mission completion rate:** X/12 checkpoints
 - **Time analysis:** vs competition average
 - **System performance:** Hardware utilization
 - **Areas for improvement:** Next competition prep
@@ -435,7 +435,7 @@ just optimization-report
 
 <div align="center">
 
-**🚁 26-Checkpoint Autonomous Mission System**  
+**🚁 12-Checkpoint Autonomous Mission System**  
 **✅ Competition Tested & Validated**  
 **🎯 Optimized for FAIO Competition**
 
