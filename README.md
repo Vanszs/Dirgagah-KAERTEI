@@ -17,11 +17,11 @@
 
 ## 📖 **Apa itu KAERTEI 2025?**
 
-**KAERTEI 2025** adalah sistem drone hexacopter yang dibuat khusus untuk kompetisi **FAIO (Festival Aeromodelling Indonesia Open)**. Drone ini bisa terbang sendiri (otonom) tanpa dikontrol manual untuk menyelesaikan misi 26 checkpoint.
+**KAERTEI 2025** adalah sistem drone hexacopter yang dibuat khusus untuk kompetisi **FAIO (Festival Aeromodelling Indonesia Open)**. Drone ini bisa terbang sendiri (otonom) tanpa dikontrol manual untuk menyelesaikan misi 12 checkpoint.
 
 ### 🎯 **Misi Drone:**
 1. **Takeoff otomatis** - Terbang sendiri ke ketinggian 1 meter
-2. **Navigasi 26 checkpoint** - Mengunjungi 26 titik secara berurutan  
+2. **Navigasi 12 checkpoint** - Mengunjungi 12 titik secara berurutan  
 3. **Deteksi objek** - Mengenali objek dengan kamera dan AI
 4. **Pickup & Drop** - Mengambil dan meletakkan objek dengan magnet
 5. **Landing otomatis** - Mendarat sendiri di titik finish
@@ -84,7 +84,7 @@ just debug-checkpoint 15
 
 #### **Mode Otomatis (Untuk Kompetisi):**
 ```bash
-# Jalankan full otomatis 26 checkpoint
+# Jalankan full otomatis 12 checkpoint
 just run
 
 # Monitor mission dashboard
@@ -108,8 +108,8 @@ just rtl
 
 #### **🖥️ Real-Time Monitoring:**
 ```bash
-# Mission progress: [████████░░] 18/26 checkpoints
-# Current Phase: Object Detection (CP-17)
+# Mission progress: [████████░░] 8/12 checkpoints
+# Current Phase: Object Detection (CP-8)
 # Status: AI scanning for target objects
 # Sensors: Camera✅ LiDAR✅ GPS✅ Electromagnet⚠️
 # Battery: 68% (Est. 4.2min remaining)
@@ -454,62 +454,15 @@ Mission drone terdiri dari 12 checkpoint yang harus diselesaikan secara beruruta
 
 **Total Mission Time:** ~7.5 menit (realistic completion time)
 
-#### **🌍 Fase 3: Outdoor Transition (Checkpoint 9-15)**
-| Checkpoint | Task | Kriteria Sukses | Sensor Used | Waktu |
-|------------|------|----------------|-------------|-------|
-| **CP-09** | **Exit Indoor Area** | Exit through designated gate/opening | Camera + LiDAR | 10s |
-| **CP-10** | **GPS Navigation Switch** | Switch to GPS primary navigation | GPS + Compass | 5s |
-| **CP-11** | **Outdoor Waypoint 1** | Reach outdoor WP1 using GPS | GPS | 20s |
-| **CP-12** | **Altitude Adjustment** | Adjust to outdoor cruise altitude (ignore ground contact) | Barometer + GPS | 5s |
-| **CP-13** | **Outdoor Waypoint 2** | Long-range GPS navigation | GPS | 25s |
-| **CP-14** | **Outdoor Waypoint 3** | Complex waypoint with turn | GPS + Compass | 20s |
-| **CP-15** | **Pre-Mission Position** | Position for object search area | GPS + Camera | 10s |
-
-#### **🔍 Fase 4: Object Detection & Approach (Checkpoint 16-20)**
-| Checkpoint | Task | Kriteria Sukses | Sensor Used | Waktu |
-|------------|------|----------------|-------------|-------|
-| **CP-16** | **Object Search Init** | Activate AI detection, scan area | AI Camera | 10s |
-| **CP-17** | **Object Detection** | Identify target objects using YOLOv8 | AI Camera | 15s |
-| **CP-18** | **Object Classification** | Classify objects, select pickup target | AI Camera | 10s |
-| **CP-19** | **Approach Planning** | Calculate safe approach path | Camera + LiDAR | 8s |
-| **CP-20** | **Approach Position** | Position above target object | Camera + GPS | 12s |
-
-#### **🧲 Fase 5: Pickup & Transport (Checkpoint 21-24)**
-| Checkpoint | Task | Kriteria Sukses | Sensor Used | Waktu |
-|------------|------|----------------|-------------|-------|
-| **CP-21** | **Fine Positioning** | Precise alignment with target object | Camera + LiDAR | 15s |
-| **CP-22** | **Object Pickup** | Activate electromagnet, secure object | Electromagnet + Camera | 10s |
-| **CP-23** | **Transport to Dropzone** | Carry object to designated drop area | GPS + All sensors | 30s |
-| **CP-24** | **Object Drop** | Release object at correct dropzone | Electromagnet + Camera | 8s |
-
-#### **🏠 Fase 6: Return & Landing (Checkpoint 25-26)**
-| Checkpoint | Task | Kriteria Sukses | Sensor Used | Waktu |
-|------------|------|----------------|-------------|-------|
-| **CP-25** | **Return to Launch** | Navigate back to launch position | GPS + All sensors | 45s |
-| **CP-26** | **Auto Landing** | Controlled descent and landing | GPS + Barometer + LiDAR | 20s |
-
----
-
-### **📊 Mission Statistics:**
-- **Total Checkpoints:** 26
-- **Estimated Mission Time:** 6-8 minutes  
-- **Success Criteria:** All 26 checkpoints completed
-- **Scoring:** Progressive points + time bonus
-- **Safety Features:** Emergency RTL at any checkpoint
-
 ### **🎯 Mission Flow Diagram:**
 ```
-START → ARM → TAKEOFF → GPS_LOCK
+START → ARM → TAKEOFF → SEARCH_ITEMS
   ↓
-INDOOR_NAV (CP 4-8) → VISUAL_ODOMETRY → OBSTACLE_AVOID → WAYPOINTS
+INDOOR_PHASE (CP 1-6) → PICKUP_DUAL → TURN_NAVIGATION → DROP_DUAL
   ↓
-TRANSITION (CP 9-15) → EXIT_INDOOR → GPS_PRIMARY → OUTDOOR_NAV  
+GPS_PHASE (CP 7-9) → WP1-3 → ITEM3_PICKUP → WP4_DIRECT  
   ↓
-DETECTION (CP 16-20) → AI_SEARCH → OBJECT_ID → APPROACH_PLAN
-  ↓
-MISSION (CP 21-24) → PICKUP → TRANSPORT → DROPZONE → DROP
-  ↓
-RETURN (CP 25-26) → RTL → LANDING → MISSION_COMPLETE
+OUTDOOR_PHASE (CP 10-12) → ITEM3_DROP → WP5_FINAL → DESCENT_DISARM
 ```
 
 ---
@@ -975,7 +928,7 @@ OUTDOOR_PHASE (CP 10-12) → ITEM3_DROP → WP5_FINAL → DESCENT_DISARM
 <div align="center">
 
 **🚁 Autonomous Hexacopter System**  
-**✅ 26-Checkpoint Mission Capable**  
+**✅ 12-Checkpoint Mission Capable**  
 **🎯 Competition Tested & Validated**
 
 **Good Luck untuk Kompetisi KAERTEI 2025! 🏆**
