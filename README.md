@@ -7,7 +7,7 @@
 ### **Hexacopter Otonom untuk Kompetisi FAIO**
 **Ubuntu 22.04 + ROS 2 Humble - Siap Kompetisi**
 
-[![Competition Ready](https://img.shields.io/badge/Status-Competition%20Ready-brightgreen)](https://github.com/Vanszs/Dirgagah-KAERTEI)
+[![Alpha Test](https://img.shields.io/badge/Status-Alpha%Test-brightyellow)](https://github.com/Vanszs/Dirgagah-KAERTEI)
 [![Ubuntu 22.04](https://img.shields.io/badge/Ubuntu-22.04%20LTS-orange)](https://ubuntu.com/download/desktop)
 [![ROS 2 Humble](https://img.shields.io/badge/ROS%202-Humble-blue)](https://docs.ros.org/en/humble/)
 
