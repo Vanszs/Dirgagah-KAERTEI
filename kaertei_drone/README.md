@@ -8,7 +8,7 @@ kaertei_drone/                           # 🎯 MAIN PROJECT DIRECTORY
 │
 ├── src/                                # 📝 SOURCE CODE (ORGANIZED)
 │   ├── mission/                        # 🎯 Mission Control
-│   │   ├── checkpoint_mission_mavros.py      # 26-checkpoint system
+│   │   ├── checkpoint_mission_mavros.py      # 12-checkpoint system
 │   │   ├── simplified_mission_control.py     # Simple 3-waypoint system
 │   │   ├── simple_3waypoint_mission.py       # Alternative simple system
 │   │   ├── simple_mission_node.py            # Basic mission node
@@ -101,7 +101,7 @@ cd /home/vanszs/ros/Dirgagah-KAERTEI/kaertei_drone
 ```
 
 ### Available Systems:
-1. **Checkpoint System**: 26-checkpoint full autonomous mission
+1. **Checkpoint System**: 12-checkpoint full autonomous mission
 2. **Simple System**: 3-waypoint basic navigation
 
 ### Available Modes:
@@ -150,7 +150,7 @@ kaertei_drone/
 ## 📋 FILE MAPPING GUIDE
 
 ### 🎯 Mission Control (`src/mission/`):
-- `checkpoint_mission_mavros.py` - **26 checkpoint system**
+- `checkpoint_mission_mavros.py` - **12 checkpoint system**
 - `simplified_mission_control.py` - **3 waypoint system**
 
 ### 🔧 Hardware Control (`src/hardware/`):
