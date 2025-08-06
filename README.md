@@ -4,16 +4,17 @@
 
 # KAERTEI 2025 FAIO Drone System
 
-### *Fully Autonomous Indoor-Outdoor Competition Ready*
+### *Ubuntu 22.04 LTS - Zero to Competition Ready*
 
 [![ROS 2 Humble](https://img.shields.io/badge/ROS_2-Humble-blue?logo=ros&logoColor=white)](https://docs.ros.org/en/humble/)
+[![Ubuntu 22.04](https://img.shields.io/badge/Ubuntu-22.04_LTS-orange?logo=ubuntu&logoColor=white)](https://ubuntu.com/)
 [![ArduPilot](https://img.shields.io/badge/ArduPilot-4.4+-green?logo=drone&logoColor=white)](https://ardupilot.org/)
-[![Python](https://img.shields.io/badge/Python-3.8+-yellow?logo=python&logoColor=white)](https://python.org/)
+[![Python](https://img.shields.io/badge/Python-3.10-yellow?logo=python&logoColor=white)](https://python.org/)
 [![License](https://img.shields.io/badge/License-MIT-red)](LICENSE)
 
 <img src="HumbleHawksbill_TransparentBG-NoROS.png" alt="ROS 2 Humble" width="150"/>
 
-*Powered by ROS 2 Humble Hawksbill*
+*Optimized for Ubuntu 22.04 LTS + ROS 2 Humble*
 
 </div>
 
@@ -21,53 +22,180 @@
 
 ## 📝 Deskripsi
 
-Sistem drone hexacopter autonomous yang komprehensif dan siap kompetisi untuk KAERTEI 2025 Divisi Fully Autonomous Indoor-Outdoor (FAIO). Dibangun dengan teknologi terdepan dan arsitektur yang robust untuk menjamin performa maksimal dalam misi pickup & delivery.
+Sistem drone hexacopter autonomous yang komprehensif dan siap kompetisi untuk KAERTEI 2025 Divisi Fully Autonomous Indoor-Outdoor (FAIO). **Dioptimalkan khusus untuk Ubuntu 22.04 LTS** dengan setup otomatis dari nol hingga siap kompetisi dalam 3 langkah sederhana.
 
 ### 🎯 Features Utama
-- **✅ Cleaned & Optimized**: File struktur yang rapi dan terorganisir
-- **✅ Multi-Platform**: Ubuntu native, Docker container, Arch Linux support
-- **✅ Docker Integration**: Complete containerized deployment
-- **✅ Hexacopter Ready**: 6-motor configuration dengan auto-detection
-- **✅ Vision System**: 3-camera setup (front, back, top) dengan YOLOv8
-- **✅ Hardware Integration**: ToF sensors, electromagnets, GPS/IMU
+- **✅ Ubuntu 22.04 Optimized**: Instalasi otomatis ROS 2 Humble + MAVROS
+- **✅ Zero to Competition**: 3 langkah setup dari sistem kosong hingga siap lomba
+- **✅ 26 Checkpoint System**: Sistem debug lengkap dengan validasi otomatis
+- **✅ Just Command Runner**: Interface sederhana untuk semua operasi
+- **✅ Hardware Integration**: Auto-detection Pixhawk, kamera, sensor
+- **✅ Vision System**: YOLOv8 + OpenCV multi-camera processing
 
 ### 🔧 Tech Stack Unggulan
-- **Hardware**: Pixhawk 2.1 Cube Orange (Industrial Grade)
-- **Firmware**: ArduPilot 4.4+ (Proven & Reliable)  
-- **Communication**: MAVROS Bridge ke ROS 2 Humble
-- **Computer Vision**: OpenCV + YOLOv8 Multi-Camera System
-- **Sensors**: ToF, GPS, IMU, 3x Camera modules
-- **Control**: Electromagnet relay system untuk pickup/drop
-- **Platform**: ROS 2 Humble + Python 3.8+
+- **Platform**: Ubuntu 22.04 LTS (Jammy Jellyfish)
+- **ROS**: ROS 2 Humble Hawksbill (Long Term Support)
+- **Hardware**: Pixhawk PX4/ArduPilot 4.4+
+- **Communication**: MAVROS + Direct MAVLink
+- **Computer Vision**: OpenCV 4.5+ + YOLOv8 + PyTorch
+- **Languages**: Python 3.10 + C++ (ROS 2 nodes)
+- **Sensors**: GPS, IMU, ToF, 3x Camera modules
+- **Control**: Electromagnet system + RC override
 
 ---
 
 ## 🚀 Quick Start
 
-Sistem telah dioptimalkan dengan 3 opsi deployment untuk fleksibilitas maksimal:
+**KAERTEI 2025 dioptimalkan untuk Ubuntu 22.04 LTS** dengan sistem setup otomatis:
 
-### 1. Ubuntu Native (Recommended)
+### ⚡ **Zero to Competition Ready (3 Steps)**
+```bash
+# Step 1: Complete Ubuntu 22.04 Setup (One Command)
+./setup_ubuntu22.sh         # Auto-install ROS 2, MAVROS, dependencies
+
+# Step 2: Verify System Ready
+just test-all               # Comprehensive system validation
+
+# Step 3: Run Competition Mission
+just mission-debug          # Start 26-checkpoint debug mission
+```
+
+### 🎯 **Essential Just Commands**
+```bash
+# 🏆 COMPETITION COMMANDS
+just setup-full             # Complete Ubuntu 22.04 setup
+just mission-debug          # Debug mode (step-by-step)
+just mission-auto           # Autonomous competition mode
+just mission-direct         # Direct Python execution (fastest)
+
+# 🧪 TESTING & VALIDATION
+just test-all               # Complete system validation
+just validate-checkpoints   # Verify all 26 checkpoints
+just doctor                 # System diagnosis
+just status                 # System overview
+
+# 🔧 HARDWARE & TROUBLESHOOTING
+just fix-permissions        # Fix USB/hardware permissions
+just emergency-reset        # Competition day emergency reset
+just check-ubuntu          # Verify Ubuntu 22.04
+
+# 📚 HELP & INFORMATION
+just help                   # Detailed command reference
+just checklist             # Competition readiness checklist
+just info                  # System information
+```
+
+### 🏃‍♂️ **Competition Workflow**
+| Stage | Command | Purpose |
+|-------|---------|---------|
+| **Setup** | `just setup-full` | Install ROS 2 + MAVROS + dependencies |
+| **Validate** | `just test-all` | Verify all systems ready |
+| **Practice** | `just mission-debug` | Practice with 26-checkpoint system |
+| **Compete** | `just mission-auto` | Full autonomous competition mode |
+| **Emergency** | `just emergency-reset` | Competition day troubleshooting |
+
+---
+
+## 🛠️ Ubuntu 22.04 Setup Details
+just status                 # Show system status
+just info                   # Show system information
+just help                   # Quick help guide
+```
+
+### 🐧 **Traditional Setup Options**
+
+#### 1. Ubuntu Native (Recommended)
+```bash
+just setup-ubuntu           # Automated Ubuntu setup
+just mission-debug          # Run debug mission
+```
+
+#### 2. Docker Container (Universal)
+```bash
+just docker-build           # Build Docker image
+just docker-run             # Run interactive container
+```
+
+#### 3. Manual Setup (Advanced)
 ```bash
 cd ros2_ws/src/drone_mvp
 ./setup.sh ubuntu
 ./kaertei_master.sh setup
 ```
 
-### 2. Docker Container (Universal)
-```bash
-cd ros2_ws/src/drone_mvp
-./docker_runner.sh build
-./docker_runner.sh run
-```
-
-### 3. Arch Linux (Unstable/Experimental)
-```bash
-cd ros2_ws/src/drone_mvp
-./setup.sh arch
-./kaertei_master.sh setup
-```
+---
 
 ---
+
+## ⚡ Just Command Runner
+
+KAERTEI 2025 menggunakan **Just** untuk mempermudah command management. Just is a handy way to save and run project-specific commands.
+
+### 📦 Installation
+```bash
+# Install Just
+curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/bin
+
+# Add to PATH (add to ~/.bashrc or ~/.profile)
+export PATH="$HOME/bin:$PATH"
+```
+
+### 🎯 Essential Commands
+
+<div align="center">
+
+| Command | Description | Environment |
+|---------|-------------|-------------|
+| `just help` | Show quick help guide | Any |
+| `just setup-ubuntu` | Setup Ubuntu dependencies | Native |
+| `just docker-build` | Build Docker image | Docker |
+| `just mission-debug` | Debug mode (step-by-step) | Native |
+| `just mission-auto` | Auto mode (autonomous) | Native |
+| `just mission-debug-docker` | Debug mode in Docker | Docker |
+| `just mission-auto-docker` | Auto mode in Docker | Docker |
+| `just test-all` | Run comprehensive tests | Any |
+| `just status` | Show system status | Any |
+| `just clean-workspace` | Clean build artifacts | Any |
+
+</div>
+
+### 🔧 Development Commands
+
+<div align="center">
+
+| Command | Description |
+|---------|-------------|
+| `just check-config` | Verify hardware configuration |
+| `just calibrate` | Run hardware calibration |
+| `just simulate` | Run mission simulation |
+| `just test-deps` | Test system dependencies |
+| `just docker-clean` | Clean Docker resources |
+| `just backup` | Backup configurations |
+| `just update` | Update system & dependencies |
+
+</div>
+
+### 💡 Usage Examples
+
+```bash
+# Complete workflow
+cd ros2_ws/src/drone_mvp
+just setup-ubuntu              # One-time setup
+just docker-build              # Build environment  
+just mission-debug-docker      # Test in debug mode
+just mission-auto-docker       # Run autonomous mission
+
+# Development cycle
+just test-all                   # Verify system
+just check-config              # Check hardware
+just clean-workspace           # Clean builds
+just status                    # Monitor system
+
+# Quick help
+just --list                    # Show all commands
+just help                      # Essential commands guide
+just info                      # System information
+```
 
 ## 🛠️ Tutorial Setup Lengkap
 
@@ -116,10 +244,12 @@ cd Dirgagah-KAERTEI/ros2_ws/src/drone_mvp
 
 #### Step 4: Run Mission
 ```bash
-# Debug mode (step-by-step)
-./run_checkpoint_mission.sh debug
+# Using Just (Recommended)
+just mission-debug          # Debug mode (step-by-step)
+just mission-auto           # Auto mode (full autonomous)
 
-# Auto mode (full autonomous)
+# Traditional method
+./run_checkpoint_mission.sh debug
 ./run_checkpoint_mission.sh auto
 ```
 
@@ -153,10 +283,16 @@ cd Dirgagah-KAERTEI/ros2_ws/src/drone_mvp
 
 #### Step 3: Run Container
 ```bash
-# Interactive mode with hardware access
-./docker_runner.sh run
+# Using Just (Recommended)
+just docker-run             # Interactive mode with hardware access
 
-# Inside container, run:
+# Inside container, choose one:
+just mission-debug-docker   # Debug mode
+just mission-auto-docker    # Auto mode
+
+# Traditional method
+./docker_runner.sh run
+# Inside container:
 source /opt/ros/humble/setup.bash
 ./kaertei_master.sh setup
 ./run_checkpoint_mission.sh debug

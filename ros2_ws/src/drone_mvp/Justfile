@@ -1,0 +1,327 @@
+# ========================================
+# KAERTEI 2025 FAIO - Competition Justfile
+# Ubuntu 22.04 LTS Optimized Commands
+# ========================================
+
+# Default recipe (shows help)
+default:
+    @echo "🚁 KAERTEI 2025 FAIO - Ubuntu 22.04 Competition System"
+    @echo "======================================================"
+    @just --list
+
+# ===================
+# 🚀 QUICK START
+# ===================
+
+# Complete setup from scratch (Ubuntu 22.04 only)
+setup:
+    @echo "🔧 Setting up Ubuntu 22.04 for KAERTEI 2025..."
+    @./setup_ubuntu.sh
+
+# Test complete system
+test:
+    @echo "🧪 Testing complete system readiness..."
+    @./test_ubuntu.sh
+
+# Run mission in debug mode (recommended for competition)
+mission:
+    @echo "🚁 Launching mission in debug mode..."
+    @./launch_mission_ubuntu.sh debug
+
+# Run mission in autonomous mode
+mission-auto:
+    @echo "🤖 Launching autonomous mission..."
+    @./launch_mission_ubuntu.sh auto
+
+# ===================
+# 🛠️ SYSTEM MANAGEMENT
+# ===================
+
+# System status and health check
+status:
+    @echo "📊 System Status for Ubuntu 22.04:"
+    @echo "=================================="
+    @echo "🖥️  OS: $(lsb_release -d | cut -f2)"
+    @echo "🐍 Python: $(python3 --version)"
+    @echo "🤖 ROS 2: $(test -f /opt/ros/humble/setup.bash && echo 'Humble ✅' || echo 'Not installed ❌')"
+    @./validate_ubuntu.py --quick
+
+# Full system validation
+validate:
+    @echo "🔍 Running full Ubuntu 22.04 system validation..."
+    @./validate_ubuntu.py
+
+# System diagnostics and troubleshooting
+doctor:
+    @echo "🩺 Running system diagnostics..."
+    @./doctor_ubuntu.py
+
+# Clean up build artifacts and temporary files
+clean:
+    @echo "🧹 Cleaning up system..."
+    @rm -rf build/ install/ log/
+    @rm -rf ~/.ros/log/*
+    @echo "✅ Cleanup complete"
+
+# ===================
+# 🏗️ BUILD & DEVELOPMENT
+# ===================
+
+# Build ROS 2 workspace
+build:
+    @echo "🔨 Building ROS 2 workspace..."
+    @cd ../../ && source /opt/ros/humble/setup.bash && colcon build --packages-select drone_mvp
+
+# Build with verbose output for debugging
+build-verbose:
+    @echo "🔨 Building with verbose output..."
+    @cd ../../ && source /opt/ros/humble/setup.bash && colcon build --packages-select drone_mvp --cmake-args -DCMAKE_VERBOSE_MAKEFILE=ON
+
+# Install Python dependencies
+deps:
+    @echo "📦 Installing Ubuntu 22.04 dependencies..."
+    @pip3 install -r requirements.txt
+
+# ===================
+# 🧪 TESTING MODES
+# ===================
+
+# Test hardware connections
+test-hardware:
+    @echo "🔧 Testing hardware connections..."
+    @python3 -c "from drone_mvp.hardware_config import HardwareConfig; HardwareConfig().validate_config()"
+
+# Test MAVROS connection
+test-mavros:
+    @echo "📡 Testing MAVROS connection..."
+    @timeout 10 ros2 topic echo /mavros/state --once || echo "⚠️  MAVROS not responding"
+
+# Test camera systems
+test-camera:
+    @echo "📸 Testing camera systems..."
+    @python3 test_camera.py
+
+# Test mission checkpoints in simulation
+test-mission:
+    @echo "🎯 Testing mission checkpoints..."
+    @python3 -c "from drone_mvp.checkpoint_mission_node import MissionCheckpoint; print(f'Found {len(list(MissionCheckpoint))} checkpoints')"
+
+# ===================
+# 🚁 MISSION MODES
+# ===================
+
+# Debug mission with MAVROS
+mission-debug:
+    @echo "🐛 Debug mission with MAVROS (manual progression)..."
+    @./launch_mission_ubuntu.sh debug mavros
+
+# Debug mission with direct MAVLink
+mission-debug-direct:
+    @echo "🐛 Debug mission with direct MAVLink..."
+    @./launch_mission_ubuntu.sh debug mavlink
+
+# Competition simulation
+mission-sim:
+    @echo "🏁 Competition simulation mode..."
+    @python3 simulate_mission.py --mode competition
+
+# ===================
+# 🔧 CONFIGURATION
+# ===================
+
+# Edit hardware configuration
+config:
+    @echo "⚙️ Opening hardware configuration..."
+    @nano config/hardware_config.conf
+
+# Show current configuration
+config-show:
+    @echo "📋 Current Ubuntu 22.04 Configuration:"
+    @echo "===================================="
+    @cat config/hardware_config.conf
+
+# Backup configuration
+config-backup:
+    @echo "💾 Backing up configuration..."
+    @cp config/hardware_config.conf config/hardware_config.conf.backup.$(date +%Y%m%d_%H%M%S)
+
+# Reset configuration to defaults
+config-reset:
+    @echo "🔄 Resetting configuration to Ubuntu 22.04 defaults..."
+    @cp config/hardware_config.conf.default config/hardware_config.conf
+
+# ===================
+# 📊 MONITORING
+# ===================
+
+# Show ROS 2 topics
+topics:
+    @echo "📡 Active ROS 2 topics:"
+    @timeout 5 ros2 topic list || echo "⚠️  ROS 2 not active"
+
+# Show ROS 2 nodes
+nodes:
+    @echo "🔗 Active ROS 2 nodes:"
+    @timeout 5 ros2 node list || echo "⚠️  ROS 2 not active"
+
+# Monitor mission status in real-time
+monitor:
+    @echo "📊 Monitoring mission status..."
+    @watch -n 1 'ros2 topic echo /checkpoint_status --once'
+
+# ===================
+# 🆘 EMERGENCY & RECOVERY
+# ===================
+
+# Emergency stop all processes
+emergency-stop:
+    @echo "🆘 EMERGENCY STOP - Killing all processes..."
+    @pkill -f "ros2" || true
+    @pkill -f "mavros" || true
+    @pkill -f "python3.*drone" || true
+    @echo "✅ All drone processes stopped"
+
+# Quick restart of ROS 2 daemon
+restart-ros2:
+    @echo "🔄 Restarting ROS 2 daemon..."
+    @ros2 daemon stop
+    @ros2 daemon start
+    @echo "✅ ROS 2 daemon restarted"
+
+# Reset USB devices (for hardware connection issues)
+reset-usb:
+    @echo "🔌 Resetting USB devices..."
+    @sudo rmmod ftdi_sio && sudo modprobe ftdi_sio || true
+    @sudo rmmod usbserial && sudo modprobe usbserial || true
+    @echo "✅ USB devices reset"
+
+# Full system recovery
+recover:
+    @echo "🚑 Full system recovery for Ubuntu 22.04..."
+    @just emergency-stop
+    @just reset-usb
+    @just restart-ros2
+    @sleep 2
+    @just status
+    @echo "✅ Recovery complete"
+
+# ===================
+# 📚 INFORMATION
+# ===================
+
+# Show competition checklist
+checklist:
+    @echo "✅ KAERTEI 2025 Competition Checklist:"
+    @echo "===================================="
+    @echo "□ Ubuntu 22.04 LTS installed"
+    @echo "□ ROS 2 Humble installed"
+    @echo "□ MAVROS configured"
+    @echo "□ Hardware connected (/dev/ttyUSB0 or /dev/ttyACM0)"
+    @echo "□ GPS coordinates updated in config"
+    @echo "□ Camera systems tested"
+    @echo "□ Mission checkpoints validated (26 total)"
+    @echo "□ Emergency stop procedures practiced"
+    @echo "□ Backup hardware ready"
+    @echo ""
+    @echo "📝 Run 'just validate' for automated checks"
+
+# Show system information
+info:
+    @echo "ℹ️  KAERTEI 2025 System Information:"
+    @echo "=================================="
+    @echo "OS: $(lsb_release -d | cut -f2)"
+    @echo "Kernel: $(uname -r)"
+    @echo "Python: $(python3 --version)"
+    @echo "ROS 2: $(test -f /opt/ros/humble/setup.bash && echo 'Humble' || echo 'Not installed')"
+    @echo "Workspace: $(pwd)"
+    @echo "Shell: $(basename $SHELL)"
+    @echo ""
+    @echo "📂 Key Files:"
+    @echo "   Config: config/hardware_config.conf"
+    @echo "   Logs: ~/.ros/log/"
+    @echo "   Python: $(which python3)"
+
+# Show version information
+version:
+    @echo "🏷️  KAERTEI 2025 FAIO Version Information:"
+    @echo "========================================"
+    @echo "Competition: KAERTEI 2025"
+    @echo "Category: FAIO (Fixed-wing Autonomous Indoor Obstacle)"
+    @echo "Platform: Ubuntu 22.04 LTS"
+    @echo "ROS 2: Humble Hawksbill"
+    @echo "Mission System: 26-Checkpoint Navigation"
+    @echo "Last Updated: $(date)"
+
+# ===================
+# 💡 HELP & DOCUMENTATION
+# ===================
+
+# Show quick help for competition day
+help-quick:
+    @echo "🚀 KAERTEI 2025 - Quick Help for Competition:"
+    @echo "============================================"
+    @echo ""
+    @echo "🏁 START COMPETITION:"
+    @echo "  just mission         # Debug mode (recommended)"
+    @echo "  just mission-auto    # Autonomous mode"
+    @echo ""
+    @echo "🆘 EMERGENCY:"
+    @echo "  just emergency-stop  # Stop all processes"
+    @echo "  just recover        # Full recovery"
+    @echo ""
+    @echo "🔍 DIAGNOSTICS:"
+    @echo "  just status         # Quick status"
+    @echo "  just doctor         # Full diagnosis"
+    @echo "  just validate       # System validation"
+    @echo ""
+    @echo "⚡ QUICK FIXES:"
+    @echo "  just reset-usb      # Fix hardware connection"
+    @echo "  just restart-ros2   # Fix ROS 2 issues"
+
+# Complete help system
+help:
+    @echo "📖 KAERTEI 2025 FAIO - Complete Help System:"
+    @echo "============================================"
+    @echo ""
+    @echo "🚀 ESSENTIAL COMMANDS:"
+    @echo "   setup              Complete Ubuntu 22.04 setup"
+    @echo "   mission            Launch debug mission (recommended)"
+    @echo "   mission-auto       Launch autonomous mission"
+    @echo "   test               Test complete system"
+    @echo "   status             System status check"
+    @echo ""
+    @echo "🛠️ SYSTEM MANAGEMENT:"
+    @echo "   validate           Full system validation"
+    @echo "   doctor             System diagnostics"
+    @echo "   build              Build ROS 2 workspace"
+    @echo "   clean              Clean build artifacts"
+    @echo ""
+    @echo "🧪 TESTING:"
+    @echo "   test-hardware      Test hardware connections"
+    @echo "   test-mavros        Test MAVROS connectivity"
+    @echo "   test-camera        Test camera systems"
+    @echo "   test-mission       Validate mission checkpoints"
+    @echo ""
+    @echo "⚙️ CONFIGURATION:"
+    @echo "   config             Edit hardware config"
+    @echo "   config-show        Show current config"
+    @echo "   config-backup      Backup configuration"
+    @echo ""
+    @echo "🆘 EMERGENCY:"
+    @echo "   emergency-stop     Stop all processes immediately"
+    @echo "   recover           Full system recovery"
+    @echo "   reset-usb         Reset USB hardware connections"
+    @echo ""
+    @echo "📊 MONITORING:"
+    @echo "   topics            Show ROS 2 topics"
+    @echo "   nodes             Show ROS 2 nodes" 
+    @echo "   monitor           Real-time mission monitoring"
+    @echo ""
+    @echo "📚 INFORMATION:"
+    @echo "   checklist         Competition preparation checklist"
+    @echo "   info              System information"
+    @echo "   version           Version information"
+    @echo "   help-quick        Quick competition help"
+    @echo ""
+    @echo "💡 For detailed documentation: README_UBUNTU.md"
+    @echo "🐛 For troubleshooting: just doctor"

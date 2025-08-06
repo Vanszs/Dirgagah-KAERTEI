@@ -1,0 +1,1085 @@
+# KAERTEI 2025 FAIO - Ubuntu 22.04 Optimized Justfile
+# ====================================================
+# Zero to competition ready Ubuntu setup and execution
+# Install Just: curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/bin
+
+# Default recipe - show competition help
+default:
+    @just competition-help
+
+# =============================================================================
+# 🏆 COMPETITION QUICK START
+# =============================================================================
+
+# Competition quick start guide
+quick-start:
+    @echo "🏆 KAERTEI 2025 FAIO - Ubuntu 22.04 Competition Ready"
+    @echo "====================================================="
+    @echo ""
+    @echo "🚀 ZERO TO COMPETITION READY (3 Steps):"
+    @echo "   1. just setup          # Complete Ubuntu 22.04 setup"
+    @echo "   2. just test           # Verify all systems"
+    @echo "   3. just mission        # Run competition mission"
+    @echo ""
+    @echo "🎯 MISSION COMMANDS:"
+    @echo "   just mission           # Smart mission launcher"
+    @echo "   just mission-debug     # Debug mode (step-by-step)"
+    @echo "   just mission-auto      # Autonomous competition mode"
+    @echo ""
+    @echo "🔧 TROUBLESHOOTING:"
+    @echo "   just doctor            # System diagnosis"
+    @echo "   just fix-permissions   # Fix hardware permissions"
+    @echo "   just emergency         # Emergency procedures"
+    @echo ""
+    @echo "📚 MORE HELP:"
+    @echo "   just help              # Detailed help"
+    @echo "   just checklist         # Competition checklist"
+    @echo "   just --list            # All available commands"
+
+# =============================================================================
+# � SETUP COMMANDS (UBUNTU 22.04 OPTIMIZED)
+# =============================================================================
+
+# Complete Ubuntu 22.04 setup from zero to competition ready
+setup:
+    @echo "🚀 KAERTEI 2025 - Ubuntu 22.04 Competition Setup"
+    @echo "================================================"
+    @echo "This will install ROS 2 Humble, MAVROS, and all dependencies"
+    @echo ""
+    just check-ubuntu
+    just setup-system
+    just setup-ros2
+    just setup-mavros
+    just setup-python
+    just build-workspace
+    just fix-permissions
+    @echo ""
+    @echo "🎉 SETUP COMPLETE - READY FOR COMPETITION!"
+    @echo "Next: just test"
+
+# Check if running Ubuntu 22.04
+check-ubuntu:
+    #!/usr/bin/env bash
+    echo "🔍 Checking Ubuntu version..."
+    if [ -f /etc/os-release ]; then
+        source /etc/os-release
+        if [[ "$ID" == "ubuntu" && "$VERSION_ID" == "22.04" ]]; then
+            echo "✅ Ubuntu 22.04 LTS detected - Perfect!"
+        elif [[ "$ID" == "ubuntu" ]]; then
+            echo "⚠️  Ubuntu $VERSION_ID detected - Ubuntu 22.04 LTS recommended"
+            echo "   Some features may not work optimally."
+        else
+            echo "❌ This system is not Ubuntu"
+            echo "💡 This setup is optimized for Ubuntu 22.04 LTS"
+            exit 1
+        fi
+    else
+        echo "❌ Cannot detect OS"
+        exit 1
+    fi
+
+# Install system dependencies
+setup-system:
+    @echo "📦 Installing system dependencies..."
+    sudo apt update && sudo apt upgrade -y
+    sudo apt install -y \
+        curl wget git nano \
+        build-essential cmake \
+        python3 python3-pip python3-dev python3-venv \
+        software-properties-common lsb-release gnupg \
+        v4l-utils usbutils htop tree \
+        can-utils i2c-tools udev \
+        python3-serial python3-opencv python3-numpy
+    @echo "✅ System dependencies installed"
+
+# Install ROS 2 Humble
+setup-ros2:
+    #!/usr/bin/env bash
+    echo "🤖 Installing ROS 2 Humble Hawksbill..."
+    
+    # Check if already installed
+    if command -v ros2 >/dev/null 2>&1; then
+        echo "✅ ROS 2 already installed"
+        return 0
+    fi
+    
+    # Add ROS 2 repository
+    sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+    
+    # Install ROS 2
+    sudo apt update
+    sudo apt install -y \
+        ros-humble-desktop \
+        python3-rosdep2 \
+        python3-colcon-common-extensions \
+        ros-dev-tools
+    
+    # Initialize rosdep
+    sudo rosdep init || true
+    rosdep update
+    
+    # Add to bashrc if not already there
+    if ! grep -q "source /opt/ros/humble/setup.bash" ~/.bashrc; then
+        echo "# ROS 2 Humble" >> ~/.bashrc
+        echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+        echo "✅ Added ROS 2 to bashrc"
+    fi
+    
+    echo "✅ ROS 2 Humble installed successfully"
+
+# Install MAVROS
+setup-mavros:
+    #!/usr/bin/env bash
+    echo "📡 Installing MAVROS..."
+    
+    # Source ROS 2 first
+    source /opt/ros/humble/setup.bash
+    
+    # Install MAVROS packages
+    sudo apt install -y \
+        ros-humble-mavros \
+        ros-humble-mavros-extras
+    
+    # Install GeographicLib datasets (critical for GPS)
+    echo "🗺️ Installing GeographicLib datasets..."
+    sudo /opt/ros/humble/lib/mavros/install_geographiclib_datasets.sh
+    
+    echo "✅ MAVROS installed successfully"
+
+# Setup Python environment
+setup-python:
+    #!/usr/bin/env bash
+    echo "🐍 Setting up Python environment..."
+    
+    # Create virtual environment if it doesn't exist
+    if [ ! -d "ros2_env" ]; then
+        echo "Creating Python virtual environment..."
+        python3 -m venv ros2_env
+    fi
+    
+    # Activate virtual environment and install packages
+    source ros2_env/bin/activate
+    pip install --upgrade pip setuptools wheel
+    
+    # Install requirements if file exists
+    if [ -f "requirements.txt" ]; then
+        pip install -r requirements.txt
+    else
+        # Install essential packages manually
+        pip install \
+            pymavlink \
+            opencv-python \
+            numpy \
+            ultralytics \
+            torch torchvision \
+            pyserial \
+            pyyaml
+    fi
+    
+    deactivate
+    
+    # Add virtual environment to bashrc
+    if ! grep -q "ros2_env/bin/activate" ~/.bashrc; then
+        echo "# KAERTEI 2025 Python Environment" >> ~/.bashrc
+        echo "source $(pwd)/ros2_env/bin/activate" >> ~/.bashrc
+    fi
+    
+    echo "✅ Python environment setup complete"
+
+# Build ROS 2 workspace
+build-workspace:
+    #!/usr/bin/env bash
+    echo "🔨 Building ROS 2 workspace..."
+    
+    # Navigate to workspace root
+    cd /home/vanszs/Documents/ros2/ros2_ws
+    
+    # Source ROS 2
+    source /opt/ros/humble/setup.bash
+    
+    # Clean build
+    rm -rf build/ install/ log/
+    
+    # Build the package
+    colcon build --packages-select drone_mvp --cmake-clean-first
+    
+    # Add workspace to bashrc if not already there
+    WORKSPACE_SETUP="$(pwd)/install/setup.bash"
+    if ! grep -q "$WORKSPACE_SETUP" ~/.bashrc; then
+        echo "# KAERTEI 2025 Workspace" >> ~/.bashrc
+        echo "source $WORKSPACE_SETUP" >> ~/.bashrc
+        echo "✅ Added workspace to bashrc"
+    fi
+    
+    echo "✅ Workspace built successfully"
+
+# Fix hardware permissions
+fix-permissions:
+    @echo "🔐 Fixing hardware permissions..."
+    sudo usermod -a -G dialout,video,tty,uucp $USER
+    # Create udev rules for hardware
+    sudo tee /etc/udev/rules.d/99-kaertei-hardware.rules > /dev/null << 'EOF'
+# KAERTEI 2025 FAIO Hardware Rules
+SUBSYSTEM=="tty", ATTRS{idVendor}=="26ac", ATTRS{idProduct}=="0011", GROUP="dialout", MODE="0666"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="5740", GROUP="dialout", MODE="0666"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", GROUP="dialout", MODE="0666"
+SUBSYSTEM=="video4linux", GROUP="video", MODE="0666"
+EOF
+    sudo udevadm control --reload-rules
+    sudo udevadm trigger
+    @echo "✅ Hardware permissions fixed"
+    @echo "⚠️  Please logout and login again for changes to take effect"
+# =============================================================================
+# 🎯 MISSION COMMANDS
+# =============================================================================
+
+# Smart mission launcher - detects best execution method
+mission:
+    #!/usr/bin/env bash
+    echo "🎯 KAERTEI 2025 - Smart Mission Launcher"
+    echo "======================================="
+    
+    # Check if workspace is built
+    if [ -f "/home/vanszs/Documents/ros2/ros2_ws/install/setup.bash" ]; then
+        echo "🤖 Using ROS 2 workspace (recommended)"
+        just mission-debug
+    else
+        echo "⚡ Using direct Python execution"
+        ./launch_mission_ubuntu.sh debug
+    fi
+
+# Debug mission - step by step with manual 'next' commands
+mission-debug:
+    @echo "🐛 Running 26-checkpoint DEBUG mission..."
+    @echo "💡 Press ENTER to advance through checkpoints"
+    ./launch_mission_ubuntu.sh debug
+
+# Autonomous mission - competition mode
+mission-auto:
+    @echo "🚀 Running AUTONOMOUS mission..."
+    @echo "⚠️  COMPETITION MODE - Full autonomous execution"
+    ./launch_mission_ubuntu.sh auto
+
+# Direct Python execution (fastest startup)
+mission-direct:
+    @echo "⚡ Running direct Python mission..."
+    ./launch_mission_ubuntu.sh debug
+
+# Simulation mode (no hardware required)
+mission-sim:
+    @echo "🎮 Running SIMULATION mission..."
+    ./launch_mission_ubuntu.sh test
+
+# =============================================================================
+# 🧪 TESTING & VALIDATION
+# =============================================================================
+
+# Comprehensive system test
+test:
+    #!/usr/bin/env bash
+    echo "🧪 KAERTEI 2025 - System Validation"
+    echo "==================================="
+    
+    # Test ROS 2
+    if command -v ros2 >/dev/null 2>&1; then
+        echo "✅ ROS 2 Humble available"
+    else
+        echo "❌ ROS 2 not found - run: just setup"
+        exit 1
+    fi
+    
+    # Test Python dependencies
+    source ros2_env/bin/activate 2>/dev/null || true
+    if python3 -c "import cv2, numpy as np, pymavlink" 2>/dev/null; then
+        echo "✅ Core Python dependencies OK"
+    else
+        echo "❌ Python dependencies missing"
+        exit 1
+    fi
+    deactivate 2>/dev/null || true
+    
+    # Test MAVROS
+    source /opt/ros/humble/setup.bash
+    if ros2 pkg list | grep -q mavros; then
+        echo "✅ MAVROS available"
+    else
+        echo "❌ MAVROS missing - run: just setup"
+        exit 1
+    fi
+    
+    # Test hardware (optional)
+    if ls /dev/tty{USB,ACM}* 2>/dev/null; then
+        echo "✅ Hardware devices found"
+    else
+        echo "⚠️  No hardware - will use dummy mode"
+    fi
+    
+    # Test workspace
+    if [ -f "/home/vanszs/Documents/ros2/ros2_ws/install/setup.bash" ]; then
+        echo "✅ ROS 2 workspace built"
+    else
+        echo "⚠️  Workspace not built - run: just build-workspace"
+    fi
+    
+    # Validate 26 checkpoints
+    python3 validate_ubuntu.py
+    
+    echo ""
+    echo "🎉 System validation complete!"
+    echo "✅ Ready for competition: just mission"
+
+# System doctor - diagnose issues
+doctor:
+    @echo "🏥 KAERTEI 2025 - System Doctor"
+    @echo "==============================="
+    python3 doctor_ubuntu.py
+
+# Show system status
+status:
+    @echo "📊 KAERTEI 2025 - System Status"
+    @echo "==============================="
+    @echo "🐧 OS: Ubuntu $(lsb_release -rs)"
+    @echo "🐍 Python: $(python3 --version)"
+    @echo "🤖 ROS 2: ${ROS_DISTRO:-Not sourced}"
+    @echo ""
+    @echo "📦 Dependencies:"
+    @python3 -c "import cv2; print('   ✅ OpenCV')" || echo "   ❌ OpenCV missing"
+    @python3 -c "import pymavlink; print('   ✅ PyMAVLink')" || echo "   ❌ PyMAVLink missing"
+    @python3 -c "import numpy; print('   ✅ NumPy')" || echo "   ❌ NumPy missing"
+    @echo ""
+    @echo "🔌 Hardware:"
+    @ls /dev/tty{USB,ACM}* 2>/dev/null && echo "   ✅ Serial devices found" || echo "   ⚠️  No serial devices"
+    @ls /dev/video* 2>/dev/null && echo "   ✅ Camera devices found" || echo "   ⚠️  No camera devices"
+    @echo ""
+    @echo "🤖 ROS 2:"
+    @[ -f "/home/vanszs/Documents/ros2/ros2_ws/install/setup.bash" ] && echo "   ✅ Workspace built" || echo "   ❌ Workspace not built"
+
+# Emergency procedures
+emergency:
+    @echo "🚨 KAERTEI 2025 - EMERGENCY PROCEDURES"
+    @echo "===================================="
+    @echo ""
+    @echo "1. 🔄 Kill all processes:"
+    @echo "   pkill -f ros2; pkill -f mavros; pkill -f python3"
+    @echo ""
+    @echo "2. 🔌 Reset USB devices:"
+    @echo "   sudo rmmod usbserial; sudo modprobe usbserial"
+    @echo ""
+    @echo "3. 🚀 Quick launch:"
+    @echo "   just mission-debug"
+    @echo ""
+    @echo "4. 🆘 If that fails:"
+    @echo "   ./launch_mission_ubuntu.sh debug"
+
+# =============================================================================
+# 🛠️ MAINTENANCE COMMANDS
+# =============================================================================
+
+# Clean all build artifacts
+clean:
+    @echo "🧹 Cleaning workspace..."
+    cd /home/vanszs/Documents/ros2/ros2_ws && rm -rf build/ install/ log/
+    find . -name "*.pyc" -delete
+    find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+    @echo "✅ Workspace cleaned"
+
+# Update system and dependencies
+update:
+    @echo "🔄 Updating system..."
+    sudo apt update && sudo apt upgrade -y
+    source ros2_env/bin/activate && pip install --upgrade pymavlink opencv-python numpy ultralytics
+    @echo "✅ System updated"
+
+# Competition checklist
+checklist:
+    @echo "📋 KAERTEI 2025 FAIO - Competition Checklist"
+    @echo "==========================================="
+    @echo ""
+    @echo "✅ PRE-COMPETITION SETUP:"
+    @echo "   □ just setup           # System setup completed"
+    @echo "   □ just test            # All tests passing"
+    @echo "   □ just doctor          # No critical issues"
+    @echo "   □ Update GPS coordinates in config/hardware_config.conf"
+    @echo "   □ Test hardware connections: ls /dev/tty{USB,ACM}*"
+    @echo "   □ Verify camera access: ls /dev/video*"
+    @echo "   □ Test electromagnets"
+    @echo ""
+    @echo "🎯 COMPETITION DAY:"
+    @echo "   □ just mission-debug   # Practice run (debug mode)"
+    @echo "   □ just mission-auto    # Final competition run"
+    @echo ""
+    @echo "🚨 EMERGENCY:"
+    @echo "   □ RC transmitter ready for manual override"
+    @echo "   □ QGroundControl available"
+    @echo "   □ just emergency       # Emergency procedures"
+
+# Detailed help
+help:
+    @echo "🏆 KAERTEI 2025 FAIO - Ubuntu 22.04 Commands"
+    @echo "============================================"
+    @echo ""
+    @echo "🚀 SETUP & BUILD:"
+    @echo "   just setup          # Complete Ubuntu 22.04 setup"
+    @echo "   just build-workspace# Build ROS 2 workspace"
+    @echo "   just clean          # Clean build artifacts"
+    @echo ""
+    @echo "🎯 MISSIONS:"
+    @echo "   just mission        # Smart mission launcher"
+    @echo "   just mission-debug  # Debug mode (recommended)"
+    @echo "   just mission-auto   # Autonomous competition mode"
+    @echo "   just mission-sim    # Simulation mode"
+    @echo ""
+    @echo "🔧 TESTING:"
+    @echo "   just test           # Complete system validation"
+    @echo "   just doctor         # System diagnosis"
+    @echo ""
+    @echo "📊 STATUS:"
+    @echo "   just status         # System overview"
+    @echo "   just checklist      # Competition checklist"
+    @echo ""
+    @echo "🛠️ MAINTENANCE:"
+    @echo "   just update         # Update system & dependencies"
+    @echo "   just fix-permissions# Fix hardware permissions"
+    @echo ""
+    @echo "💡 TIPS:"
+    @echo "   • Always run 'just setup' on fresh Ubuntu 22.04"
+    @echo "   • Use 'just mission-debug' for practice"
+    @echo "   • Run 'just test' before competition"
+    @echo "   • Keep RC transmitter ready for emergencies"
+
+# Quick info
+info:
+    @echo "ℹ️  KAERTEI 2025 FAIO - System Information"
+    @echo "========================================="
+    @echo "🏆 Competition: KAERTEI 2025 FAIO"
+    @echo "🐧 Platform: Ubuntu 22.04 LTS (Optimized)"
+    @echo "🤖 ROS 2: Humble Hawksbill"
+    @echo "📁 Project: $(pwd)"
+    @echo ""
+    @echo "🎯 Quick Commands:"
+    @echo "   just setup          # Complete setup"
+    @echo "   just test           # Validate system"
+    @echo "   just mission-debug  # Debug mode"
+    @echo "   just mission-auto   # Competition mode"
+    echo "🎯 Step-by-step execution with manual control"
+    echo "💡 Type 'next' to proceed to each checkpoint"
+    echo ""
+    
+    # Source environments
+    source /opt/ros/humble/setup.bash
+    source /home/vanszs/Documents/ros2/ros2_ws/install/setup.bash
+    
+    # Launch debug mission
+    ./run_checkpoint_mission.sh debug mavros
+
+# Autonomous mission - competition mode
+mission-auto:
+    #!/usr/bin/env bash
+    echo "🚀 KAERTEI 2025 - AUTONOMOUS Mission"
+    echo "==================================="
+    echo "🏆 Full autonomous competition mode"
+    echo ""
+    
+    # Source environments
+    source /opt/ros/humble/setup.bash
+    source /home/vanszs/Documents/ros2/ros2_ws/install/setup.bash
+    
+    # Launch autonomous mission
+    ./run_checkpoint_mission.sh auto mavros
+
+# Direct Python execution (fastest startup)
+mission-direct:
+    #!/usr/bin/env bash
+    echo "⚡ KAERTEI 2025 - DIRECT Python Mission"
+    echo "======================================"
+    echo "🔧 Direct execution without ROS 2 launch system"
+    echo ""
+    
+    # Launch direct mission
+    ./run_direct.sh debug
+
+# Simulation mode (no hardware required)
+mission-sim:
+    @echo "🎮 Running simulation mission..."
+    python3 simulate_mission.py
+
+# =============================================================================
+# 🧪 TESTING & VALIDATION
+# =============================================================================
+
+# Comprehensive system test
+test-all:
+    @echo "🧪 KAERTEI 2025 - Comprehensive System Test"
+    @echo "==========================================="
+    just test-ros2
+    just test-mavros
+    just test-python-deps
+    just test-hardware
+    just test-workspace
+    just validate-checkpoints
+    @echo ""
+    @echo "🎉 ALL TESTS COMPLETED!"
+
+# Test ROS 2 installation
+test-ros2:
+    #!/usr/bin/env bash
+    echo "🤖 Testing ROS 2 installation..."
+    
+    if command -v ros2 >/dev/null 2>&1; then
+        source /opt/ros/humble/setup.bash
+        ros2 --version
+        echo "✅ ROS 2 OK"
+    else
+        echo "❌ ROS 2 not found - run: just setup-ros2"
+        exit 1
+    fi
+
+# Test MAVROS installation
+test-mavros:
+    #!/usr/bin/env bash
+    echo "📡 Testing MAVROS installation..."
+    
+    source /opt/ros/humble/setup.bash
+    if ros2 pkg list | grep -q mavros; then
+        echo "✅ MAVROS packages found"
+    else
+        echo "❌ MAVROS not found - run: just setup-mavros"
+        exit 1
+    fi
+
+# Test Python dependencies
+test-python-deps:
+    #!/usr/bin/env bash
+    echo "🐍 Testing Python dependencies..."
+    
+    python3 -c "import cv2; print('✅ OpenCV OK')" || echo "❌ OpenCV missing"
+    python3 -c "import numpy; print('✅ NumPy OK')" || echo "❌ NumPy missing"
+    python3 -c "import pymavlink; print('✅ PyMAVLink OK')" || echo "❌ PyMAVLink missing"
+    python3 -c "import ultralytics; print('✅ YOLOv8 OK')" || echo "❌ YOLOv8 missing"
+
+# Test hardware connections
+test-hardware:
+    #!/usr/bin/env bash
+    echo "🔌 Testing hardware connections..."
+    
+    # Check USB devices
+    if ls /dev/tty{USB,ACM}* 2>/dev/null; then
+        echo "✅ Hardware devices found"
+        ls -la /dev/tty{USB,ACM}*
+    else
+        echo "⚠️  No hardware devices - will use dummy mode"
+    fi
+    
+    # Check camera devices
+    if ls /dev/video* 2>/dev/null; then
+        echo "✅ Camera devices found"
+        ls -la /dev/video*
+    else
+        echo "⚠️  No camera devices found"
+    fi
+
+# Test workspace build
+test-workspace:
+    #!/usr/bin/env bash
+    echo "🔨 Testing workspace build..."
+    
+    source /opt/ros/humble/setup.bash
+    source /home/vanszs/Documents/ros2/ros2_ws/install/setup.bash
+    
+    if ros2 pkg list | grep -q drone_mvp; then
+        echo "✅ drone_mvp package found"
+    else
+        echo "❌ drone_mvp package not found - run: just build-workspace"
+        exit 1
+    fi
+
+# Validate 26 checkpoints implementation
+validate-checkpoints:
+    @echo "📋 Validating 26 checkpoints..."
+    python3 validate_mission.py
+
+# =============================================================================
+# 🏥 DIAGNOSTICS & TROUBLESHOOTING
+# =============================================================================
+
+# System doctor - diagnose issues
+doctor:
+    @echo "🏥 KAERTEI 2025 - System Doctor"
+    @echo "==============================="
+    just check-ubuntu
+    just status
+    python3 debug_v2.py
+    @echo ""
+    @echo "💡 Common fixes:"
+    @echo "   just fix-permissions     # Fix hardware permissions"
+    @echo "   just emergency-reset     # Competition day reset"
+    @echo "   just setup-full          # Complete re-setup"
+
+# Show system status
+status:
+    #!/usr/bin/env bash
+    echo "📊 KAERTEI 2025 - System Status"
+    echo "==============================="
+    echo "🐧 OS: $(lsb_release -d | cut -f2)"
+    echo "🐍 Python: $(python3 --version)"
+    echo "🤖 ROS 2: ${ROS_DISTRO:-Not sourced}"
+    echo ""
+    
+    # Check installations
+    echo "📦 Installations:"
+    command -v ros2 >/dev/null && echo "   ✅ ROS 2" || echo "   ❌ ROS 2"
+    source /opt/ros/humble/setup.bash 2>/dev/null && ros2 pkg list | grep -q mavros && echo "   ✅ MAVROS" || echo "   ❌ MAVROS"
+    python3 -c "import cv2" 2>/dev/null && echo "   ✅ OpenCV" || echo "   ❌ OpenCV"
+    python3 -c "import pymavlink" 2>/dev/null && echo "   ✅ PyMAVLink" || echo "   ❌ PyMAVLink"
+    
+    echo ""
+    echo "🔌 Hardware:"
+    ls /dev/tty{USB,ACM}* 2>/dev/null | head -3 | while read dev; do echo "   ✅ $dev"; done || echo "   ⚠️  No hardware devices"
+
+# Emergency reset for competition day
+emergency-reset:
+    @echo "🚨 KAERTEI 2025 - EMERGENCY RESET"
+    @echo "================================="
+    @echo "⚠️  This will kill all processes and reset the system"
+    @read -p "Continue? (y/N): " confirm && [ "$confirm" = "y" ] || exit 1
+    @echo ""
+    @echo "🔄 Killing all ROS processes..."
+    -pkill -f ros2
+    -pkill -f mavros
+    -pkill -f python3
+    @echo "🔌 Resetting USB devices..."
+    -sudo rmmod usbserial_generic usbserial
+    -sudo modprobe usbserial_generic
+    -sudo modprobe usbserial
+    @echo "🤖 Restarting ROS 2 daemon..."
+    ros2 daemon stop || true
+    ros2 daemon start
+    @echo "✅ Emergency reset complete"
+    @echo "💡 Now try: just mission-debug"
+
+# =============================================================================
+# 🛠️ MAINTENANCE COMMANDS
+# =============================================================================
+
+# Clean all build artifacts
+clean:
+    @echo "🧹 Cleaning build artifacts..."
+    cd /home/vanszs/Documents/ros2/ros2_ws && rm -rf build/ install/ log/
+    find . -name "*.pyc" -delete
+    find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+    @echo "✅ Cleanup complete"
+
+# Update system and dependencies
+update:
+    @echo "🔄 Updating system and dependencies..."
+    sudo apt update && sudo apt upgrade -y
+    pip3 install --user --upgrade pip
+    pip3 install --user --upgrade pymavlink opencv-python ultralytics numpy
+    @echo "✅ System updated"
+
+# Create configuration backup
+backup:
+    @echo "💾 Creating configuration backup..."
+    mkdir -p backups
+    cp -r config/ backups/config_$(date +%Y%m%d_%H%M%S)/
+    @echo "✅ Backup created in backups/"
+
+# =============================================================================
+# 📚 HELP & DOCUMENTATION
+# =============================================================================
+
+# Detailed help menu
+help:
+    @echo "🏆 KAERTEI 2025 FAIO - Ubuntu 22.04 Commands"
+    @echo "==========================================="
+    @echo ""
+    @echo "🚀 SETUP & BUILD:"
+    @echo "   just setup-full         # Complete Ubuntu 22.04 setup"
+    @echo "   just setup-system       # System dependencies only"
+    @echo "   just setup-ros2         # ROS 2 Humble only"
+    @echo "   just setup-mavros       # MAVROS only"
+    @echo "   just build-workspace    # Build ROS 2 workspace"
+    @echo "   just clean              # Clean build artifacts"
+    @echo ""
+    @echo "🎯 MISSIONS:"
+    @echo "   just mission-debug      # Debug mode (step-by-step)"
+    @echo "   just mission-auto       # Autonomous competition mode"
+    @echo "   just mission-direct     # Direct Python execution"
+    @echo "   just mission-sim        # Simulation mode"
+    @echo ""
+    @echo "🧪 TESTING:"
+    @echo "   just test-all           # Complete system validation"
+    @echo "   just test-ros2          # ROS 2 installation test"
+    @echo "   just test-mavros        # MAVROS test"
+    @echo "   just test-hardware      # Hardware connectivity test"
+    @echo "   just validate-checkpoints # Validate 26 checkpoints"
+    @echo ""
+    @echo "🏥 DIAGNOSTICS:"
+    @echo "   just doctor             # System diagnosis"
+    @echo "   just status             # System overview"
+    @echo "   just fix-permissions    # Fix hardware permissions"
+    @echo "   just emergency-reset    # Competition day emergency"
+    @echo ""
+    @echo "🛠️ MAINTENANCE:"
+    @echo "   just update             # Update system & dependencies"
+    @echo "   just backup             # Backup configuration"
+    @echo "   just checklist          # Competition checklist"
+    @echo ""
+    @echo "💡 TIPS:"
+    @echo "   • Always run 'just setup-full' on fresh Ubuntu 22.04"
+    @echo "   • Use 'just mission-debug' for practice"
+    @echo "   • Run 'just test-all' before competition"
+    @echo "   • Keep RC transmitter ready for emergencies"
+
+# Competition checklist
+checklist:
+    @echo "📋 KAERTEI 2025 FAIO - Competition Checklist"
+    @echo "==========================================="
+    @echo ""
+    @echo "✅ PRE-COMPETITION SETUP:"
+    @echo "   □ just setup-full       # Complete system setup"
+    @echo "   □ just test-all         # All tests passing"
+    @echo "   □ just doctor           # No critical issues"
+    @echo "   □ Update GPS coordinates in config/hardware_config.conf"
+    @echo "   □ Test all hardware connections"
+    @echo "   □ Verify camera orientations (front, back, top)"
+    @echo "   □ Check electromagnet functionality"
+    @echo "   □ Test RC transmitter for manual override"
+    @echo ""
+    @echo "🎯 COMPETITION DAY:"
+    @echo "   □ just mission-debug    # Practice run (debug mode)"
+    @echo "   □ just mission-auto     # Competition run (autonomous)"
+    @echo "   □ Monitor via QGroundControl"
+    @echo ""
+    @echo "🚨 EMERGENCY PROCEDURES:"
+    @echo "   □ just emergency-reset  # System reset"
+    @echo "   □ RC transmitter manual override"
+    @echo "   □ Emergency stop procedures ready"
+    @echo ""
+    @echo "📍 GPS COORDINATES CHECK:"
+    @echo "   ⚠️  CRITICAL: Update GPS coordinates in config/hardware_config.conf"
+    @echo "   - waypoint_1_lat/lon (pickup location)"
+    @echo "   - waypoint_2_lat/lon (drop location)"
+    @echo "   - waypoint_3_lat/lon (landing location)"
+
+# Show all available commands
+list:
+    @just --list
+
+# Quick info
+info:
+    @echo "🏆 KAERTEI 2025 FAIO - Competition System"
+    @echo "========================================"
+    @echo "📍 Platform: Ubuntu 22.04 LTS"
+    @echo "🤖 ROS 2: Humble Hawksbill"
+    @echo "📡 Communication: MAVROS + Direct MAVLink"
+    @echo "🎯 Mission: 26 Checkpoint System"
+    @echo "📁 Project: $(pwd)"
+    @echo ""
+    @echo "🚀 Quick Start: just setup-full"# =============================================================================
+# 🚀 SETUP COMMANDS (UBUNTU 22.04 OPTIMIZED)
+# =============================================================================
+
+# One-command Ubuntu 22.04 setup from zero to competition ready
+setup:
+    echo "🐧 KAERTEI 2025 - Ubuntu 22.04 Competition Setup"
+    echo "================================================"
+    ./setup_ubuntu.sh
+    just build
+    echo ""
+    echo "🎉 Setup complete! Next: just test"
+
+# Build ROS 2 workspace
+build:
+    echo "🔨 Building ROS 2 workspace..."
+    cd /home/vanszs/Documents/ros2/ros2_ws
+    source /opt/ros/humble/setup.bash
+    colcon build --packages-select drone_mvp --cmake-clean-first
+    echo "✅ Workspace built successfully!"
+
+# Clean workspace build artifacts
+clean:
+    echo "🧹 Cleaning workspace..."
+    cd /home/vanszs/Documents/ros2/ros2_ws
+    rm -rf build/ install/ log/
+    cd src/drone_mvp
+    find . -name "*.pyc" -delete
+    find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+    echo "✅ Workspace cleaned!"
+
+# =============================================================================
+# 🎯 MISSION COMMANDS (COMPETITION FOCUSED)
+# =============================================================================
+
+# Smart mission - auto-detects best execution method
+mission:
+    #!/usr/bin/env bash
+    echo "🎯 KAERTEI 2025 - Smart Mission Launcher"
+    echo "======================================="
+    
+    # Check if workspace is built
+    if [ -f "/home/vanszs/Documents/ros2/ros2_ws/install/setup.bash" ]; then
+        echo "🤖 Using ROS 2 workspace (recommended)"
+        just mission-debug
+    else
+        echo "⚡ Using direct Python execution"
+        bash ./run_direct.sh debug
+    fi
+
+# Debug mission (step-by-step with 'next' commands) - RECOMMENDED
+mission-debug:
+    echo "🐛 Running 26-checkpoint DEBUG mission..."
+    bash ./launch_mission_ubuntu.sh debug
+
+# Autonomous mission (competition mode)
+mission-auto:
+    echo "🚀 Running AUTONOMOUS mission..."
+    bash ./launch_mission_ubuntu.sh auto
+
+# Simulation mission (no hardware required)
+mission-sim:
+    echo "🎮 Running SIMULATION mission..."
+    bash ./launch_mission_ubuntu.sh test
+
+# Direct Python mission (fastest startup)
+mission-direct:
+    echo "⚡ Running direct Python mission..."
+    bash ./launch_mission_ubuntu.sh debug
+
+# =============================================================================
+# 🔧 TESTING & VALIDATION
+# =============================================================================
+
+# Comprehensive system test
+test:
+    #!/usr/bin/env bash
+    echo "🧪 KAERTEI 2025 - System Validation"
+    echo "==================================="
+    
+    # Test ROS 2
+    if command -v ros2 >/dev/null 2>&1; then
+        echo "✅ ROS 2 Humble available"
+    else
+        echo "❌ ROS 2 not found - run: just setup"
+        exit 1
+    fi
+    
+    # Test Python dependencies
+    python3 -c "import cv2, numpy as np, pymavlink; print('✅ Core Python dependencies OK')" || (echo "❌ Python dependencies missing" && exit 1)
+    
+    # Test MAVROS
+    if ros2 pkg list | grep -q mavros; then
+        echo "✅ MAVROS available"
+    else
+        echo "❌ MAVROS missing - run: just setup"
+        exit 1
+    fi
+    
+    # Test hardware (optional)
+    if ls /dev/tty{USB,ACM}* 2>/dev/null; then
+        echo "✅ Hardware devices found"
+    else
+        echo "⚠️  No hardware - will use dummy mode"
+    fi
+    
+    # Test workspace
+    if [ -f "/home/vanszs/Documents/ros2/ros2_ws/install/setup.bash" ]; then
+        echo "✅ ROS 2 workspace built"
+    else
+        echo "⚠️  Workspace not built - run: just build"
+    fi
+    
+    # Validate 26 checkpoints
+    python3 validate_ubuntu.py
+    
+    echo ""
+    echo "🎉 System validation complete!"
+    echo "✅ Ready for competition: just mission"
+
+# System doctor - diagnose issues
+doctor:
+    echo "🏥 KAERTEI 2025 - System Doctor"
+    echo "==============================="
+    python3 doctor_ubuntu.py
+
+# Hardware test
+test-hardware:
+    echo "🔌 Testing hardware connections..."
+    python3 doctor_ubuntu.py
+
+# MAVROS test
+test-mavros:
+    #!/usr/bin/env bash
+    echo "📡 Testing MAVROS..."
+    source /opt/ros/humble/setup.bash
+    if ros2 pkg list | grep -q mavros; then
+        echo "✅ MAVROS packages available"
+        # Test if MAVROS can start
+        timeout 5s ros2 topic list | grep -q mavros && echo "✅ MAVROS can communicate" || echo "⚠️  MAVROS not running"
+    else
+        echo "❌ MAVROS not installed"
+        exit 1
+    fi
+
+# =============================================================================
+# 📊 STATUS & MONITORING
+# =============================================================================
+
+# System status overview
+status:
+    echo "📊 KAERTEI 2025 - System Status"
+    echo "==============================="
+    echo "🐧 OS: Ubuntu $(lsb_release -rs)"
+    echo "🐍 Python: $(python3 --version)"
+    echo "🤖 ROS 2: ${ROS_DISTRO:-Not sourced}"
+    echo ""
+    echo "📦 Dependencies:"
+    python3 -c "import cv2; print('   ✅ OpenCV')" || echo "   ❌ OpenCV missing"
+    python3 -c "import pymavlink; print('   ✅ PyMAVLink')" || echo "   ❌ PyMAVLink missing"
+    python3 -c "import numpy; print('   ✅ NumPy')" || echo "   ❌ NumPy missing"
+    echo ""
+    echo "🔌 Hardware:"
+    ls /dev/tty{USB,ACM}* 2>/dev/null && echo "   ✅ Serial devices found" || echo "   ⚠️  No serial devices"
+    ls /dev/video* 2>/dev/null && echo "   ✅ Camera devices found" || echo "   ⚠️  No camera devices"
+    echo ""
+    echo "🤖 ROS 2:"
+    if [ -f "/home/vanszs/Documents/ros2/ros2_ws/install/setup.bash" ]; then
+        echo "   ✅ Workspace built"
+    else
+        echo "   ❌ Workspace not built"
+    fi
+
+# Show system information
+info:
+    @echo "ℹ️  KAERTEI 2025 FAIO - System Information"
+    @echo "========================================="
+    @echo "🏆 Competition: KAERTEI 2025 FAIO"
+    @echo "🐧 Platform: Ubuntu 22.04 LTS (Recommended)"
+    @echo "🤖 ROS 2: Humble Hawksbill"
+    @echo "📁 Project: $(pwd)"
+    @echo ""
+    @echo "🎯 Quick Commands:"
+    @echo "   just setup          # Complete setup"
+    @echo "   just test           # Validate system"
+    @echo "   just mission-debug  # Debug mode"
+    @echo "   just mission-auto   # Competition mode"
+
+# =============================================================================
+# 🛠️ MAINTENANCE & UTILITIES
+# =============================================================================
+
+# Update system and dependencies
+update:
+    echo "🔄 Updating system..."
+    sudo apt update && sudo apt upgrade -y
+    pip3 install --upgrade pymavlink opencv-python numpy ultralytics
+    echo "✅ System updated!"
+
+# Install missing dependencies
+install-deps:
+    echo "📦 Installing missing dependencies..."
+    sudo apt update
+    sudo apt install -y python3-opencv python3-numpy python3-pip python3-serial
+    pip3 install pymavlink ultralytics
+    echo "✅ Dependencies installed!"
+
+# Create configuration backup
+backup:
+    echo "💾 Creating configuration backup..."
+    mkdir -p backups
+    cp -r config/ backups/config_$(date +%Y%m%d_%H%M%S)/
+    echo "✅ Backup created in backups/"
+
+# Reset to clean state
+reset:
+    echo "🔄 Resetting to clean state..."
+    just clean
+    git checkout HEAD -- .
+    echo "✅ Reset complete - run: just setup"
+
+# =============================================================================
+# 📚 HELP & DOCUMENTATION
+# =============================================================================
+
+# Competition checklist
+checklist:
+    @echo "📋 KAERTEI 2025 FAIO - Competition Checklist"
+    @echo "==========================================="
+    @echo ""
+    @echo "✅ PRE-COMPETITION SETUP:"
+    @echo "   □ just setup           # System setup completed"
+    @echo "   □ just test            # All tests passing"
+    @echo "   □ just doctor          # No critical issues"
+    @echo "   □ Update GPS coordinates in config/hardware_config.conf"
+    @echo "   □ Test hardware connections: ls /dev/tty{USB,ACM}*"
+    @echo "   □ Verify camera access: ls /dev/video*"
+    @echo "   □ Test electromagnets"
+    @echo ""
+    @echo "🎯 COMPETITION DAY:"
+    @echo "   □ just mission-debug   # Practice run (debug mode)"
+    @echo "   □ just mission-auto    # Final competition run"
+    @echo ""
+    @echo "🚨 EMERGENCY:"
+    @echo "   □ RC transmitter ready for manual override"
+    @echo "   □ QGroundControl available: qgroundcontrol"
+    @echo "   □ just doctor          # Quick diagnosis"
+
+# Detailed help
+help:
+    @echo "🐧 KAERTEI 2025 FAIO - Ubuntu 22.04 Commands"
+    @echo "============================================"
+    @echo ""
+    @echo "🚀 SETUP & BUILD:"
+    @echo "   just setup          # Complete Ubuntu 22.04 setup"
+    @echo "   just build          # Build ROS 2 workspace"
+    @echo "   just clean          # Clean build artifacts"
+    @echo ""
+    @echo "🎯 MISSIONS:"
+    @echo "   just mission        # Smart mission launcher"
+    @echo "   just mission-debug  # Debug mode (recommended)"
+    @echo "   just mission-auto   # Autonomous competition mode"
+    @echo "   just mission-sim    # Simulation mode"
+    @echo ""
+    @echo "🔧 TESTING:"
+    @echo "   just test           # Complete system validation"
+    @echo "   just test-hardware  # Hardware connectivity test"
+    @echo "   just test-mavros    # MAVROS functionality test"
+    @echo "   just doctor         # System diagnosis"
+    @echo ""
+    @echo "📊 STATUS:"
+    @echo "   just status         # System overview"
+    @echo "   just info           # Project information"
+    @echo "   just checklist      # Competition checklist"
+    @echo ""
+    @echo "🛠️ MAINTENANCE:"
+    @echo "   just update         # Update system & dependencies"
+    @echo "   just backup         # Backup configuration"
+    @echo "   just reset          # Reset to clean state"
+    @echo ""
+    @echo "💡 TIPS:"
+    @echo "   • Always run 'just setup' on fresh Ubuntu 22.04"
+    @echo "   • Use 'just mission-debug' for practice"
+    @echo "   • Run 'just test' before competition"
+    @echo "   • Keep RC transmitter ready for emergencies"
+
+# Show all available commands
+list:
+    @just --list
+
+# Emergency competition day quick start
+emergency:
+    @echo "🚨 KAERTEI 2025 - EMERGENCY QUICK START"
+    @echo "======================================"
+    @echo ""
+    @echo "1. 🔄 Kill all processes:"
+    @echo "   pkill -f ros2; pkill -f mavros; pkill -f python3"
+    @echo ""
+    @echo "2. 🔌 Reset USB devices:"
+    @echo "   sudo rmmod usbserial; sudo modprobe usbserial"
+    @echo ""
+    @echo "3. 🚀 Quick launch:"
+    @echo "   just mission-debug"
+    @echo ""
+    @echo "4. 🆘 If that fails:"
+    @echo "   bash ./run_direct.sh debug"

@@ -1,38 +1,79 @@
-# Requirements for KAERTEI 2025 FAIO Drone System
+# KAERTEI 2025 FAIO - Ubuntu 22.04 Competition Dependencies
+# =========================================================
+# Optimized for Ubuntu 22.04 LTS + ROS 2 Humble + Python 3.10
 
-# Core ROS 2 and Python dependencies
-rclpy>=3.3.0
-std_msgs
-geometry_msgs
-sensor_msgs
-nav_msgs
+# MAVLink communication (core requirement)
+pymavlink>=2.4.37          # MAVLink protocol for flight controller
+mavsdk>=1.4.0               # Modern MAVLink SDK
+empy>=3.3.4                 # ROS 2 template engine
 
-# MAVLink for direct PX4 communication (no MAVROS needed)
-pymavlink>=2.4.0
+# Computer Vision (Ubuntu 22.04 optimized)
+opencv-python>=4.6.0       # Computer vision library
+numpy>=1.21.5              # Numerical computing foundation
+Pillow>=9.0.1               # Image processing
 
-# Computer Vision
-opencv-python>=4.5.0
-cv-bridge
-numpy>=1.20.0
-Pillow>=8.0.0
+# Machine Learning and Object Detection
+ultralytics>=8.0.196       # YOLOv8 for object detection (competition requirement)
+torch>=1.13.1              # PyTorch deep learning framework
+torchvision>=0.14.1        # Computer vision for PyTorch
+torchaudio>=0.13.1          # Audio processing for PyTorch
 
-# Hardware interfaces (uncomment if using real hardware)
-# RPi.GPIO>=0.7.1
-# adafruit-circuitpython-vl53l0x>=3.6.0
-# adafruit-blinka>=8.0.0
+# Hardware Communication and Control
+pyserial>=3.5               # Serial communication with flight controller
+pyusb>=1.2.1                # USB device communication
+gpiozero>=1.6.2             # GPIO control for Ubuntu (electromagnets, sensors)
+RPi.GPIO>=0.7.1
+adafruit-circuitpython-vl53l0x>=3.6.1
+adafruit-blinka>=8.0.2
 
 # Mathematical and scientific computing
-scipy>=1.7.0
-matplotlib>=3.3.0
+scipy>=1.8.0
+matplotlib>=3.5.1
+pandas>=1.4.0
 
-# Additional utilities
-PyYAML>=5.4.0
-transforms3d>=0.3.1
+# Serial and USB communication
+pyserial>=3.5
+pyusb>=1.2.1
 
-# Optional: Development and debugging tools
-# rqt-common-plugins
-# rqt-graph
-# rqt-console
+# Configuration and utilities
+PyYAML>=6.0
+configparser>=5.2.0
+transforms3d>=0.4.1
+python-dotenv>=0.19.2
 
-# For simulation/testing (optional)
-# gazebo-ros-pkgs
+# Development and testing tools
+pytest>=7.0.1
+pytest-cov>=3.0.0
+black>=22.3.0
+flake8>=4.0.1
+
+# System monitoring and diagnostics
+psutil>=5.9.0
+netifaces>=0.11.0
+GPUtil>=1.4.0
+
+# Network and communication
+requests>=2.27.1
+websockets>=10.2
+
+# Image processing enhancements
+scikit-image>=0.19.2
+imageio>=2.16.1
+
+# GPS and navigation utilities
+geopy>=2.2.0
+pyproj>=3.3.0
+
+# Competition-specific utilities
+tqdm>=4.63.0  # Progress bars for long operations
+colorama>=0.4.4  # Colored terminal output
+click>=8.0.4  # CLI interface
+rich>=12.0.0  # Beautiful terminal formatting
+
+# Optional simulation support (uncomment for SITL testing)
+# pymavproxy>=1.8.55
+# dronekit>=2.9.2
+
+# Emergency fallback packages
+pynput>=1.7.6  # Emergency keyboard control
+playsound>=1.3.0  # Audio alerts
