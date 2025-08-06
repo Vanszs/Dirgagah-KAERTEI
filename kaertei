@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# =====================================================================
+# KAERTEI 2025 FAIO - Universal Just Wrapper
+# Makes 'just' commands work from anywhere in the project
+# =====================================================================
+
+# Function to find project root
+find_project_root() {
+    local current_dir="$PWD"
+    
+    # Try git method first
+    if git rev-parse --show-toplevel &>/dev/null; then
+        git rev-parse --show-toplevel
+        return 0
+    fi
+    
+    # Search up the directory tree for indicators
+    while [[ "$current_dir" != "/" ]]; do
+        if [[ -f "$current_dir/Justfile" ]] && [[ -d "$current_dir/ros2_ws" ]]; then
+            echo "$current_dir"
+            return 0
+        fi
+        current_dir="$(dirname "$current_dir")"
+    done
+    
+    # Fallback to searching for specific markers
+    current_dir="$PWD"
+    while [[ "$current_dir" != "/" ]]; do
+        if [[ -f "$current_dir/KAERTEI" ]] || [[ -f "$current_dir/README.md" && -d "$current_dir/Dirgagah-KAERTEI" ]]; then
+            echo "$current_dir"
+            return 0
+        fi
+        current_dir="$(dirname "$current_dir")"
+    done
+    
+    echo "."
+    return 1
+}
+
+# Find the project root
+PROJECT_ROOT=$(find_project_root)
+
+if [[ ! -f "$PROJECT_ROOT/Justfile" ]]; then
+    echo "❌ KAERTEI Justfile not found!"
+    echo "   Make sure you're inside the KAERTEI project directory"
+    echo "   Current directory: $PWD"
+    echo "   Looking in: $PROJECT_ROOT"
+    exit 1
+fi
+
+echo "🚁 KAERTEI 2025 - Running from: $PROJECT_ROOT"
+echo "📍 Current directory: $PWD"
+echo ""
+
+# Change to project root and run just with all arguments
+cd "$PROJECT_ROOT" && just "$@"

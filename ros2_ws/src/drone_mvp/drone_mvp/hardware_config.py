@@ -101,16 +101,23 @@ class HardwareConfig:
         return (x_offset, y_offset)
     
     # ===========================================
-    # GPIO Pin Configuration
+    # GPIO Pin Configuration (Raspberry Pi 5)
     # ===========================================
     
     def get_front_magnet_pin(self):
-        """Get front electromagnet GPIO pin"""
-        return self.config.getint('gpio_pins', 'front_magnet_pin', fallback=18)
+        """Get front electromagnet relay GPIO pin"""
+        return self.config.getint('gpio_pins', 'front_magnet_relay_pin', fallback=18)
     
     def get_back_magnet_pin(self):
-        """Get back electromagnet GPIO pin"""
-        return self.config.getint('gpio_pins', 'back_magnet_pin', fallback=19)
+        """Get back electromagnet relay GPIO pin"""
+        return self.config.getint('gpio_pins', 'back_magnet_relay_pin', fallback=19)
+    
+    def get_relay_pins(self):
+        """Get both relay GPIO pins for electromagnets"""
+        return {
+            'front_magnet': self.get_front_magnet_pin(),
+            'back_magnet': self.get_back_magnet_pin()
+        }
     
     def get_status_led_pin(self):
         """Get status LED GPIO pin"""
@@ -126,26 +133,47 @@ class HardwareConfig:
     
     def is_relay_active_high(self):
         """Check if relay is active HIGH or LOW"""
-        return self.config.getboolean('gpio_pins', 'relay_active_high', fallback=True)
+        return self.config.getboolean('gpio_pins', 'relay_active_high', fallback=False)  # Most relays are active LOW
     
     # ===========================================
-    # Sensor Configuration
+    # Sensor Configuration (Raspberry Pi 5)
     # ===========================================
+    
+    def get_lidar_interfaces(self):
+        """Get LiDAR sensor interfaces for TF Mini Plus"""
+        return {
+            'front': self.config.get('sensors', 'lidar_front_interface', fallback='/dev/ttyUSB1'),
+            'left': self.config.get('sensors', 'lidar_left_interface', fallback='/dev/ttyUSB2'), 
+            'right': self.config.get('sensors', 'lidar_right_interface', fallback='/dev/ttyUSB3')
+        }
+    
+    def get_lidar_baud_rate(self):
+        """Get LiDAR serial communication baud rate"""
+        return self.config.getint('sensors', 'lidar_baud_rate', fallback=115200)
+    
+    def get_lidar_max_range(self):
+        """Get LiDAR sensor maximum range in meters"""
+        return self.config.getfloat('sensors', 'lidar_max_range', fallback=12.0)
+    
+    def get_lidar_detection_threshold(self):
+        """Get LiDAR obstacle detection threshold in meters"""
+        return self.config.getfloat('sensors', 'lidar_detection_threshold', fallback=2.0)
+    
+    def get_lidar_sample_rate(self):
+        """Get LiDAR sampling rate in Hz"""
+        return self.config.getint('sensors', 'lidar_sample_rate', fallback=100)
     
     def get_tof_addresses(self):
-        """Get ToF sensor I2C addresses"""
-        left = self.config.get('sensors', 'tof_left_address', fallback='0x30')
-        right = self.config.get('sensors', 'tof_right_address', fallback='0x31')
-        front = self.config.get('sensors', 'tof_front_address', fallback='0x32')
-        return {'left': left, 'right': right, 'front': front}
+        """DEPRECATED: Using LiDAR instead of ToF sensors"""
+        return self.get_lidar_interfaces()
     
     def get_tof_max_range(self):
-        """Get ToF sensor maximum range in meters"""
-        return self.config.getfloat('sensors', 'tof_max_range', fallback=4.0)
+        """DEPRECATED: Using LiDAR instead of ToF sensors"""
+        return self.get_lidar_max_range()
     
     def get_tof_detection_threshold(self):
-        """Get ToF obstacle detection threshold in meters"""
-        return self.config.getfloat('sensors', 'tof_detection_threshold', fallback=1.5)
+        """DEPRECATED: Using LiDAR instead of ToF sensors"""
+        return self.get_lidar_detection_threshold()
     
     def get_i2c_bus(self):
         """Get I2C bus number"""
@@ -157,7 +185,7 @@ class HardwareConfig:
     
     def get_takeoff_altitude(self):
         """Get takeoff altitude in meters"""
-        return self.config.getfloat('flight', 'takeoff_altitude', fallback=1.5)
+        return self.config.getfloat('flight', 'takeoff_altitude', fallback=1.0)
     
     # Mission Parameters
     def get_mission_debug_mode(self):
@@ -170,7 +198,7 @@ class HardwareConfig:
     
     def get_indoor_altitude(self):
         """Get indoor cruise altitude in meters"""
-        return self.config.getfloat('MISSION', 'indoor_altitude', fallback=1.5)
+        return self.config.getfloat('MISSION', 'indoor_altitude', fallback=1.0)
     
     def get_outdoor_altitude(self):
         """Get outdoor cruise altitude in meters"""

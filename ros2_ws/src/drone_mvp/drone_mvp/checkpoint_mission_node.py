@@ -351,7 +351,7 @@ class CheckpointMissionNode(Node):
         
         checkpoint_descriptions = {
             MissionCheckpoint.INIT: "Initialize systems and arm drone",
-            MissionCheckpoint.TAKEOFF: "Takeoff to 0.6m altitude", 
+            MissionCheckpoint.TAKEOFF: "Takeoff to 1.0m altitude", 
             MissionCheckpoint.SEARCH_ITEM_1_FRONT: "Move forward, activate front camera, search for item 1",
             MissionCheckpoint.ALIGN_ITEM_1: "Align drone to center item 1 in camera view",
             MissionCheckpoint.PICKUP_ITEM_1: "Descend and pickup item 1 with front magnet",
@@ -492,7 +492,7 @@ class CheckpointMissionNode(Node):
             self.wait_for_user_confirmation()
             
         elif checkpoint == MissionCheckpoint.TAKEOFF:
-            self.get_logger().info("🚀 Executing takeoff to 0.6m...")
+            self.get_logger().info("🚀 Executing takeoff to 1.0m...")
             self.send_mavlink_command("SET_MODE", {"mode": "POSITION"})
             time.sleep(1)
             self.send_mavlink_command("TAKEOFF", {"altitude": self.hw_config.get_indoor_altitude()})

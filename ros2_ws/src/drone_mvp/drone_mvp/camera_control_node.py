@@ -7,6 +7,7 @@ from sensor_msgs.msg import Image
 from geometry_msgs.msg import Point
 import numpy as np
 import time
+import threading
 
 # Import OpenCV with error handling
 try:
@@ -26,6 +27,17 @@ except ImportError:
 from .hardware_config import HardwareConfig
 
 class CameraControlNode(Node):
+    """
+    Camera Control Node optimized for Raspberry Pi 5
+    Handles 3x USB cameras with hardware-accelerated processing
+    
+    Features:
+    - Multi-threaded camera capture
+    - Hardware-accelerated video processing
+    - Object detection and tracking
+    - Low-latency streaming for competition
+    """
+    
     def __init__(self):
         super().__init__('camera_control_node')
         
@@ -38,17 +50,23 @@ class CameraControlNode(Node):
             return
         
         # Camera states
-        self.front_camera_enabled = False
-        self.back_camera_enabled = False
-        self.top_camera_enabled = False
-        
-        # OpenCV captures
-        self.front_cap = None
-        self.back_cap = None
-        self.top_cap = None
+        self.camera_states = {
+            'front': {'enabled': False, 'cap': None, 'thread': None},
+            'back': {'enabled': False, 'cap': None, 'thread': None},
+            'top': {'enabled': False, 'cap': None, 'thread': None}
+        }
         
         # CV Bridge
         self.bridge = CvBridge()
+        
+        # Camera configuration optimized for Pi 5
+        self.camera_config = {
+            'width': 640,
+            'height': 480,
+            'fps': 30,
+            'fourcc': cv2.VideoWriter_fourcc(*'MJPG'),  # Hardware MJPEG decode
+            'buffer_size': 1  # Minimal buffer for low latency
+        }
         
         # Get camera configuration
         self.camera_width, self.camera_height = self.hw_config.get_camera_resolution()

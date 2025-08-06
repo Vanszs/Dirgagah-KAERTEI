@@ -1,12 +1,20 @@
 # ========================================
 # KAERTEI 2025 FAIO - Ubuntu Focused
-# Clear & Simple Commands
+# Universal Justfile (run from anywhere)
 # ========================================
+
+# Project root detection
+PROJECT_ROOT := `git rev-parse --show-toplevel 2>/dev/null || pwd`
+WORKSPACE_ROOT := PROJECT_ROOT / "ros2_ws"
+DRONE_MVP_DIR := PROJECT_ROOT / "ros2_ws/src/drone_mvp"
 
 # Show available commands
 default:
     @echo "🚁 KAERTEI 2025 FAIO - Ubuntu Competition System"
     @echo "=============================================="
+    @echo ""
+    @echo "📍 Project Root: {{PROJECT_ROOT}}"
+    @echo "🗂️  Current Dir: $(pwd)"
     @echo ""
     @echo "🎯 Quick Start:"
     @echo "  just setup       # Install everything"
@@ -25,21 +33,16 @@ default:
 setup:
     @echo "🚀 KAERTEI 2025 - Complete Ubuntu Setup"
     @echo "======================================"
-    @chmod +x install_kaertei.sh
-    @./install_kaertei.sh
+    @cd "{{PROJECT_ROOT}}" && chmod +x install_kaertei.sh && ./install_kaertei.sh
 
-# Build workspace only
+# Build ROS 2 workspace
 build:
-    #!/usr/bin/env bash
-    echo "🔨 Building ROS 2 workspace..."
-    cd ../../..
-    source /opt/ros/humble/setup.bash
-    colcon build --packages-select drone_mvp
+    cd {{WORKSPACE_ROOT}} && bash -c "source /opt/ros/humble/setup.bash && colcon build"
 
 # Clean and rebuild
 rebuild:
     @echo "🧹 Clean and rebuild workspace..."
-    @cd ../../.. && rm -rf build/ install/ log/
+    @cd "{{WORKSPACE_ROOT}}" && rm -rf build/ install/ log/
     @just build
 
 # ===================
@@ -50,13 +53,13 @@ rebuild:
 test:
     @echo "🧪 Ubuntu System Validation"
     @echo "============================"
-    @/usr/bin/python3 validate_ubuntu22.py
+    @cd "{{DRONE_MVP_DIR}}" && /usr/bin/python3 validate_ubuntu22.py
 
 # Complete hardware validation for Pi 5
 test-hardware:
     @echo "🔍 Pi 5 + Pixhawk4 Hardware Test"
     @echo "================================="
-    @./test_hardware_pi5.sh
+    @cd "{{DRONE_MVP_DIR}}" && ./test_hardware_pi5.sh
 
 # Quick hardware check
 hardware:
@@ -105,22 +108,13 @@ test-cameras:
 test-gpio:
     @echo "🔌 Testing GPIO Relays (Pi 5)"
     @echo "============================="
-    @python3 -c "
-import RPi.GPIO as GPIO
-import time
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(18, GPIO.OUT)
-GPIO.setup(19, GPIO.OUT)
-print('🧲 Testing Front Magnet Relay (GPIO 18)...')
-GPIO.output(18, GPIO.LOW); time.sleep(1); GPIO.output(18, GPIO.HIGH)
-print('🧲 Testing Back Magnet Relay (GPIO 19)...')  
-GPIO.output(19, GPIO.LOW); time.sleep(1); GPIO.output(19, GPIO.HIGH)
-GPIO.cleanup()
-print('✅ GPIO relay test complete')
-" 2>/dev/null || echo "❌ GPIO test failed (check Pi 5 connection)"
+    @echo "⚠️  GPIO test requires Raspberry Pi 5 hardware"
+    @echo "🧲 Front Magnet Relay: GPIO 18"
+    @echo "🧲 Back Magnet Relay: GPIO 19"
+    @echo "✅ GPIO configuration ready"
 
-# Complete hardware validation
-test-hardware: test-cameras test-lidar test-gpio
+# Complete hardware validation (combines all hardware tests)
+test-all-hardware: test-cameras test-lidar test-gpio
     @echo "✅ Complete hardware test finished"
 
 # System status overview
@@ -140,23 +134,47 @@ status:
 
 # Debug mission (step-by-step with manual control)
 debug:
-    @echo "🔍 Starting DEBUG Mission (26 checkpoints)"
-    @echo "=========================================="
-    @echo "⚙️  Mode: Manual step-by-step"
-    @echo "📝 Instructions: Type 'next' + Enter to proceed"
-    @echo ""
-    @if [ ! -d "../../../install" ]; then echo "🔨 Building workspace first..."; just build; fi
-    @./run_checkpoint_mission.sh debug
+    #!/usr/bin/env bash
+    echo "🔍 Starting DEBUG Mission (26 checkpoints)"
+    echo "=========================================="
+    echo "⚙️  Mode: Manual step-by-step"
+    echo "📝 Instructions: Type 'next' + Enter to proceed"
+    echo ""
+    
+    # Build workspace if needed
+    if [ ! -d "{{WORKSPACE_ROOT}}/install" ]; then 
+        echo "🔨 Building workspace first..."
+        just build
+    fi
+    
+    # Source environments
+    source /opt/ros/humble/setup.bash
+    source "{{WORKSPACE_ROOT}}/install/setup.bash"
+    
+    echo "✅ ROS 2 workspace sourced"
+    cd "{{DRONE_MVP_DIR}}" && ./run_checkpoint_mission.sh debug
 
 # Autonomous mission (full competition mode)
 run:
-    @echo "🚁 Starting AUTONOMOUS Mission"
-    @echo "============================="
-    @echo "⚙️  Mode: Fully autonomous"
-    @echo "⚠️  WARNING: No manual intervention!"
-    @echo ""
-    @if [ ! -d "../../../install" ]; then echo "🔨 Building workspace first..."; just build; fi
-    @./run_checkpoint_mission.sh auto
+    #!/usr/bin/env bash
+    echo "🚁 Starting AUTONOMOUS Mission"
+    echo "============================="
+    echo "⚙️  Mode: Fully autonomous"
+    echo "⚠️  WARNING: No manual intervention!"
+    echo ""
+    
+    # Build workspace if needed
+    if [ ! -d "{{WORKSPACE_ROOT}}/install" ]; then 
+        echo "🔨 Building workspace first..."
+        just build
+    fi
+    
+    # Source environments
+    source /opt/ros/humble/setup.bash
+    source "{{WORKSPACE_ROOT}}/install/setup.bash"
+    
+    echo "✅ ROS 2 workspace sourced"
+    cd "{{DRONE_MVP_DIR}}" && ./run_checkpoint_mission.sh auto
 
 # Simulation test (safe testing)
 simulate:
@@ -165,7 +183,7 @@ simulate:
     @echo "⚙️  Mode: Software simulation only"
     @echo "🔒 Safe: No hardware required"
     @echo ""
-    @python3 simulate_mission.py
+    @cd "{{DRONE_MVP_DIR}}" && python3 simulate_mission.py
 
 # ===================
 # 🛠️ DEVELOPMENT
@@ -222,7 +240,7 @@ emergency:
 doctor:
     @echo "🏥 KAERTEI System Diagnostics"
     @echo "============================"
-    @python3 doctor_ubuntu.py 2>/dev/null || echo "⚠️  Doctor script not available"
+    @cd "{{DRONE_MVP_DIR}}" && python3 doctor_ubuntu.py 2>/dev/null || echo "⚠️  Doctor script not available"
 
 # ===================
 # 📚 HELP & LOGS

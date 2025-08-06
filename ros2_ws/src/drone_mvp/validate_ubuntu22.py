@@ -1,9 +1,199 @@
 #!/usr/bin/env python3
 """
-KAERTEI 2025 FAIO - Ubuntu 22.04 System Validation
-==================================================
-Comprehensive system validation for competition readiness
+KAERTEI 2025 FAIO - System Validation Script
+Ubuntu 22.04 LTS System Validation
 """
+
+import os
+import sys
+import subprocess
+import importlib
+from pathlib import Path
+import argparse
+
+# Colors for output
+class Colors:
+    GREEN = '\033[92m'
+    RED = '\033[91m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    BOLD = '\033[1m'
+    END = '\033[0m'
+
+def print_success(msg):
+    print(f"{Colors.GREEN}✅ {msg}{Colors.END}")
+
+def print_error(msg):
+    print(f"{Colors.RED}❌ {msg}{Colors.END}")
+
+def print_warning(msg):
+    print(f"{Colors.YELLOW}⚠️  {msg}{Colors.END}")
+
+def print_info(msg):
+    print(f"{Colors.BLUE}ℹ️  {msg}{Colors.END}")
+
+def print_header(msg):
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*50}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{msg}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*50}{Colors.END}")
+
+def check_os():
+    """Check Ubuntu version"""
+    print_header("System Check")
+    try:
+        with open('/etc/os-release', 'r') as f:
+            content = f.read()
+            if 'VERSION_ID="22.04"' in content:
+                print_success("Ubuntu 22.04 LTS detected")
+                return True
+            else:
+                print_warning("Not Ubuntu 22.04 LTS")
+                return False
+    except:
+        print_error("Cannot detect OS version")
+        return False
+
+def check_python():
+    """Check Python version"""
+    print_header("Python Environment")
+    version = sys.version_info
+    if version.major == 3 and version.minor >= 10:
+        print_success(f"Python {version.major}.{version.minor}.{version.micro}")
+        return True
+    else:
+        print_error(f"Python {version.major}.{version.minor}.{version.micro} - Need 3.10+")
+        return False
+
+def check_ros2():
+    """Check ROS 2 installation"""
+    print_header("ROS 2 Environment")
+    
+    # Check ROS 2 installation directory
+    ros2_path = "/opt/ros/humble/setup.bash"
+    if not os.path.exists(ros2_path):
+        print_error("ROS 2 Humble not found at /opt/ros/humble/")
+        return False
+    
+    try:
+        # Try to source ROS 2 and check if ros2 command works
+        temp_script = """#!/bin/bash
+source /opt/ros/humble/setup.bash
+ros2 -h 2>/dev/null | head -1
+"""
+        result = subprocess.run(
+            temp_script,
+            shell=True,
+            capture_output=True,
+            text=True,
+            executable='/bin/bash'
+        )
+        
+        if result.returncode == 0 and "usage: ros2" in result.stdout.lower():
+            print_success("ROS 2 Humble installed and working")
+            return True
+        else:
+            print_error("ROS 2 command not working properly")
+            return False
+    except Exception as e:
+        print_error(f"ROS 2 check failed: {e}")
+        return False
+
+def check_python_packages():
+    """Check essential Python packages"""
+    print_header("Python Dependencies")
+    essential_packages = [
+        'pymavlink',
+        'cv2',
+        'numpy',
+        'ultralytics',
+        'torch',
+        'yaml',
+        'serial',
+    ]
+    
+    success_count = 0
+    for package in essential_packages:
+        try:
+            if package == 'cv2':
+                importlib.import_module('cv2')
+            else:
+                importlib.import_module(package)
+            print_success(f"{package} - OK")
+            success_count += 1
+        except ImportError:
+            print_error(f"{package} - Missing")
+    
+    return success_count == len(essential_packages)
+
+def check_hardware():
+    """Check hardware connections"""
+    print_header("Hardware Detection")
+    
+    # Check flight controllers
+    fc_devices = list(Path('/dev').glob('tty[AU][CS][BM]*'))
+    if fc_devices:
+        print_success(f"Flight controller: {len(fc_devices)} device(s)")
+        for device in fc_devices:
+            print_info(f"  - {device}")
+    else:
+        print_warning("No flight controllers detected")
+    
+    # Check cameras
+    camera_devices = list(Path('/dev').glob('video*'))
+    if camera_devices:
+        print_success(f"Cameras: {len(camera_devices)} device(s)")
+        for device in camera_devices:
+            print_info(f"  - {device}")
+    else:
+        print_warning("No cameras detected")
+    
+    # Check if we can access GPIO (Raspberry Pi)
+    try:
+        import RPi.GPIO
+        print_success("GPIO interface available")
+    except:
+        print_warning("GPIO not available (not on Raspberry Pi)")
+    
+    return True
+
+def main():
+    parser = argparse.ArgumentParser(description='KAERTEI 2025 System Validation')
+    parser.add_argument('--competition', action='store_true', 
+                       help='Run comprehensive competition readiness check')
+    parser.add_argument('--quick', action='store_true',
+                       help='Run quick validation only')
+    
+    args = parser.parse_args()
+    
+    print(f"{Colors.BOLD}{Colors.BLUE}")
+    print("🚁 KAERTEI 2025 FAIO System Validation")
+    print("=====================================")
+    print(f"{Colors.END}")
+    
+    all_checks_passed = True
+    
+    # Basic checks
+    all_checks_passed &= check_os()
+    all_checks_passed &= check_python()
+    
+    if not args.quick:
+        all_checks_passed &= check_ros2()
+        all_checks_passed &= check_python_packages()
+        all_checks_passed &= check_hardware()
+    
+    # Final result
+    print_header("Validation Result")
+    if all_checks_passed:
+        print_success("System validation PASSED ✅")
+        print_info("System ready for KAERTEI 2025 competition!")
+        return 0
+    else:
+        print_error("System validation FAILED ❌")
+        print_info("Please fix the issues above before proceeding.")
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main())
 
 import os
 import sys

@@ -1,0 +1,177 @@
+# ========================================
+# KAERTEI 2025 FAIO - Optimized Justfile
+# Ubuntu 22.04 & Docker Commands
+# ========================================
+
+# Show available commands
+default:
+    @echo "🚁 KAERTEI 2025 FAIO - Competition Ready System"
+    @echo "=============================================="
+    @echo ""
+    @just --list
+
+# ===================
+# 🚀 ESSENTIAL COMMANDS
+# ===================
+
+# Complete Ubuntu 22.04 setup
+setup:
+    @echo "🔧 Setting up Ubuntu 22.04 for competition..."
+    @./setup_ubuntu22.sh
+
+# System health check
+status:
+    @echo "📊 KAERTEI 2025 System Status"
+    @echo "============================="
+    @echo "🖥️  OS: $(lsb_release -d 2>/dev/null | cut -f2 || echo 'Unknown')"
+    @echo "🐍 Python: $(python3 --version 2>/dev/null || echo 'Not found')"
+    @echo "🤖 ROS 2: $(test -f /opt/ros/humble/setup.bash && echo 'Humble ✅' || echo 'Not installed ❌')"
+    @echo "🔧 Hardware: $(ls /dev/tty{ACM,USB}* 2>/dev/null | wc -l) device(s) detected"
+    @echo "📷 Cameras: $(ls /dev/video* 2>/dev/null | wc -l) camera(s) detected"
+
+# Complete system validation
+test-all:
+    @echo "🧪 Running comprehensive system tests..."
+    @python3 validate_ubuntu22.py
+
+# Hardware detection and testing
+hardware-check:
+    @echo "🔍 Hardware Detection & Testing"
+    @echo "==============================="
+    @echo "📡 Flight Controllers:"
+    @ls /dev/tty{ACM,USB}* 2>/dev/null || echo "❌ No flight controllers detected"
+    @echo "📷 Cameras:"
+    @v4l2-ctl --list-devices 2>/dev/null || echo "❌ No cameras detected"
+    @echo "🎮 GPIO Status:"
+    @python3 -c "import RPi.GPIO; print('✅ GPIO ready')" 2>/dev/null || echo "⚠️  GPIO not available (not on Raspberry Pi)"
+
+# ===================
+# 🏆 COMPETITION COMMANDS
+# ===================
+
+# Debug mission (step-by-step with checkpoints)
+mission-debug:
+    @echo "🚁 Starting debug mission (26 checkpoints)..."
+    @./run_checkpoint_mission.sh debug
+
+# Autonomous mission (full competition mode)
+mission-auto:
+    @echo "🤖 Starting autonomous competition mission..."
+    @./run_checkpoint_mission.sh auto
+
+# Competition readiness check
+competition-ready:
+    @echo "🏆 KAERTEI 2025 Competition Readiness Check"
+    @echo "=========================================="
+    @python3 validate_system.py --competition
+
+# Emergency stop all processes
+emergency-stop:
+    @echo "🚨 Emergency stop - killing all drone processes..."
+    @pkill -f "python3.*mission" || true
+    @pkill -f "ros2" || true
+    @echo "✅ All processes stopped"
+
+# ===================
+# 🐳 DOCKER COMMANDS
+# ===================
+
+# Build Docker environment
+docker-build:
+    @echo "🐳 Building Docker environment for KAERTEI 2025..."
+    @docker-compose build
+
+# Run Docker container
+docker-run:
+    @echo "🐳 Running Docker container..."
+    @docker-compose up -d
+    @echo "✅ Container started. Access with: docker exec -it kaertei2025_hexacopter bash"
+
+# Docker mission debug
+docker-mission:
+    @echo "🐳 Running mission in Docker..."
+    @docker exec -it kaertei2025_hexacopter bash -c "source /opt/ros/humble/setup.bash && just mission-debug"
+
+# Clean Docker resources
+docker-clean:
+    @echo "🐳 Cleaning Docker resources..."
+    @docker-compose down
+    @docker system prune -f
+
+# ===================
+# 🛠️ SYSTEM MAINTENANCE
+# ===================
+
+# Build ROS 2 workspace
+build:
+    @echo "🔨 Building ROS 2 workspace..."
+    @cd ../../.. && colcon build --packages-select drone_mvp
+
+# Clean build files
+clean:
+    @echo "🧹 Cleaning build files..."
+    @cd ../../.. && rm -rf build/ install/ log/
+    @echo "✅ Build files cleaned"
+
+# Install Just command runner
+install-just:
+    @echo "⚡ Installing Just command runner..."
+    @curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/bin
+    @echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
+    @echo "✅ Just installed. Restart terminal or run: source ~/.bashrc"
+
+# Update system and dependencies
+update:
+    @echo "🔄 Updating system and dependencies..."
+    @sudo apt update && sudo apt upgrade -y
+    @pip3 install --upgrade -r requirements.txt
+
+# ===================
+# 🔧 HARDWARE SETUP
+# ===================
+
+# Test MAVROS connection
+test-mavros:
+    @echo "📡 Testing MAVROS connection..."
+    @python3 -c "from pymavlink import mavutil; print('✅ PyMAVLink ready')"
+
+# Test camera system
+test-cameras:
+    @echo "📷 Testing camera system..."
+    @python3 -c "import cv2; print('✅ OpenCV ready')"
+
+# Calibrate hardware
+calibrate:
+    @echo "⚖️  Running hardware calibration..."
+    @python3 calibrate_hardware.py
+
+# Fix hardware permissions
+fix-permissions:
+    @echo "🔧 Fixing hardware permissions..."
+    @sudo usermod -a -G dialout,video $USER
+    @echo "✅ Permissions fixed. Please logout and login again"
+
+# ===================
+# 📚 HELP & INFO
+# ===================
+
+# Quick help for competition day
+help:
+    @echo "🏆 KAERTEI 2025 Competition Quick Commands"
+    @echo "======================================="
+    @echo "Setup:     just setup"
+    @echo "Test:      just test-all"
+    @echo "Mission:   just mission-debug"
+    @echo "Status:    just status"
+    @echo "Emergency: just emergency-stop"
+    @echo ""
+    @echo "Full list: just --list"
+
+# System information
+info:
+    @echo "ℹ️  KAERTEI 2025 FAIO System Information"
+    @echo "====================================="
+    @echo "Project: Autonomous Hexacopter Drone"
+    @echo "Platform: Ubuntu 22.04 LTS + ROS 2 Humble"
+    @echo "Mission: 26-Checkpoint Indoor/Outdoor"
+    @echo "Repository: https://github.com/Vanszs/Dirgagah-KAERTEI"
