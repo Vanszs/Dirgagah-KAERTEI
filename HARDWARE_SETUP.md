@@ -146,7 +146,7 @@ ls /dev/video*
 # Should show /dev/video0, /dev/video1, /dev/video2
 
 # Test each camera
-just camera-test
+just test-cameras
 ```
 
 #### **Camera Mounting:**
@@ -164,7 +164,7 @@ just camera-test
 # Right LiDAR: /dev/ttyUSB2 (atau Serial2)
 
 # Test LiDAR
-just lidar-test
+just test-lidar
 ```
 
 #### **LiDAR Mounting:**
@@ -195,7 +195,7 @@ Pi 5 5V      ──► Relay VCC
 # Biasanya /dev/ttyACM0 atau /dev/ttyUSB0
 
 # Test connection
-just mavlink-test
+just hardware
 ```
 
 #### **PC ↔ Raspberry Pi 5:**
@@ -215,25 +215,25 @@ ros2 topic list
 ### **Individual Component Test:**
 ```bash
 # Test flight controller
-just pixhawk-test
+just hardware
 
 # Test all cameras
-just camera-test
+just test-cameras
 
 # Test all LiDAR
-just lidar-test
+just test-lidar
 
 # Test electromagnets
-just magnet-test
+just test-gpio
 
-# Test GPS
-just gps-test
+# Test GPS & hardware
+just test-hardware
 ```
 
 ### **Integrated System Test:**
 ```bash
 # Test all hardware together
-just hardware-test
+just test-all-hardware
 
 # System health check
 just status
@@ -244,14 +244,14 @@ just test
 
 ### **Pre-Flight Test:**
 ```bash
-# Competition readiness check
-just competition-ready
+# Full hardware validation
+just test-hardware
 
-# Mission system test
-just test-mission
+# Mission system test  
+just simulate
 
 # Emergency procedures test
-just test-emergency
+just emergency
 ```
 
 ---
@@ -275,29 +275,29 @@ just test-emergency
 
 ### **Regular Calibration:**
 ```bash
-# Compass calibration (outdoor)
-just calibrate-compass
+# Hardware check & fix permissions
+just fix-permissions
 
-# Accelerometer calibration (level surface)
-just calibrate-accel
+# System diagnostics
+just doctor
 
-# Camera calibration
-just calibrate-camera
+# Update dependencies
+just update
 
-# LiDAR calibration
-just calibrate-lidar
+# Fix Python packages
+just fix-python
 ```
 
 ### **Pre-Competition Check:**
 ```bash
 # Full hardware inspection
-just inspect-hardware
+just test-all-hardware
 
-# Calibration check
-just check-calibration
+# System status check
+just status
 
 # Performance test
-just performance-test
+just test
 ```
 
 ---
@@ -313,14 +313,14 @@ just performance-test
 
 ### **Safety Procedures:**
 ```bash
-# Enable all safety features
-just enable-safety
+# Emergency stop all processes
+just stop
 
-# Test emergency procedures
-just test-emergency
+# Emergency system reset
+just emergency
 
-# Set failsafe parameters
-just configure-failsafe
+# Fix hardware permissions
+just fix-permissions
 ```
 
 ---
@@ -329,17 +329,17 @@ just configure-failsafe
 
 ### **Monitoring Commands:**
 ```bash
-# Real-time hardware status
-just monitor
+# Hardware status check
+just status
 
-# Hardware health dashboard
-just hardware-dashboard
+# System logs
+just logs
 
-# Performance metrics
-just performance-metrics
+# System information  
+just info
 
-# System resources
-just system-resources
+# System diagnostics
+just doctor
 ```
 
 ---
@@ -348,17 +348,17 @@ just system-resources
 
 ### **Final Setup:**
 ```bash
-# Competition mode configuration
-just competition-config
+# Build system
+just build
 
-# Lock settings
-just lock-config
+# Final test
+just test
 
-# Create backup
-just backup-config
+# Help guide
+just help
 
-# Competition ready check
-just final-check
+# Competition readiness
+just status
 ```
 
 **✅ Hardware setup complete! Siap untuk kompetisi KAERTEI 2025!**

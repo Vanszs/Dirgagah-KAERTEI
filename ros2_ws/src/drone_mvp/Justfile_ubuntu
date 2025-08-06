@@ -1,0 +1,230 @@
+# ========================================
+# KAERTEI 2025 FAIO - Ubuntu Focused
+# Clear & Simple Commands
+# ========================================
+
+# Show available commands
+default:
+    @echo "🚁 KAERTEI 2025 FAIO - Ubuntu Competition System"
+    @echo "=============================================="
+    @echo ""
+    @echo "🎯 Quick Start:"
+    @echo "  just setup       # Install everything"
+    @echo "  just test        # Validate system"
+    @echo "  just debug       # Run debug mission (step-by-step)"
+    @echo "  just run         # Run autonomous mission"
+    @echo ""
+    @echo "📋 All Commands:"
+    @just --list
+
+# ===================
+# 🚀 SETUP & INSTALL
+# ===================
+
+# Complete system setup (one command install)
+setup:
+    @echo "🚀 KAERTEI 2025 - Complete Ubuntu Setup"
+    @echo "======================================"
+    @chmod +x install_kaertei.sh
+    @./install_kaertei.sh
+
+# Build workspace only
+build:
+    #!/usr/bin/env bash
+    echo "🔨 Building ROS 2 workspace..."
+    cd ../../..
+    source /opt/ros/humble/setup.bash
+    colcon build --packages-select drone_mvp
+
+# Clean and rebuild
+rebuild:
+    @echo "🧹 Clean and rebuild workspace..."
+    @cd ../../.. && rm -rf build/ install/ log/
+    @just build
+
+# ===================
+# 🧪 TESTING & STATUS
+# ===================
+
+# Complete system validation
+test:
+    @echo "🧪 Ubuntu System Validation"
+    @echo "============================"
+    @export PATH="$$HOME/.local/bin:$$PATH" && python3 validate_ubuntu22.py
+
+# Quick hardware check
+hardware:
+    @echo "🔍 Hardware Detection"
+    @echo "===================="
+    @echo "📡 Flight Controllers:"
+    @ls /dev/tty{ACM,USB}* 2>/dev/null || echo "❌ No flight controllers detected"
+    @echo ""
+    @echo "📷 Cameras:"
+    @ls /dev/video* 2>/dev/null || echo "❌ No cameras detected"
+    @v4l2-ctl --list-devices 2>/dev/null | head -10 || true
+    @echo ""
+
+# System status overview
+status:
+    @echo "📊 KAERTEI 2025 System Status"
+    @echo "============================="
+    @echo "🖥️  OS: $(lsb_release -d 2>/dev/null | cut -f2 || echo 'Unknown')"
+    @echo "🐍 Python: $(python3 --version 2>/dev/null || echo 'Not found')"
+    @echo "🤖 ROS 2: $(test -f /opt/ros/humble/setup.bash && echo 'Humble ✅' || echo 'Not installed ❌')"
+    @echo "🔧 Hardware: $(ls /dev/tty{ACM,USB}* 2>/dev/null | wc -l) device(s)"
+    @echo "📷 Cameras: $(ls /dev/video* 2>/dev/null | wc -l) camera(s)"
+    @echo "💾 Workspace: $(test -d '../../../install' && echo 'Built ✅' || echo 'Not built ❌')"
+
+# ===================
+# 🏆 MISSION COMMANDS
+# ===================
+
+# Debug mission (step-by-step with manual control)
+debug:
+    @echo "🔍 Starting DEBUG Mission (26 checkpoints)"
+    @echo "=========================================="
+    @echo "⚙️  Mode: Manual step-by-step"
+    @echo "📝 Instructions: Type 'next' + Enter to proceed"
+    @echo ""
+    @if [ ! -d "../../../install" ]; then echo "🔨 Building workspace first..."; just build; fi
+    @./run_checkpoint_mission.sh debug
+
+# Autonomous mission (full competition mode)
+run:
+    @echo "🚁 Starting AUTONOMOUS Mission"
+    @echo "============================="
+    @echo "⚙️  Mode: Fully autonomous"
+    @echo "⚠️  WARNING: No manual intervention!"
+    @echo ""
+    @if [ ! -d "../../../install" ]; then echo "🔨 Building workspace first..."; just build; fi
+    @./run_checkpoint_mission.sh auto
+
+# Simulation test (safe testing)
+simulate:
+    @echo "🎮 Starting SIMULATION Mode"
+    @echo "=========================="
+    @echo "⚙️  Mode: Software simulation only"
+    @echo "🔒 Safe: No hardware required"
+    @echo ""
+    @python3 simulate_mission.py
+
+# ===================
+# 🛠️ DEVELOPMENT
+# ===================
+
+# Update system and dependencies
+update:
+    @echo "🔄 Updating system packages and Python dependencies..."
+    @sudo apt update && sudo apt upgrade -y
+    @export PATH="$$HOME/.local/bin:$$PATH" && pip3 install --upgrade -r requirements.txt
+
+# Fix hardware permissions
+fix-permissions:
+    @echo "🔧 Fixing hardware permissions..."
+    @sudo usermod -a -G dialout,video,tty $$USER
+    @sudo chmod 666 /dev/tty{USB,ACM}* 2>/dev/null || true
+    @echo "✅ Permissions updated. Please logout/login for changes to take effect."
+
+# Install missing Python packages
+fix-python:
+    @echo "🐍 Installing/fixing Python dependencies..."
+    @export PATH="$$HOME/.local/bin:$$PATH" && pip3 install -r requirements.txt
+
+# ===================
+# 🆘 EMERGENCY & TOOLS
+# ===================
+
+# Emergency stop all processes
+stop:
+    @echo "🚨 EMERGENCY STOP - Killing all processes"
+    @echo "========================================"
+    @pkill -f "python3.*mission" 2>/dev/null || true
+    @pkill -f "ros2" 2>/dev/null || true
+    @pkill -f "mavros" 2>/dev/null || true
+    @echo "✅ All drone processes stopped"
+
+# Competition day emergency reset
+emergency:
+    @echo "🆘 COMPETITION EMERGENCY RESET"
+    @echo "============================="
+    @echo "🔄 Resetting all systems..."
+    @pkill -f ros2 2>/dev/null || true
+    @pkill -f mavros 2>/dev/null || true
+    @pkill -f python3 2>/dev/null || true
+    @sudo rmmod usbserial 2>/dev/null || true
+    @sudo modprobe usbserial 2>/dev/null || true
+    @sudo chmod 666 /dev/tty{USB,ACM}* 2>/dev/null || true
+    @export PATH="$$HOME/.local/bin:$$PATH" && ros2 daemon stop 2>/dev/null || true
+    @export PATH="$$HOME/.local/bin:$$PATH" && ros2 daemon start 2>/dev/null || true
+    @echo "✅ Emergency reset completed"
+    @echo "🚀 Try: just test && just debug"
+
+# System diagnostics
+doctor:
+    @echo "🏥 KAERTEI System Diagnostics"
+    @echo "============================"
+    @python3 doctor_ubuntu.py 2>/dev/null || echo "⚠️  Doctor script not available"
+
+# ===================
+# 📚 HELP & LOGS
+# ===================
+
+# Competition quick help
+help:
+    @echo "🏆 KAERTEI 2025 - Competition Quick Guide"
+    @echo "======================================="
+    @echo ""
+    @echo "🚀 First Time Setup:"
+    @echo "  just setup       # Complete installation"
+    @echo ""
+    @echo "🎯 Before Competition:"
+    @echo "  just test        # Validate everything works"
+    @echo "  just hardware    # Check hardware connections"
+    @echo "  just status      # System overview"
+    @echo ""
+    @echo "🏁 Competition Day:"
+    @echo "  just debug       # Manual debugging mode"
+    @echo "  just run         # Full autonomous mission"
+    @echo "  just stop        # Emergency stop"
+    @echo ""
+    @echo "🆘 Problems:"
+    @echo "  just emergency   # Reset everything"
+    @echo "  just doctor      # System diagnostics"
+    @echo "  just fix-permissions  # Fix hardware access"
+
+# Show system logs
+logs:
+    @echo "📋 Recent System Logs"
+    @echo "===================="
+    @echo "🔍 ROS 2 logs:"
+    @ls -la ~/.ros/log/ 2>/dev/null | tail -5 || echo "No ROS logs found"
+    @echo ""
+    @echo "🔍 Mission logs:"
+    @ls -la logs/ 2>/dev/null | tail -5 || echo "No mission logs found"
+    @echo ""
+    @echo "🔍 System messages:"
+    @dmesg | tail -10 2>/dev/null || echo "Cannot access system messages"
+
+# System information
+info:
+    @echo "ℹ️  KAERTEI 2025 FAIO Information"
+    @echo "==============================="
+    @echo "Project: Autonomous Hexacopter Drone"
+    @echo "Mission: 26-Checkpoint Indoor/Outdoor Navigation"
+    @echo "Platform: Ubuntu 22.04 LTS + ROS 2 Humble"
+    @echo "Hardware: Pixhawk PX4 + Multi-Camera System"
+    @echo "AI: YOLOv8 Object Detection + OpenCV"
+    @echo ""
+    @echo "Repository: github.com/Vanszs/Dirgagah-KAERTEI"
+    @echo "Competition: KAERTEI 2025 FAIO"
+
+# ===================
+# 🎯 QUICK SHORTCUTS
+# ===================
+
+# Alias for common commands
+d: debug    # Quick debug
+r: run      # Quick run
+t: test     # Quick test
+s: status   # Quick status
+h: help     # Quick help
