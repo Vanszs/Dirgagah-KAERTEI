@@ -67,63 +67,44 @@ def generate_launch_description():
     
     hardware_group = GroupAction([
         
-        # Camera Control - 3x USB cameras
+        # Camera Control - 2x USB cameras (top camera disabled per MISSION_CLARIFICATION.md)
+        # Uses centralized hardware_config.conf for parameters
         Node(
             package='kaertei_drone',
             executable='camera_control_node',
             name='camera_controller',
-            output='screen',
-            parameters=[
-                {'front_camera_index': 0},      # Bottom-facing front camera
-                {'back_camera_index': 2},       # Rear camera  
-                {'front_nav_camera_index': 4},  # Front navigation camera
-                {'camera_width': 640},
-                {'camera_height': 480},
-                {'camera_fps': 30}
-            ]
+            output='screen'
+            # No parameters here - reads from hardware_config.conf
         ),
         
         # Magnet Control - 2x electromagnets via GPIO relays
+        # Uses centralized hardware_config.conf for parameters
         Node(
             package='kaertei_drone',
             executable='magnet_control_node',
             name='magnet_controller',
-            output='screen',
-            parameters=[
-                {'front_magnet_pin': 18},  # GPIO 18 = Pin 12
-                {'back_magnet_pin': 19},   # GPIO 19 = Pin 35
-                {'relay_active_high': False},  # Most relays active LOW
-                {'current_sensing_enabled': True}
-            ]
+            output='screen'
+            # No parameters here - reads from hardware_config.conf
         ),
         
         # LiDAR Control - 3x TF Mini Plus sensors
+        # Uses centralized hardware_config.conf for parameters
         Node(
             package='kaertei_drone',
             executable='lidar_control_node',
             name='lidar_controller',
-            output='screen',
-            parameters=[
-                {'front_lidar_port': '/dev/ttyUSB1'},
-                {'left_lidar_port': '/dev/ttyUSB2'},
-                {'right_lidar_port': '/dev/ttyUSB3'},
-                {'lidar_baud_rate': 115200},
-                {'lidar_max_range': 12.0},
-                {'obstacle_threshold': 1.5}
-            ]
+            output='screen'
+            # No parameters here - reads from hardware_config.conf
         ),
         
         # GPIO Control - Emergency stop & status LEDs
+        # Uses centralized hardware_config.conf for parameters
         Node(
             package='kaertei_drone',
             executable='gpio_control_node',
             name='gpio_controller',
-            output='screen',
-            parameters=[
-                {'status_led_pin': 21},
-                {'error_led_pin': 20}, 
-                {'emergency_stop_pin': 16}
-            ]
+            output='screen'
+            # No parameters here - reads from hardware_config.conf
         )
     ])
     
@@ -134,15 +115,13 @@ def generate_launch_description():
     vision_group = GroupAction([
         
         # Unified Vision System - YOLOv8 object detection
+        # Now uses centralized hardware_config.conf for parameters
         Node(
             package='kaertei_drone',
             executable='unified_vision_system',
             name='vision_system',
             output='screen',
             parameters=[
-                {'confidence_threshold': 0.6},
-                {'alignment_tolerance': 25},
-                {'models_path': '/home/vanszs/ros/Dirgagah-KAERTEI/kaertei_drone/models'},
                 {'debug_visualization': LaunchConfiguration('debug_mode')}
             ]
         )
@@ -168,30 +147,14 @@ def generate_launch_description():
         ),
         
         # GPS Waypoint Navigator - 5 waypoint navigation
+        # Uses centralized hardware_config.conf for parameters
+        # NOTE: Waypoints 1-5 retrieved from PX4/ArduPilot after successful bucket drop
         Node(
             package='kaertei_drone',
             executable='gps_waypoint_monitor',
             name='gps_navigator',
-            output='screen',
-            parameters=[
-                {'waypoint_1_lat': -6.365000},
-                {'waypoint_1_lon': 106.825000},
-                {'waypoint_1_alt': 30.0},
-                {'waypoint_2_lat': -6.364500},
-                {'waypoint_2_lon': 106.825500},
-                {'waypoint_2_alt': 30.0},
-                {'waypoint_3_lat': -6.364000},
-                {'waypoint_3_lon': 106.826000},
-                {'waypoint_3_alt': 30.0},
-                {'waypoint_4_lat': -6.363500},
-                {'waypoint_4_lon': 106.826500},
-                {'waypoint_4_alt': 30.0},
-                {'waypoint_5_lat': -6.365500},
-                {'waypoint_5_lon': 106.824500},
-                {'waypoint_5_alt': 30.0},
-                {'waypoint_reached_threshold': 3.0},
-                {'gps_accuracy_threshold': 2.0}
-            ]
+            output='screen'
+            # No parameters here - reads from hardware_config.conf
         ),
         
         # Flight State Monitor - System health & telemetry
@@ -255,6 +218,20 @@ def generate_launch_description():
     # MAVROS CONNECTION (DELAYED START)
     # ===========================================
     
+    # Import hardware config directly in launch file to configure MAVROS
+    import configparser
+    from pathlib import Path
+    
+    # Load hardware config for MAVROS connection
+    config = configparser.ConfigParser()
+    config_file = str(Path(__file__).parent.parent) + "/config/hardware_config.conf"
+    config.read(config_file)
+    
+    # Get PX4 connection parameters from config
+    px4_port = config.get('flight_controller', 'connection_port', fallback='/dev/ttyUSB0')
+    px4_baud = config.get('flight_controller', 'baud_rate', fallback='57600')
+    px4_url = f"{px4_port}:{px4_baud}"
+    
     # Start MAVROS after other nodes are ready
     mavros_node = TimerAction(
         period=3.0,  # Wait 3 seconds for other nodes
@@ -265,7 +242,7 @@ def generate_launch_description():
                 name='mavros',
                 output='screen',
                 parameters=[
-                    {'fcu_url': '/dev/ttyUSB0:57600'},  # Update based on hardware
+                    {'fcu_url': px4_url},  # From hardware_config.conf
                     {'gcs_url': ''},
                     {'target_system_id': 1},
                     {'target_component_id': 1},

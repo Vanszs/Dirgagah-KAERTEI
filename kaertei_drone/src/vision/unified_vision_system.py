@@ -26,6 +26,9 @@ except ImportError:
     YOLO_AVAILABLE = False
     print("❌ ultralytics not installed. Run: pip install ultralytics")
 
+# Import centralized hardware config
+from ..hardware_config import HardwareConfig
+
 class VisionSystem(Node):
     """
     Unified Vision System untuk semua kebutuhan computer vision:
@@ -37,31 +40,32 @@ class VisionSystem(Node):
     def __init__(self):
         super().__init__('vision_system')
         
-        # Load YOLO models
-        self.models_path = Path(__file__).parent.parent / 'models'
-        self.models_path.mkdir(exist_ok=True)
+        # Load centralized hardware configuration
+        self.hardware_config = HardwareConfig()
         
+        # Load YOLO models from config
         self.models = {}
         self.load_yolo_models()
         
-        # Camera configuration
+        # Camera configuration from config
         self.camera_type = "front"  # Default
-        self.camera_index = 0
+        self.camera_index = self.hardware_config.get_front_camera_index()
         self.camera_enabled = True
         
         # Initialize camera
+        camera_resolution = self.hardware_config.get_camera_resolution()
         self.cap = cv2.VideoCapture(self.camera_index)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, camera_resolution[0])
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, camera_resolution[1])
         
         # CV Bridge
         self.bridge = CvBridge()
         
-        # Detection parameters
-        self.confidence_threshold = 0.6
-        self.alignment_tolerance = 25  # pixels dari center
-        self.screen_center_x = 320  # 640/2
-        self.screen_center_y = 240  # 480/2
+        # Detection parameters from config
+        self.confidence_threshold = self.hardware_config.get_detection_confidence()
+        self.alignment_tolerance = self.hardware_config.get_alignment_tolerance()
+        self.screen_center_x = camera_resolution[0] // 2
+        self.screen_center_y = camera_resolution[1] // 2
         
         # Current detection results
         self.current_detections = []
@@ -84,40 +88,37 @@ class VisionSystem(Node):
         # Processing timer
         self.timer = self.create_timer(0.1, self.process_frame)  # 10 FPS
         
-        self.get_logger().info("🎯 Vision System initialized")
+        self.get_logger().info("🎯 Vision System initialized with centralized config")
         
     def load_yolo_models(self):
-        """Load YOLO models untuk berbagai kebutuhan"""
+        """Load YOLO models from centralized config"""
         if not YOLO_AVAILABLE:
             self.get_logger().error("❌ YOLOv8 not available!")
             return
             
         try:
-            # Model paths (letakkan file .pt atau .onnx di sini)
-            model_configs = {
-                'general': 'yolov8n.pt',  # General object detection
-                'exit_gate': 'exit_gate_custom.pt',  # Custom untuk exit gate (optional)
-                'objects': 'objects_custom.pt',  # Custom untuk objects (optional)
-                'dropzone': 'dropzone_custom.pt'  # Custom untuk dropzone (optional)
-            }
+            # Get model paths from centralized config
+            model_paths = self.hardware_config.get_yolo_model_paths()
             
-            for model_name, model_file in model_configs.items():
-                model_path = self.models_path / model_file
-                
-                # Cek jika custom model exist, jika tidak gunakan general
-                if not model_path.exists():
-                    if model_name != 'general':
-                        self.get_logger().warn(f"⚠️ Custom model {model_file} not found, using general model")
-                        self.models[model_name] = self.models.get('general')
-                        continue
-                    else:
-                        # Download general model jika tidak ada
-                        self.get_logger().info(f"📥 Downloading {model_file}...")
-                
+            for model_name, model_path in model_paths.items():
                 try:
-                    model = YOLO(str(model_path) if model_path.exists() else model_file)
-                    self.models[model_name] = model
-                    self.get_logger().info(f"✅ Loaded {model_name} model: {model_file}")
+                    if model_path.exists():
+                        model = YOLO(str(model_path))
+                        self.models[model_name] = model
+                        self.get_logger().info(f"✅ Loaded {model_name} model: {model_path}")
+                    else:
+                        # Try to download default model if not found
+                        if model_name == 'general':
+                            self.get_logger().info(f"📥 Downloading default model...")
+                            model = YOLO('yolov8n.pt')  # Will download if not exists
+                            self.models[model_name] = model
+                            self.get_logger().info(f"✅ Downloaded and loaded {model_name} model")
+                        else:
+                            self.get_logger().warn(f"⚠️ Model {model_name} not found: {model_path}")
+                            # Use general model as fallback
+                            if 'general' in self.models:
+                                self.models[model_name] = self.models['general']
+                                self.get_logger().info(f"🔄 Using general model for {model_name}")
                 except Exception as e:
                     self.get_logger().error(f"❌ Failed to load {model_name} model: {e}")
                     

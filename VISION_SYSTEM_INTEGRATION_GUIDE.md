@@ -1,20 +1,23 @@
 # KAERTEI 2025 FAIO - Vision System Integration Guide
 
 ## Overview
-Sistem vision KAERTEI 2025 telah direorganisasi menjadi modular per divisi/fungsi untuk memudahkan debugging dan pengembangan. Sistem ini terintegrasi dengan mission flow 3-waypoint sederhana sesuai permintaan.
+Sistem vision KAERTEI 2025 telah direorganisasi untuk misi 12-checkpoint dengan konfigurasi 2 kamera (front + back). Top kamera sementara tidak tersedia.
 
-## Mission Flow - Simple 3 Waypoint System
+## Mission Flow - 12 Checkpoint System
 
-### Flow Diagram
+### Corrected Flow:
 ```
-Exit Gate → WP1 (search+pickup) → WP2 (drop) → WP3 (finish)
+CP 1-2: INIT → TAKEOFF
+CP 3-6: SEARCH ITEMS → DROP ITEMS (no fixed waypoints, follow checkpoint logic)  
+CP 7: EXIT GATE → OUTDOOR TRANSITION
+CP 8-12: PX4 WAYPOINTS (retrieved after drop completion)
 ```
 
-### Detailed Flow:
-1. **Exit Gate**: Keluar dari exit gate dan naik ke 3m
-2. **WP1**: Terbang ke waypoint 1, mencari barang sambil maju, jika ketemu maka turun dan ambil
-3. **WP2**: Terbang ke waypoint 2 untuk logic drop
-4. **WP3**: Terbang ke waypoint 3 (final, tanpa logic tambahan)
+### Key Changes:
+- **Pickup/Drop**: NO fixed waypoints, follows checkpoint detection logic
+- **Camera Config**: Only front (index 0) + back (index 2) cameras
+- **Waypoint 1-5**: Retrieved from PX4/ArduPilot AFTER successful bucket drop
+- **Exit Gate**: Uses front camera (not top camera)
 
 ## Vision System Architecture
 
@@ -49,13 +52,13 @@ vision/
 ```bash
 # Publishers
 /vision/detection_mode        # Current detection mode
-/vision/camera_switch        # Camera switching control
+/vision/camera_switch        # Camera switching control (front/back only)
 /vision/aligned              # General alignment status
 /vision/alignment_error      # Alignment error vector
 
 # Subscribers  
 /vision/front/image          # Front camera feed
-/vision/bottom/image         # Bottom camera feed
+/vision/back/image           # Back camera feed (replaces bottom)
 /vision/detection_mode       # Detection mode commands
 ```
 
@@ -67,6 +70,7 @@ vision/
 - Multiple detection methods (YOLO, shape-based, edge-based)
 - Portal center alignment untuk safe passage
 - Gate dimension validation
+- **UPDATE**: Uses FRONT camera instead of top camera
 
 **Detection Methods**:
 1. **YOLO Detection**: Deteksi menggunakan YOLOv8 untuk object "door", "gate", "entrance"
@@ -77,6 +81,7 @@ vision/
 - Mengatur logic YOLO untuk exit gate agar keluar ditengah-tengah kotak portal exit
 - Center alignment threshold dapat dikonfigurasi
 - Real-time alignment error calculation
+- **NOTE**: Now uses front camera for exit gate detection
 
 **ROS Topics**:
 ```bash
@@ -87,7 +92,7 @@ vision/
 /vision/exit_gate/debug       # Debug visualization
 
 # Subscribers
-/vision/front/image           # Front camera feed
+/vision/front/image           # Front camera feed (changed from top)
 /vision/exit_gate/enable      # Enable/disable detection
 ```
 
@@ -121,7 +126,8 @@ vision/
 /mission/command             # Mission commands (forward search)
 
 # Subscribers
-/vision/bottom/image         # Bottom camera feed
+/vision/front/image          # Front camera feed (primary)
+/vision/back/image           # Back camera feed (secondary)
 /vision/item/enable          # Enable/disable detection
 ```
 
@@ -155,7 +161,8 @@ vision/
 /vision/dropzone/debug        # Debug visualization
 
 # Subscribers
-/vision/front/image           # Front camera feed
+/vision/front/image           # Front camera feed (primary)
+/vision/back/image            # Back camera feed (secondary)  
 /vision/dropzone/enable       # Enable/disable detection
 ```
 
@@ -209,43 +216,40 @@ def check_alignment(self, object_center, image_shape):
 - Real-time error calculation dan feedback
 - Integration dengan movement commands
 
-## Simple 3-Waypoint Mission System
+## 12-Checkpoint Mission System
 
 ### Mission Node
-**File**: `kaertei_drone/mission/simple_3waypoint_mission.py`
+**File**: `kaertei_drone/mission/checkpoint_mission_mavros.py`
 
 **Features**:
-- Simplified mission flow sesuai request
+- Complete 12-checkpoint mission flow
 - Vision system integration
 - PX4 waypoint system integration
 - Automatic checkpoint progression
+- **KEY**: Pickup/drop follow checkpoint logic (no fixed waypoints)
 
 ### Mission Checkpoints
 ```python
-class Simple3WaypointCheckpoint(Enum):
-    # Initial phase
+class CheckpointMission(Enum):
+    # Phase 1: Initialization
     INIT = "INIT"
     TAKEOFF = "TAKEOFF"
-    EXIT_GATE_SEARCH = "EXIT_GATE_SEARCH"
-    EXIT_GATE_ALIGN = "EXIT_GATE_ALIGN"
-    EXIT_GATE_PASS = "EXIT_GATE_PASS"
-    ASCEND_TO_3M = "ASCEND_TO_3M"
     
-    # WP1: Search and pickup
-    NAVIGATE_TO_WP1 = "NAVIGATE_TO_WP1"
-    SEARCH_FORWARD_WP1 = "SEARCH_FORWARD_WP1"
-    ITEM_ALIGN_WP1 = "ITEM_ALIGN_WP1"
-    PICKUP_WP1 = "PICKUP_WP1"
+    # Phase 2: Indoor Mission (no fixed waypoints - follow detection logic)
+    SEARCH_ITEM_1_FRONT = "SEARCH_ITEM_1_FRONT"
+    SEARCH_ITEM_2_BACK = "SEARCH_ITEM_2_BACK"  
+    DROP_ITEM_1 = "DROP_ITEM_1"
+    DROP_ITEM_2 = "DROP_ITEM_2"
     
-    # WP2: Drop
-    NAVIGATE_TO_WP2 = "NAVIGATE_TO_WP2"
-    DROPZONE_SEARCH_WP2 = "DROPZONE_SEARCH_WP2"
-    DROPZONE_ALIGN_WP2 = "DROPZONE_ALIGN_WP2"
-    DROP_WP2 = "DROP_WP2"
+    # Phase 3: Exit & Outdoor Transition
+    FIND_EXIT = "FIND_EXIT"
+    ASCEND_TO_OUTDOOR = "ASCEND_TO_OUTDOOR"
     
-    # WP3: Finish (no additional logic)
-    NAVIGATE_TO_WP3 = "NAVIGATE_TO_WP3"
-    LAND_WP3 = "LAND_WP3"
+    # Phase 4: GPS Navigation (waypoints retrieved from PX4 after drop)
+    GET_PX4_WAYPOINTS = "GET_PX4_WAYPOINTS"
+    AUTO_WAYPOINT_1 = "AUTO_WAYPOINT_1"
+    AUTO_WAYPOINT_2 = "AUTO_WAYPOINT_2"
+    AUTO_WAYPOINT_3 = "AUTO_WAYPOINT_3"
     
     COMPLETED = "COMPLETED"
 ```
@@ -272,9 +276,9 @@ pip install opencv-python
 
 ### 3. Launch System
 
-#### Complete 3-Waypoint System
+#### Complete 12-Checkpoint System
 ```bash
-ros2 launch kaertei_drone simple_3waypoint_system.launch.py
+ros2 launch kaertei_drone kaertei_12checkpoint_system.launch.py
 ```
 
 #### Vision System Only
@@ -296,8 +300,11 @@ ros2 run kaertei_drone item_detector
 # Dropzone detector
 ros2 run kaertei_drone dropzone_detector_new
 
-# Simple mission system
+# Simple mission system (for development)
 ros2 run kaertei_drone simple_3waypoint_mission
+
+# Main 12-checkpoint mission system
+ros2 run kaertei_drone checkpoint_mission_mavros
 ```
 
 ## Configuration
@@ -347,14 +354,21 @@ ros2 topic echo /mission/checkpoint
 ros2 topic echo /vision/exit_gate/detected
 ros2 topic echo /vision/item/detected  
 ros2 topic echo /vision/dropzone/detected
+
+# Monitor PX4 waypoint status (after drop completion)
+ros2 topic echo /mission/px4_waypoints
 ```
 
 ### 3. Debug Visualization
 ```bash
-# View debug images
+# View debug images (2 cameras only)
 ros2 run rqt_image_view rqt_image_view /vision/exit_gate/debug
 ros2 run rqt_image_view rqt_image_view /vision/item/debug
 ros2 run rqt_image_view rqt_image_view /vision/dropzone/debug
+
+# Monitor camera feeds
+ros2 run rqt_image_view rqt_image_view /vision/front/image
+ros2 run rqt_image_view rqt_image_view /vision/back/image
 ```
 
 ### 4. Manual Control

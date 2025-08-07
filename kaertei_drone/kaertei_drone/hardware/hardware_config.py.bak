@@ -15,7 +15,26 @@ class HardwareConfig:
     """
     
     def __init__(self, config_file=None):
-        self.config = configparser.ConfigParser()
+        self.config = con# ===========================================
+    # Utility Methods
+    # ===========================================
+    
+    def print_summary(self):
+        """Print configuration summary for verification"""
+        print("\n" + "="*50)
+        print("🚁 KAERTEI 2025 FAIO - Hardware Configuration")
+        print("="*50)
+        print(f"PX4 Connection: {self.get_px4_connection_string()}")
+        print(f"Front Camera: /dev/video{self.get_front_camera_index()}")
+        print(f"Back Camera: /dev/video{self.get_back_camera_index()}")
+        print(f"Top Camera: /dev/video{self.get_top_camera_index()}")
+        print(f"Front Magnet Pin: GPIO {self.get_front_magnet_pin()}")
+        print(f"Back Magnet Pin: GPIO {self.get_back_magnet_pin()}")
+        print(f"Takeoff Altitude: {self.get_takeoff_altitude()}m")
+        print(f"NOTE: All waypoints are fetched from PX4 Flight Controller")
+        print("="*50 + "\n")
+    
+    def validate_config(self):er()
         
         # Default config file path
         if config_file is None:
@@ -417,16 +436,16 @@ class HardwareConfig:
         print("🚁 KAERTEI 2025 FAIO - Hardware Configuration")
         print("="*50)
         print(f"PX4 Connection: {self.get_px4_connection_string()}")
-        print(f"Front Camera: /dev/video{self.get_front_camera_index()}")
-        print(f"Back Camera: /dev/video{self.get_back_camera_index()}")
-        print(f"Top Camera: /dev/video{self.get_top_camera_index()}")
-        print(f"Front Magnet Pin: GPIO {self.get_front_magnet_pin()}")
-        print(f"Back Magnet Pin: GPIO {self.get_back_magnet_pin()}")
-        print(f"Takeoff Altitude: {self.get_takeoff_altitude()}m")
-        print(f"NOTE: All waypoints are fetched from PX4 Flight Controller")
-        print("="*50 + "\n")
+    print(f"Front Camera: /dev/video{self.get_front_camera_index()}")
+    print(f"Back Camera: /dev/video{self.get_back_camera_index()}")
+    print(f"Top Camera: /dev/video{self.get_top_camera_index()}")
+    print(f"Front Magnet Pin: GPIO {self.get_front_magnet_pin()}")
+    print(f"Back Magnet Pin: GPIO {self.get_back_magnet_pin()}")
+    print(f"Takeoff Altitude: {self.get_takeoff_altitude()}m")
+    print(f"NOTE: All waypoints are fetched from PX4 Flight Controller")
+    print("="*50 + "\n")
     
-    def validate_config(self):
+def validate_config(self):
         """Validate configuration and return list of issues"""
         issues = []
         

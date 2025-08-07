@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# KAERTEI 2025 FAIO - Main Launcher Script
-# Clean and organized structure
-# Usage: ./run_kaertei.sh [debug|auto] [checkpoint|simple]
+# KAERTEI 2025 FAIO - Main Launcher Script  
+# 12-Checkpoint Mission System Only
+# Usage: ./run_kaertei.sh [debug|auto]
 
-echo "🚁 KAERTEI 2025 FAIO - Main Launcher"
-echo "===================================="
+echo "🚁 KAERTEI 2025 FAIO - 12 Checkpoint Mission Launcher"
+echo "===================================================="
 
 # Set script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -13,11 +13,10 @@ cd "$SCRIPT_DIR"
 
 # Parse arguments
 MODE="${1:-debug}"        # debug or auto
-SYSTEM="${2:-checkpoint}" # checkpoint or simple
 
 echo "🔧 Configuration:"
 echo "   Mode: $MODE"
-echo "   System: $SYSTEM"
+echo "   Mission: 12-Checkpoint System"
 echo "   Directory: $SCRIPT_DIR"
 
 # Source ROS2 environment
@@ -38,21 +37,22 @@ fi
 # Source workspace
 source install/setup.bash
 
-# Launch appropriate system
-if [ "$SYSTEM" == "checkpoint" ]; then
-    echo "🎯 Launching 12 Checkpoint Mission System..."
-    if [ "$MODE" == "debug" ]; then
-        ros2 launch kaertei_drone kaertei_pi5_system.launch.py debug_mode:=true
-    else
-        ros2 launch kaertei_drone kaertei_pi5_system.launch.py debug_mode:=false
-    fi
+# Launch 12-Checkpoint Mission System
+echo "🎯 Launching 12-Checkpoint Mission System..."
+if [ "$MODE" == "debug" ]; then
+    echo "🐛 DEBUG MODE: Step-by-step checkpoint execution"
+    ros2 launch kaertei_drone kaertei_12checkpoint_system.launch.py debug_mode:=true auto_continue:=false
+elif [ "$MODE" == "auto" ]; then
+    echo "🤖 AUTONOMOUS MODE: Full mission execution"
+    ros2 launch kaertei_drone kaertei_12checkpoint_system.launch.py debug_mode:=false auto_continue:=true
 else
-    echo "🎯 Launching Simple 3-Waypoint System..."
-    if [ "$MODE" == "debug" ]; then
-        ros2 launch kaertei_drone simple_3waypoint_system.launch.py debug_mode:=true
-    else
-        ros2 launch kaertei_drone simple_3waypoint_system.launch.py debug_mode:=false
-    fi
+    echo "❌ Invalid mode: $MODE"
+    echo "Usage: $0 [debug|auto]"
+    echo ""
+    echo "Examples:"
+    echo "  $0 debug  # Manual step-by-step debugging"
+    echo "  $0 auto   # Full autonomous mission"
+    exit 1
 fi
 
 echo "🏁 Mission completed"

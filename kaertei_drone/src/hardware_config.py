@@ -19,7 +19,7 @@ class HardwareConfig:
         
         # Default config file path
         if config_file is None:
-            current_dir = Path(__file__).parent
+            current_dir = Path(__file__).parent.parent
             config_file = current_dir / "config" / "hardware_config.conf"
         
         # Load configuration
@@ -310,6 +310,25 @@ class HardwareConfig:
         """Get alignment tolerance in pixels"""
         return self.config.getint('vision', 'alignment_tolerance_pixels', fallback=30)
     
+    def get_models_directory(self):
+        """Get YOLO models directory path"""
+        models_dir = self.config.get('vision', 'models_directory', fallback='/home/vanszs/ros/Dirgagah-KAERTEI/kaertei_drone/models')
+        return Path(models_dir)
+    
+    def get_yolo_model_paths(self):
+        """Get all YOLO model paths as dict"""
+        models_dir = self.get_models_directory()
+        return {
+            'general': models_dir / self.config.get('vision', 'general_model', fallback='yolov8n.pt'),
+            'exit_gate': models_dir / self.config.get('vision', 'exit_gate_model', fallback='yolov8n.pt'),
+            'objects': models_dir / self.config.get('vision', 'objects_model', fallback='yolov8n.pt'),
+            'dropzone': models_dir / self.config.get('vision', 'dropzone_model', fallback='yolov8n.pt')
+        }
+    
+    def get_debug_visualization(self):
+        """Get debug visualization setting"""
+        return self.config.getboolean('vision', 'debug_visualization', fallback=True)
+    
     def get_color_ranges(self, color='red'):
         """Get HSV color detection ranges"""
         return {
@@ -424,6 +443,12 @@ class HardwareConfig:
         print(f"Back Magnet Pin: GPIO {self.get_back_magnet_pin()}")
         print(f"Takeoff Altitude: {self.get_takeoff_altitude()}m")
         
+        print(f"Models Directory: {self.get_models_directory()}")
+        yolo_models = self.get_yolo_model_paths()
+        for model_type, model_path in yolo_models.items():
+            status = "✅" if model_path.exists() else "❌"
+            print(f"YOLO {model_type.title()}: {model_path} {status}")
+        
         pickup_wp = self.get_outdoor_pickup_waypoint()
         drop_wp = self.get_outdoor_drop_waypoint()
         print(f"Pickup Waypoint: {pickup_wp['latitude']:.6f}, {pickup_wp['longitude']:.6f}")
@@ -462,6 +487,17 @@ class HardwareConfig:
         for name, pin in gpio_pins.items():
             if not (0 <= pin <= 27):
                 issues.append(f"❌ Invalid GPIO pin for {name}: {pin} (should be 0-27)")
+        
+        # Check YOLO model files
+        yolo_models = self.get_yolo_model_paths()
+        for model_type, model_path in yolo_models.items():
+            if not model_path.exists():
+                issues.append(f"⚠️  YOLO {model_type} model not found: {model_path}")
+        
+        # Check models directory exists
+        models_dir = self.get_models_directory()
+        if not models_dir.exists():
+            issues.append(f"❌ Models directory not found: {models_dir}")
         
         return issues
 

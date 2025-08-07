@@ -18,6 +18,9 @@ from std_msgs.msg import String, Bool, Float32
 from geometry_msgs.msg import Point
 from cv_bridge import CvBridge
 
+# Import hardware configuration for centralized settings
+from ..hardware.hardware_config import HardwareConfig
+
 # Import YOLOv8 dari ultralytics
 try:
     from ultralytics import YOLO
@@ -37,31 +40,41 @@ class VisionSystem(Node):
     def __init__(self):
         super().__init__('vision_system')
         
-        # Load YOLO models
-        self.models_path = Path(__file__).parent.parent / 'models'
+        # Load hardware configuration
+        self.hw_config = HardwareConfig()
+        
+        # Load YOLO models from central configuration
+        models_dir = self.hw_config.config.get('vision', 'models_directory', 
+                                             fallback='/home/vanszs/ros/Dirgagah-KAERTEI/kaertei_drone/models')
+        self.models_path = Path(models_dir)
         self.models_path.mkdir(exist_ok=True)
         
         self.models = {}
         self.load_yolo_models()
         
-        # Camera configuration
+        # Camera configuration from hardware config
         self.camera_type = "front"  # Default
-        self.camera_index = 0
+        self.camera_index = self.hw_config.get_front_camera_index()
         self.camera_enabled = True
         
-        # Initialize camera
+        # Initialize camera with settings from config
         self.cap = cv2.VideoCapture(self.camera_index)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        width, height = self.hw_config.get_camera_resolution()
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        self.cap.set(cv2.CAP_PROP_FPS, self.hw_config.get_camera_fps())
         
         # CV Bridge
         self.bridge = CvBridge()
         
-        # Detection parameters
-        self.confidence_threshold = 0.6
-        self.alignment_tolerance = 25  # pixels dari center
-        self.screen_center_x = 320  # 640/2
-        self.screen_center_y = 240  # 480/2
+        # Detection parameters from hardware config
+        self.confidence_threshold = self.hw_config.get_detection_confidence()
+        self.alignment_tolerance = self.hw_config.get_alignment_tolerance()
+        
+        # Calculate screen center from camera resolution
+        width, height = self.hw_config.get_camera_resolution()
+        self.screen_center_x = width // 2
+        self.screen_center_y = height // 2
         
         # Current detection results
         self.current_detections = []
@@ -93,13 +106,15 @@ class VisionSystem(Node):
             return
             
         try:
-            # Model paths (letakkan file .pt atau .onnx di sini)
+            # Get model paths from hardware config
             model_configs = {
-                'general': 'yolov8n.pt',  # General object detection
-                'exit_gate': 'exit_gate_custom.pt',  # Custom untuk exit gate (optional)
-                'objects': 'objects_custom.pt',  # Custom untuk objects (optional)
-                'dropzone': 'dropzone_custom.pt'  # Custom untuk dropzone (optional)
+                'general': self.hw_config.config.get('vision', 'general_model', fallback='yolov8n.pt'),
+                'exit_gate': self.hw_config.config.get('vision', 'exit_gate_model', fallback='yolov8n.pt'),
+                'objects': self.hw_config.config.get('vision', 'objects_model', fallback='yolov8n.pt'),
+                'dropzone': self.hw_config.config.get('vision', 'dropzone_model', fallback='yolov8n.pt')
             }
+            
+            self.get_logger().info(f"📦 Using models directory: {self.models_path}")
             
             for model_name, model_file in model_configs.items():
                 model_path = self.models_path / model_file

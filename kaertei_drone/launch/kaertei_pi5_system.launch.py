@@ -32,10 +32,10 @@ def generate_launch_description():
         description='Run in simulation mode (no hardware)'
     )
 
-    # Core mission control node - USE SIMPLIFIED SYSTEM
+    # Core mission control node - USE 12-CHECKPOINT SYSTEM
     mission_node = Node(
         package='kaertei_drone',
-        executable='simplified_mission_control',
+        executable='checkpoint_mission_mavros',
         name='mission_control',
         output='screen',
         parameters=[
