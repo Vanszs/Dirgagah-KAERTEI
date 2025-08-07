@@ -81,6 +81,16 @@ class HardwareConfig:
         # USB camera biasanya: 0, 2, 4 (tergantung urutan colok)
         return self.config.getint('cameras', 'front_camera_index', fallback=0)
     
+    def get_front_bottom_camera_index(self):
+        """Get front bottom camera device index (alternative name for front camera)"""
+        # Same as front camera - provides compatibility with different naming conventions
+        return self.get_front_camera_index()
+        
+    def get_front_nav_camera_index(self):
+        """Get front navigation camera device index (alternative name for front camera)"""
+        # Same as front camera - provides compatibility with different naming conventions
+        return self.get_front_camera_index()
+    
     def get_back_camera_index(self):
         """Get back camera device index"""
         # sesuaikan ini - WAJIB CEK: v4l2-ctl --list-devices sebelum kompetisi
@@ -334,19 +344,29 @@ class HardwareConfig:
         # sesuaikan ini - CRITICAL: WAJIB UPDATE koordinat sesuai lokasi kompetisi!
         # Koordinat default Jakarta, HARUS DIGANTI dengan lokasi kompetisi asli!
         return {
-            'latitude': self.config.getfloat('waypoints', 'outdoor_pickup_latitude', fallback=-6.365000),
-            'longitude': self.config.getfloat('waypoints', 'outdoor_pickup_longitude', fallback=106.825000),
-            'altitude': self.config.getfloat('waypoints', 'outdoor_pickup_altitude', fallback=30.0)
+            'lat': self.config.getfloat('waypoints', 'outdoor_pickup_latitude', fallback=-6.365000),
+            'lon': self.config.getfloat('waypoints', 'outdoor_pickup_longitude', fallback=106.825000),
+            'alt': self.config.getfloat('waypoints', 'outdoor_pickup_altitude', fallback=30.0)
         }
+        
+    def get_outdoor_pickup_coords(self):
+        """Get outdoor pickup GPS coordinates (alternative method name)"""
+        # Provides compatibility with different naming conventions
+        return self.get_outdoor_pickup_waypoint()
+        
+    def get_outdoor_drop_coords(self):
+        """Get outdoor drop GPS coordinates (alternative method name)"""
+        # Provides compatibility with different naming conventions
+        return self.get_outdoor_drop_waypoint()
     
     def get_outdoor_drop_waypoint(self):
         """Get outdoor drop GPS coordinates"""
         # sesuaikan ini - CRITICAL: WAJIB UPDATE koordinat sesuai lokasi kompetisi!
         # Koordinat default Jakarta, HARUS DIGANTI dengan lokasi kompetisi asli!
         return {
-            'latitude': self.config.getfloat('waypoints', 'outdoor_drop_latitude', fallback=-6.364500),
-            'longitude': self.config.getfloat('waypoints', 'outdoor_drop_longitude', fallback=106.825500),
-            'altitude': self.config.getfloat('waypoints', 'outdoor_drop_altitude', fallback=30.0)
+            'lat': self.config.getfloat('waypoints', 'outdoor_drop_latitude', fallback=-6.364500),
+            'lon': self.config.getfloat('waypoints', 'outdoor_drop_longitude', fallback=106.825500),
+            'alt': self.config.getfloat('waypoints', 'outdoor_drop_altitude', fallback=30.0)
         }
     
     def get_gps_thresholds(self):

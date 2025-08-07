@@ -28,8 +28,9 @@ class TopicAdaptersNode(Node):
             depth=5
         )
         
+        # Changed to BEST_EFFORT to match flight_state_monitor.py for compatibility
         self.control_qos = QoSProfile(
-            reliability=ReliabilityPolicy.RELIABLE,
+            reliability=ReliabilityPolicy.BEST_EFFORT,
             history=HistoryPolicy.KEEP_LAST,
             depth=10
         )

@@ -64,7 +64,7 @@ setup_custom() {
     read -p "Enter waypoints (comma-separated): " waypoints
     
     python3 -c "
-from drone_mvp.px4_waypoint_config import PX4WaypointConfig
+from kaertei_drone.navigation.px4_waypoint_config import PX4WaypointConfig
 config = PX4WaypointConfig()
 waypoints = [int(x.strip()) for x in '$waypoints'.split(',')]
 if config.update_sequence_waypoints('$seq_name', waypoints):

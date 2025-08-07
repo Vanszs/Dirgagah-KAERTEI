@@ -25,20 +25,20 @@ from ..hardware.hardware_config import HardwareConfig
 class MissionCheckpoint(Enum):
     """12 Checkpoint Mission System - KAERTEI 2025 FAIO"""
     # Phase 1: Initialization & Indoor Search (CP 1-6)
-    CP1_INIT_ARM = "CP1_INIT_ARM"
-    CP2_TAKEOFF_1M = "CP2_TAKEOFF_1M"
-    CP3_SEARCH_ITEM1 = "CP3_SEARCH_ITEM1"
-    CP4_SEARCH_ITEM2_TURN = "CP4_SEARCH_ITEM2_TURN"
-    CP5_DROP_ITEM1 = "CP5_DROP_ITEM1"
-    CP6_DROP_ITEM2 = "CP6_DROP_ITEM2"
+    CP1_INIT_ARM = "CP1_INIT_ARM"               # Inisialisasi dan arming drone
+    CP2_TAKEOFF_1M = "CP2_TAKEOFF_1M"           # Takeoff ke ketinggian 1m
+    CP3_SEARCH_ITEM1 = "CP3_SEARCH_ITEM1"       # Mencari dan mengambil item pertama
+    CP4_SEARCH_ITEM2_TURN = "CP4_SEARCH_ITEM2_TURN" # Berputar dan mencari item kedua
+    CP5_DROP_ITEM1 = "CP5_DROP_ITEM1"           # Menjatuhkan item pertama
+    CP6_DROP_ITEM2 = "CP6_DROP_ITEM2"           # Menjatuhkan item kedua
     
     # Phase 2: GPS Navigation & Outdoor Mission (CP 7-12)
-    CP7_GPS_WP1_3 = "CP7_GPS_WP1_3"
-    CP8_SEARCH_ITEM3 = "CP8_SEARCH_ITEM3"
-    CP9_DIRECT_WP4 = "CP9_DIRECT_WP4"
-    CP10_SEARCH_DROP_ITEM3 = "CP10_SEARCH_DROP_ITEM3"
-    CP11_GPS_WP5 = "CP11_GPS_WP5"
-    CP12_FINAL_DESCENT_DISARM = "CP12_FINAL_DESCENT_DISARM"
+    CP7_GPS_WP1_3 = "CP7_GPS_WP1_3"             # Navigasi ke GPS waypoint 1-3
+    CP8_SEARCH_ITEM3 = "CP8_SEARCH_ITEM3"       # Mencari dan mengambil item ketiga
+    CP9_DIRECT_WP4 = "CP9_DIRECT_WP4"           # Terbang langsung ke waypoint 4
+    CP10_SEARCH_DROP_ITEM3 = "CP10_SEARCH_DROP_ITEM3" # Mencari dropzone dan menjatuhkan item ketiga
+    CP11_GPS_WP5 = "CP11_GPS_WP5"               # Navigasi ke GPS waypoint 5
+    CP12_LANDING_DISARM = "CP12_LANDING_DISARM" # Landing dan disarm
     
     # Mission States
     COMPLETED = "COMPLETED"

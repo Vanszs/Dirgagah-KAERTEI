@@ -49,7 +49,7 @@ def generate_launch_description():
     
     mission_control_node = Node(
         package='kaertei_drone',
-        executable='checkpoint_12_mission_node',
+        executable='checkpoint_mission_mavros',
         name='mission_control',
         output='screen',
         parameters=[
