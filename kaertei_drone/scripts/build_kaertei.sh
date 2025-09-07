@@ -63,8 +63,8 @@ EOF
     echo ""
     echo "🚀 Usage:"
     echo "   ./setup_kaertei.sh                    # Setup environment"
-    echo "   ./run_kaertei.sh debug checkpoint     # Launch debug mode"
-    echo "   ./run_kaertei.sh auto simple          # Launch simple mode"
+    echo "   ./run_kaertei.sh debug                # Launch debug mode"
+    echo "   ./run_kaertei.sh auto                 # Launch autonomous mode"
     
 else
     echo "❌ Build failed!"

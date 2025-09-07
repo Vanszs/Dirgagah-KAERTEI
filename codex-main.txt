@@ -20,7 +20,8 @@ Topik/Interface Target (to keep consistent)
 
 Build/Run Baseline (Foxy)
 - Source: `/opt/ros/foxy/setup.bash` then build with colcon.
-- Run launcher: `kaertei_drone/run_kaertei.sh [debug|auto]` (updated to Foxy).
+- Build: `./kaertei_drone/scripts/build_kaertei.sh`
+- Run: `./kaertei_drone/scripts/run_kaertei.sh [debug|auto]`.
 
 Open Items to remember
 - Camera indices: unknown on Jetson Nano. Update here once discovered (e.g., front_bottom=/dev/video0, back=/dev/video2, front_nav=/dev/video4). If indices change during testing, update this file.
@@ -29,3 +30,4 @@ Open Items to remember
 Change Log
 - 2025-09-07: Switch baseline to Ubuntu 20.04 + ROS 2 Foxy, no Docker; created minimal Foxy installer and updated build/run.
 - 2025-09-07: Created local git branch `no-docker-foxy`. Remote push pending (credentials required).
+- 2025-09-07: Consolidated all shell scripts into `kaertei_drone/scripts/`; removed legacy Humble/22.04 and Docker-related scripts.
