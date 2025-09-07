@@ -28,3 +28,4 @@ Open Items to remember
 
 Change Log
 - 2025-09-07: Switch baseline to Ubuntu 20.04 + ROS 2 Foxy, no Docker; created minimal Foxy installer and updated build/run.
+- 2025-09-07: Created local git branch `no-docker-foxy`. Remote push pending (credentials required).

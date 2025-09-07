@@ -42,12 +42,12 @@ cd Dirgagah-KAERTEI
 ### **Langkah 2: Install ROS 2 Foxy + Dependensi**
 ```bash
 # Minimal installer untuk Ubuntu 20.04 (tanpa Docker)
-./install_foxy.sh
+./kaertei_drone/scripts/install_foxy.sh
 ```
 
 ### **Langkah 3: Build Workspace**
 ```bash
-./kaertei_drone/build_kaertei.sh
+./kaertei_drone/scripts/build_kaertei.sh
 ```
 
 **🎉 Selesai! System siap digunakan.**
@@ -58,10 +58,10 @@ cd Dirgagah-KAERTEI
 
 ### **📋 Perintah Utama (Foxy)**
 
-- Install: `./install_foxy.sh`
-- Build: `./kaertei_drone/build_kaertei.sh`
-- Debug: `./kaertei_drone/run_kaertei.sh debug`
-- Run: `./kaertei_drone/run_kaertei.sh auto`
+- Install: `./kaertei_drone/scripts/install_foxy.sh`
+- Build: `./kaertei_drone/scripts/build_kaertei.sh`
+- Debug: `./kaertei_drone/scripts/run_kaertei.sh debug`
+- Run: `./kaertei_drone/scripts/run_kaertei.sh auto`
 
 ### **🚀 Menjalankan Mission**
 

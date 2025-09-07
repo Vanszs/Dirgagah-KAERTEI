@@ -96,6 +96,5 @@ setup_permissions
 
 ok "Installation complete. Next:"
 echo "  1) New terminal or: source /opt/ros/$ROS_DISTRO/setup.bash"
-echo "  2) Build:   ./kaertei_drone/build_kaertei.sh"
-echo "  3) Run:     ./kaertei_drone/run_kaertei.sh [debug|auto]"
-
+echo "  2) Build:   ./kaertei_drone/scripts/build_kaertei.sh"
+echo "  3) Run:     ./kaertei_drone/scripts/run_kaertei.sh [debug|auto]"

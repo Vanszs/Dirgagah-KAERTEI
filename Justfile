@@ -31,13 +31,13 @@ default:
 
 # Complete system setup (one command install)
 setup:
-    @echo "🚀 KAERTEI 2025 - Complete Ubuntu Setup"
-    @echo "======================================"
-    @cd "{{PROJECT_ROOT}}" && chmod +x install_kaertei.sh && ./install_kaertei.sh
+    @echo "🚀 KAERTEI — Foxy Setup (Ubuntu 20.04)"
+    @echo "====================================="
+    @cd "{{PROJECT_ROOT}}" && chmod +x kaertei_drone/scripts/install_foxy.sh && ./kaertei_drone/scripts/install_foxy.sh
 
 # Build ROS 2 workspace
 build:
-    cd {{KAERTEI_DRONE_DIR}} && bash -c "source /opt/ros/humble/setup.bash && ./build_kaertei.sh"
+    cd {{KAERTEI_DRONE_DIR}} && bash -c "source /opt/ros/foxy/setup.bash && ./scripts/build_kaertei.sh"
 
 # Clean and rebuild
 rebuild:
@@ -140,7 +140,7 @@ debug:
     @echo "📝 Instructions: Type 'next' + Enter to proceed"
     @echo ""
     @bash -c 'if [ ! -d "{{KAERTEI_DRONE_DIR}}/install" ]; then echo "🔨 Building workspace first..."; just build; fi'
-    @bash -c 'cd "{{KAERTEI_DRONE_DIR}}" && source install/setup.bash && echo "✅ KAERTEI workspace sourced" && ./run_kaertei.sh debug'
+    @bash -c 'cd "{{KAERTEI_DRONE_DIR}}" && source install/setup.bash && echo "✅ KAERTEI workspace sourced" && ./scripts/run_kaertei.sh debug'
 
 # Autonomous mission (full competition mode)
 run:
@@ -150,7 +150,7 @@ run:
     @echo "⚠️  WARNING: No manual intervention!"
     @echo ""
     @bash -c 'if [ ! -d "{{KAERTEI_DRONE_DIR}}/install" ]; then echo "🔨 Building workspace first..."; just build; fi'
-    @bash -c 'cd "{{KAERTEI_DRONE_DIR}}" && source install/setup.bash && echo "✅ KAERTEI workspace sourced" && ./run_kaertei.sh auto'
+    @bash -c 'cd "{{KAERTEI_DRONE_DIR}}" && source install/setup.bash && echo "✅ KAERTEI workspace sourced" && ./scripts/run_kaertei.sh auto'
 
 # Simulation test (safe testing)
 simulate:

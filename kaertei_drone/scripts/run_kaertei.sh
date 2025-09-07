@@ -7,8 +7,9 @@
 echo "🚁 KAERTEI 2025 FAIO - 12 Checkpoint Mission Launcher"
 echo "===================================================="
 
-# Set script directory
+# Set script and root directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$SCRIPT_DIR"
 
 # Parse arguments
@@ -24,9 +25,9 @@ echo "🔄 Setting up ROS2 environment (Foxy)..."
 source /opt/ros/foxy/setup.bash
 
 # Check if system is built
-if [ ! -d "install" ]; then
+if [ ! -d "$ROOT_DIR/install" ]; then
     echo "❌ System not built. Building now..."
-    ./build_kaertei.sh
+    "$SCRIPT_DIR/build_kaertei.sh"
     if [ $? -ne 0 ]; then
         echo "❌ Build failed. Exiting."
         exit 1
@@ -35,7 +36,7 @@ if [ ! -d "install" ]; then
 fi
 
 # Source workspace
-source install/setup.bash
+source "$ROOT_DIR/install/setup.bash"
 
 # Launch 12-Checkpoint Mission System
 echo "🎯 Launching 12-Checkpoint Mission System..."

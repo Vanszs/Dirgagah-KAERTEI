@@ -6,8 +6,9 @@
 echo "🔧 KAERTEI 2025 - Independent Build System"
 echo "=========================================="
 
-# Set project directory
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Set directories
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"   # kaertei_drone
 BUILD_DIR="$PROJECT_DIR/build"
 INSTALL_DIR="$PROJECT_DIR/install"
 
@@ -29,14 +30,14 @@ if [[ "$1" == "clean" ]]; then
 fi
 
 # Create build directories
-mkdir -p build install
+mkdir -p "$BUILD_DIR" "$INSTALL_DIR"
 
 echo "🔨 Building kaertei_drone package..."
 
 # Build with colcon
 colcon build \
-    --build-base build \
-    --install-base install \
+    --build-base "$BUILD_DIR" \
+    --install-base "$INSTALL_DIR" \
     --packages-select kaertei_drone \
     --cmake-args -DCMAKE_BUILD_TYPE=Release
 
@@ -45,14 +46,14 @@ if [ $? -eq 0 ]; then
     
     echo "🔧 Setting up environment..."
     # Create environment setup script
-cat > setup_kaertei.sh << 'EOF'
+    cat > "$SCRIPT_DIR/setup_kaertei.sh" << 'EOF'
 #!/bin/bash
 # KAERTEI 2025 Environment Setup
 source /opt/ros/foxy/setup.bash
-source install/setup.bash
+source "$(cd "$(dirname "$0")/.." && pwd)/install/setup.bash"
 echo "✅ KAERTEI environment ready!"
 EOF
-    chmod +x setup_kaertei.sh
+    chmod +x "$SCRIPT_DIR/setup_kaertei.sh"
     
     echo "🎯 Build Summary:"
     echo "   - Package: kaertei_drone v2.0.0"
