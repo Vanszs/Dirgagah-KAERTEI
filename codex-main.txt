@@ -1,0 +1,30 @@
+KAERTEI Project — Persistent Context (for future AI sessions)
+
+Last Updated: 2025-09-07
+
+- Platform: Jetson Nano 4GB
+- OS: Ubuntu 20.04 (Focal)
+- Target ROS 2: Foxy Fitzroy
+- Constraint: No Docker (bare‑metal only)
+- Goal: Minimal scripts and docs; keep only essential setup/build/run
+
+Mission Context
+- Mission controller: 12‑checkpoint FSM in `kaertei_drone/kaertei_drone/mission/checkpoint_mission_mavros.py`.
+- Use MAVROS for arming/modes/takeoff; use GPS waypoint monitoring via `gps_waypoint_monitor.py`.
+- Prefer unified vision, but be mindful of Jetson Nano 4GB performance.
+
+Topik/Interface Target (to keep consistent)
+- Vision: publish `/vision/detection` (geometry_msgs/Point) and `/vision/aligned` (std_msgs/Bool).
+- LiDAR: adapt Range to Float32 for `/lidar/front/distance` if needed.
+- Magnet: choose ONE command topic and keep consistent (prefer `/magnet/command`).
+
+Build/Run Baseline (Foxy)
+- Source: `/opt/ros/foxy/setup.bash` then build with colcon.
+- Run launcher: `kaertei_drone/run_kaertei.sh [debug|auto]` (updated to Foxy).
+
+Open Items to remember
+- Camera indices: unknown on Jetson Nano. Update here once discovered (e.g., front_bottom=/dev/video0, back=/dev/video2, front_nav=/dev/video4). If indices change during testing, update this file.
+- YOLOv8 may be too heavy on Nano 4GB; consider tiny models/TensorRT if needed. Update chosen model here.
+
+Change Log
+- 2025-09-07: Switch baseline to Ubuntu 20.04 + ROS 2 Foxy, no Docker; created minimal Foxy installer and updated build/run.

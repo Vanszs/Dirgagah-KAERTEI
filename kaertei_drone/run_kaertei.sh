@@ -20,8 +20,8 @@ echo "   Mission: 12-Checkpoint System"
 echo "   Directory: $SCRIPT_DIR"
 
 # Source ROS2 environment
-echo "🔄 Setting up ROS2 environment..."
-source /opt/ros/humble/setup.bash
+echo "🔄 Setting up ROS2 environment (Foxy)..."
+source /opt/ros/foxy/setup.bash
 
 # Check if system is built
 if [ ! -d "install" ]; then

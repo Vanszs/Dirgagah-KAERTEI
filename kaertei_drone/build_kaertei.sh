@@ -18,8 +18,8 @@ echo "🔨 Build Directory: $BUILD_DIR"
 echo "📦 Install Directory: $INSTALL_DIR"
 
 # Source ROS2 environment
-echo "🔄 Setting up ROS2 environment..."
-source /opt/ros/humble/setup.bash
+echo "🔄 Setting up ROS2 environment (Foxy)..."
+source /opt/ros/foxy/setup.bash
 
 # Clean previous build if requested
 if [[ "$1" == "clean" ]]; then
@@ -45,10 +45,10 @@ if [ $? -eq 0 ]; then
     
     echo "🔧 Setting up environment..."
     # Create environment setup script
-    cat > setup_kaertei.sh << 'EOF'
+cat > setup_kaertei.sh << 'EOF'
 #!/bin/bash
 # KAERTEI 2025 Environment Setup
-source /opt/ros/humble/setup.bash
+source /opt/ros/foxy/setup.bash
 source install/setup.bash
 echo "✅ KAERTEI environment ready!"
 EOF

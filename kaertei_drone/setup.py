@@ -27,7 +27,7 @@ setup(
         'console_scripts': [
             # Mission Control
             'checkpoint_mission_mavros = kaertei_drone.mission.checkpoint_mission_mavros:main',
-            'simplified_mission_control = kaertei_drone.mission.simplified_mission_control:main',
+            # simplified_mission_control removed for minimal Foxy setup
             
             # Hardware Control
             'camera_control_node = kaertei_drone.hardware.camera_control_node:main',

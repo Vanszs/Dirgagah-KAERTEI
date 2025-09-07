@@ -5,11 +5,11 @@
 <img src="logo-krti25.png" alt="KAERTEI 2025" width="200"/>
 
 ### **Hexacopter Otonom untuk Kompetisi FAIO**
-**Ubuntu 22.04 + ROS 2 Humble - Siap Kompetisi**
+**Ubuntu 20.04 + ROS 2 Foxy (Jetson Nano) — No Docker**
 
 [![Alpha Test](https://img.shields.io/badge/Status-Alpha_Test-yellow)](https://github.com/Vanszs/Dirgagah-KAERTEI)
-[![Ubuntu 22.04](https://img.shields.io/badge/Ubuntu-22.04%20LTS-orange)](https://ubuntu.com/download/desktop)
-[![ROS 2 Humble](https://img.shields.io/badge/ROS%202-Humble-blue)](https://docs.ros.org/en/humble/)
+[![Ubuntu 20.04](https://img.shields.io/badge/Ubuntu-20.04%20LTS-orange)](https://releases.ubuntu.com/20.04/)
+[![ROS 2 Foxy](https://img.shields.io/badge/ROS%202-Foxy-blue)](https://docs.ros.org/en/foxy/)
 
 </div>
 
@@ -39,16 +39,15 @@ git clone https://github.com/Vanszs/Dirgagah-KAERTEI.git
 cd Dirgagah-KAERTEI
 ```
 
-### **Langkah 2: Install Semua (Otomatis)**
+### **Langkah 2: Install ROS 2 Foxy + Dependensi**
 ```bash
-# Install semua dependency otomatis (tunggu 10-15 menit)
-just setup
+# Minimal installer untuk Ubuntu 20.04 (tanpa Docker)
+./install_foxy.sh
 ```
 
-### **Langkah 3: Test System**
+### **Langkah 3: Build Workspace**
 ```bash
-# Cek apakah semua berhasil ter-install
-just test
+./kaertei_drone/build_kaertei.sh
 ```
 
 **🎉 Selesai! System siap digunakan.**
@@ -57,16 +56,12 @@ just test
 
 ## 🎮 **Cara Menjalankan Drone**
 
-### **📋 Perintah Utama**
+### **📋 Perintah Utama (Foxy)**
 
-| Perintah | Fungsi | Kapan Digunakan |
-|----------|--------|-----------------|
-| `just setup` | Install semua | Pertama kali saja |
-| `just test` | Cek system | Sebelum kompetisi |
-| `just debug` | Mission step-by-step | Latihan/Testing |
-| `just run` | Mission otomatis penuh | Saat kompetisi |
-| `just stop` | Stop darurat | Emergency |
-| `just status` | Cek kondisi system | Kapan saja |
+- Install: `./install_foxy.sh`
+- Build: `./kaertei_drone/build_kaertei.sh`
+- Debug: `./kaertei_drone/run_kaertei.sh debug`
+- Run: `./kaertei_drone/run_kaertei.sh auto`
 
 ### **🚀 Menjalankan Mission**
 
