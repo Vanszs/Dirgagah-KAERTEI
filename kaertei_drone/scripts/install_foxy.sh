@@ -37,7 +37,7 @@ install_ros2() {
 http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | \
     sudo tee /etc/apt/sources.list.d/ros2.list >/dev/null
   sudo apt update
-  sudo apt install -y ros-$ROS_DISTRO-desktop python3-rosdep2 python3-colcon-common-extensions
+  sudo apt install -y ros-$ROS_DISTRO-desktop python3-rosdep python3-colcon-common-extensions
 
   if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
     sudo rosdep init || true

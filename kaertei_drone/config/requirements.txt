@@ -1,5 +1,5 @@
 # KAERTEI 2025 FAIO - Optimized Dependencies
-# Auto-optimized for Ubuntu 22.04 LTS + Python 3.10
+# Auto-optimized for Ubuntu 20.04 LTS + Python 3.8 (Jetson Nano)
 # Raspberry Pi 5 & Desktop compatible
 # ================================================
 

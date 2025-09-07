@@ -65,6 +65,16 @@ EOF
     echo "   ./setup_kaertei.sh                    # Setup environment"
     echo "   ./run_kaertei.sh debug                # Launch debug mode"
     echo "   ./run_kaertei.sh auto                 # Launch autonomous mode"
+
+    # Append workspace setup to ~/.bashrc if not present
+    BASHRC="$HOME/.bashrc"
+    WORK_SETUP="source $PROJECT_DIR/install/setup.bash"
+    if ! grep -q "${WORK_SETUP//\//\/}" "$BASHRC" 2>/dev/null; then
+        echo "" >> "$BASHRC"
+        echo "# KAERTEI workspace (Foxy)" >> "$BASHRC"
+        echo "$WORK_SETUP" >> "$BASHRC"
+        echo "✅ Appended workspace setup to ~/.bashrc"
+    fi
     
 else
     echo "❌ Build failed!"

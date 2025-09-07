@@ -25,7 +25,7 @@ except ImportError:
 try:
     from cv_bridge import CvBridge
 except ImportError:
-    print("❌ cv_bridge not installed. Run: sudo apt install ros-humble-cv-bridge")
+    print("❌ cv_bridge not installed. Run: sudo apt install ros-foxy-cv-bridge")
     CvBridge = None
 
 # Import hardware configuration

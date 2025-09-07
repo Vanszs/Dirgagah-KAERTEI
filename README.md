@@ -164,9 +164,8 @@ export PATH="$HOME/.local/bin:$PATH"
 
 #### **❌ "No ROS 2 found"**
 ```bash
-# Install ulang ROS 2
-sudo apt update
-sudo apt install ros-humble-desktop-full
+# Gunakan installer Foxy minimal
+./kaertei_drone/scripts/install_foxy.sh
 ```
 
 #### **❌ "Hardware not detected"**
