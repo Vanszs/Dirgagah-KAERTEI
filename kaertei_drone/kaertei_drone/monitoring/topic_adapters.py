@@ -8,7 +8,7 @@ import json
 
 from std_msgs.msg import String, Bool, Float32, Int32
 from geometry_msgs.msg import Point, Twist, Vector3, PoseStamped
-from sensor_msgs.msg import Image, PointCloud2, NavSatFix
+from sensor_msgs.msg import Image, PointCloud2, NavSatFix, Range
 from mavros_msgs.msg import State, OverrideRCIn
 from mavros_msgs.srv import CommandBool as CommandBoolSrv, SetMode as SetModeSrv
 from kaertei_drone.hardware.hardware_config import HardwareConfig
@@ -109,12 +109,13 @@ class TopicAdaptersNode(Node):
             String, '/mission/sensor_health', self.sensor_qos)
         
         # Subscribers - Sensor inputs
+        # Subscribe to LiDAR Range messages and normalize to float distances
         self.lidar_front_sub = self.create_subscription(
-            Float32, '/sensors/lidar_front', self.lidar_front_callback, self.sensor_qos)
+            Range, '/sensors/lidar/front', self.lidar_front_callback, self.sensor_qos)
         self.lidar_left_sub = self.create_subscription(
-            Float32, '/sensors/lidar_left', self.lidar_left_callback, self.sensor_qos)
+            Range, '/sensors/lidar/left', self.lidar_left_callback, self.sensor_qos)
         self.lidar_right_sub = self.create_subscription(
-            Float32, '/sensors/lidar_right', self.lidar_right_callback, self.sensor_qos)
+            Range, '/sensors/lidar/right', self.lidar_right_callback, self.sensor_qos)
         
         # ===========================================
         # PAYLOAD SYSTEM ADAPTERS
@@ -262,19 +263,19 @@ class TopicAdaptersNode(Node):
     def lidar_front_callback(self, msg):
         """Handle front LiDAR data"""
         if self.get_parameter('enable_sensor_bridge').value:
-            self.lidar_distances['front'] = msg.data
+            self.lidar_distances['front'] = float(getattr(msg, 'range', 0.0))
             self.check_obstacle_detection()
     
     def lidar_left_callback(self, msg):
         """Handle left LiDAR data"""
         if self.get_parameter('enable_sensor_bridge').value:
-            self.lidar_distances['left'] = msg.data
+            self.lidar_distances['left'] = float(getattr(msg, 'range', 0.0))
             self.check_obstacle_detection()
     
     def lidar_right_callback(self, msg):
         """Handle right LiDAR data"""
         if self.get_parameter('enable_sensor_bridge').value:
-            self.lidar_distances['right'] = msg.data
+            self.lidar_distances['right'] = float(getattr(msg, 'range', 0.0))
             self.check_obstacle_detection()
     
     def check_obstacle_detection(self):

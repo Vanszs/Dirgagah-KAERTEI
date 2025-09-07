@@ -8,6 +8,11 @@ Last Updated: 2025-09-07
 - Constraint: No Docker (bare‑metal only)
 - Goal: Minimal scripts and docs; keep only essential setup/build/run
 
+Hardware Links (Serial)
+- Pixhawk FCU: `/dev/ttyACM0` @ `115200` (MAVROS FCU link)
+- RTK Receiver: `/dev/ttyUSB0` @ `115200` (RTCM/NMEA into Jetson)
+  - Bridge: `rtk_serial_bridge` forwards serial RTCM → `/mavros/gps_rtk/send_rtcm`
+
 Mission Context
 - Mission controller: 12‑checkpoint FSM in `kaertei_drone/kaertei_drone/mission/checkpoint_mission_mavros.py`.
 - Use MAVROS for arming/modes/takeoff; use GPS waypoint monitoring via `gps_waypoint_monitor.py`.
@@ -31,3 +36,4 @@ Change Log
 - 2025-09-07: Switch baseline to Ubuntu 20.04 + ROS 2 Foxy, no Docker; created minimal Foxy installer and updated build/run.
 - 2025-09-07: Created local git branch `no-docker-foxy`. Remote push pending (credentials required).
 - 2025-09-07: Consolidated all shell scripts into `kaertei_drone/scripts/`; removed legacy Humble/22.04 and Docker-related scripts.
+- 2025-09-07: Set FCU to `/dev/ttyACM0:115200` and added RTK serial bridge on `/dev/ttyUSB0:115200`.

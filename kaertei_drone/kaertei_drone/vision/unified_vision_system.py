@@ -149,6 +149,8 @@ class VisionSystem(Node):
         # Object Detection & Alignment
         self.object_detected_pub = self.create_publisher(String, '/vision/object_detected', qos)
         self.object_center_pub = self.create_publisher(Point, '/vision/object_center', qos)
+        # Add unified detection point topic expected by mission node
+        self.detection_point_pub = self.create_publisher(Point, '/vision/detection', qos)
         self.alignment_status_pub = self.create_publisher(Bool, '/vision/aligned', qos)
         self.alignment_error_pub = self.create_publisher(Point, '/vision/alignment_error', qos)
         
@@ -365,6 +367,8 @@ class VisionSystem(Node):
         
         self.object_detected_pub.publish(String(data=obj['name']))
         self.object_center_pub.publish(object_center)
+        # Mirror to unified detection interface
+        self.detection_point_pub.publish(object_center)
         self.alignment_status_pub.publish(Bool(data=is_aligned))
         self.alignment_error_pub.publish(alignment_error)
         self.confidence_pub.publish(Float32(data=obj['confidence']))

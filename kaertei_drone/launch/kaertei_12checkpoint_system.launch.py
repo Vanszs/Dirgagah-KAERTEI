@@ -269,6 +269,22 @@ def generate_launch_description():
             output='screen'
         )
     ])
+
+    # ===========================================
+    # RTK SERIAL BRIDGE (USB → MAVROS RTCM)
+    # ===========================================
+
+    rtk_bridge = Node(
+        package='kaertei_drone',
+        executable='rtk_serial_bridge',
+        name='rtk_serial_bridge',
+        output='screen',
+        parameters=[
+            {'serial_port': '/dev/ttyUSB0'},   # RTK receiver on Jetson
+            {'baud_rate': 115200},
+            {'chunk_size': 512}
+        ]
+    )
     
     return LaunchDescription([
         # Launch arguments
@@ -294,6 +310,7 @@ def generate_launch_description():
         
         # Topic bridges & adapters
         adapters_group,
+        rtk_bridge,
         
         # MAVROS connection (delayed start)
         mavros_node

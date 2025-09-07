@@ -96,7 +96,8 @@ class Checkpoint12MissionNode(Node):
         self.state_sub = self.create_subscription(State, '/mavros/state', self.mavros_state_callback, 10)
         self.pose_sub = self.create_subscription(PoseStamped, '/mavros/local_position/pose', self.pose_callback, 10)
         self.gps_sub = self.create_subscription(NavSatFix, '/mavros/global_position/global', self.gps_callback, 10)
-        self.vision_sub = self.create_subscription(String, '/vision/detection', self.vision_callback, 10)
+        # Expect unified detection as geometry_msgs/Point
+        self.vision_sub = self.create_subscription(Point, '/vision/detection', self.vision_callback, 10)
         self.user_input_sub = self.create_subscription(String, '/mission/user_input', self.user_input_callback, 10)
         
         # Services
@@ -703,15 +704,13 @@ class Checkpoint12MissionNode(Node):
         self.gps_position = msg
         
     def vision_callback(self, msg):
-        """Vision detection callback"""
+        """Vision detection callback (Point center)"""
         try:
-            data = json.loads(msg.data)
-            if data.get('detected', False):
-                self.item_detected = True
-                self.item_position.x = data.get('x', 0)
-                self.item_position.y = data.get('y', 0)
-        except:
-            pass
+            # If a point is received, consider it a detection
+            self.item_detected = True
+            self.item_position = msg
+        except Exception:
+            self.item_detected = False
             
     def user_input_callback(self, msg):
         """User input callback for debug mode"""

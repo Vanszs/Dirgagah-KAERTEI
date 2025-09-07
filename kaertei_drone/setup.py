@@ -41,6 +41,7 @@ setup(
             'flight_state_monitor = kaertei_drone.navigation.flight_state_monitor:main',
             'gps_monitor = kaertei_drone.navigation.gps_monitor:main',
             'gps_waypoint_monitor = kaertei_drone.navigation.gps_waypoint_monitor:main',
+            'rtk_serial_bridge = kaertei_drone.navigation.rtk_serial_bridge:main',
             'flight_mode_switcher = kaertei_drone.navigation.flight_mode_switcher:main',
             'kalibrasi_navigator = kaertei_drone.navigation.kalibrasi_navigator:main',
             'waypoint_navigator = kaertei_drone.navigation.waypoint_navigator:main',
