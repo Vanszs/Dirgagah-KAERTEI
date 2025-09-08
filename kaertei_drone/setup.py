@@ -27,8 +27,7 @@ setup(
         'console_scripts': [
             # Mission Control
             'checkpoint_mission_mavros = kaertei_drone.mission.checkpoint_mission_mavros:main',
-            # simplified_mission_control removed for minimal Foxy setup
-            
+            'mission_fsm = kaertei_drone.mission.checkpoint_mission_mavros:main',
             # Hardware Control
             'camera_control_node = kaertei_drone.hardware.camera_control_node:main',
             'gpio_control_node = kaertei_drone.hardware.gpio_control_node:main',
@@ -53,6 +52,11 @@ setup(
             'system_health_monitor = kaertei_drone.monitoring.system_health_monitor:main',
             'sensor_monitor = kaertei_drone.monitoring.sensor_monitor:main',
             'topic_adapters = kaertei_drone.monitoring.topic_adapters:main',
+            # Short aliases for convenience
+            'health = kaertei_drone.monitoring.system_health_monitor:main',
+            'gpsmon = kaertei_drone.navigation.gps_waypoint_monitor:main',
+            'vision = kaertei_drone.vision.unified_vision_system:main',
+            'emerg = kaertei_drone.hardware.emergency_controller:main',
         ],
     },
 )

@@ -964,3 +964,20 @@ OUTDOOR_PHASE (CP 10-12) → ITEM3_DROP → WP5_FINAL → DESCENT_DISARM
 **Good Luck untuk Kompetisi KAERTEI 2025! 🏆**
 
 </div>
+
+---
+
+## Mission FSM (12 CP) – Run & Debug
+
+- Run (debug step-by-step): `ros2 launch kaertei_drone mission_bringup.launch.py mode:=debug cfg:=config/hardware_config.yaml`
+- Run (autonomous): `ros2 launch kaertei_drone mission_bringup.launch.py mode:=run cfg:=config/hardware_config.yaml`
+- Direct node run: `ros2 run kaertei_drone checkpoint_mission_mavros --ros-args --log-level debug`
+
+Debug playbook (minimum):
+- `ros2 node list`, `ros2 topic list`, `ros2 param list`
+- `ros2 topic echo /mavros/state` (add `--qos-reliability best_effort` if needed)
+- Record: `/mavros/state`, `/mavros/local_position/*`, `/mavros/global_position/*`, `/diagnostics`, `/camera/*`
+
+QoS/Frames policy (mission node):
+- Control/State/GPS: RELIABLE depth=10; Vision: BEST_EFFORT depth=10
+- Frames: `map` (GPS/world), `base_link` (vehicle)

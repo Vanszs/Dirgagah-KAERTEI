@@ -5,60 +5,92 @@ Last Updated: 2025-09-08
 - Platform: Jetson Nano 4GB
 - OS: Ubuntu 20.04 (Focal)
 - Target ROS 2: Foxy Fitzroy
-- Constraint: No Docker (bare‑metal only)
+- Constraint: No Docker (bare-metal only)
 - Goal: Minimal scripts and docs; keep only essential setup/build/run
 
 Hardware Links (Serial)
-- Pixhawk FCU: `/dev/ttyACM0` @ `115200` (MAVROS FCU link)
-- RTK Receiver: `/dev/ttyUSB0` @ `115200` (RTCM/NMEA into Jetson)
-  - Bridge: `rtk_serial_bridge` forwards serial RTCM → `/mavros/gps_rtk/send_rtcm`
+- Pixhawk FCU: /dev/ttyACM0 @ 115200 (MAVROS FCU link)
+  Symlink: /dev/serial/by-id/usb-ArduPilot_Pixhawk1_3A0023001051333036333432-if00
+- RTK Receiver: /dev/ttyUSB0 @ 115200 (RTCM/NMEA into Jetson)
+  Bridge: rtk_serial_bridge forwards serial RTCM → /mavros/gps_rtk/send_rtcm
 
 Mission Context
-- Mission controller: 12‑checkpoint FSM in `kaertei_drone/kaertei_drone/mission/checkpoint_mission_mavros.py`.
-- Use MAVROS for arming/modes/takeoff; use GPS waypoint monitoring via `gps_waypoint_monitor.py`.
-- Prefer unified vision, but be mindful of Jetson Nano 4GB performance.
+- Mission controller: 12-checkpoint FSM in kaertei_drone/kaertei_drone/mission/checkpoint_mission_mavros.py
+- Use MAVROS for arming/modes/takeoff; use GPS waypoint monitoring via gps_waypoint_monitor.py
+- Prefer unified vision, but be mindful of Jetson Nano 4GB performance
 
 Topik/Interface Target (to keep consistent)
-- Vision: publish `/vision/detection` (geometry_msgs/Point) and `/vision/aligned` (std_msgs/Bool).
-- LiDAR: adapt Range to Float32 for `/lidar/front/distance` if needed.
-- Magnet: choose ONE command topic and keep consistent (prefer `/magnet/command`).
+- Vision: publish /vision/detection (geometry_msgs/Point) and /vision/aligned (std_msgs/Bool)
+- LiDAR: adapt Range to Float32 for /lidar/front/distance if needed
+- Magnet: choose ONE command topic and keep consistent (prefer /magnet/command)
 
 Build/Run Baseline (Foxy)
-- Source: `/opt/ros/foxy/setup.bash` then build with colcon.
-- Build: `./kaertei_drone/scripts/build_kaertei.sh`
-- Run: `./kaertei_drone/scripts/run_kaertei.sh [debug|auto]`.
-- Auto-sourcing: `install_foxy.sh` appends ROS Foxy to `~/.bashrc`; `build_kaertei.sh` appends workspace `install/setup.bash` to `~/.bashrc`.
+- Source: /opt/ros/foxy/setup.bash then build with colcon
+- Build: ./kaertei_drone/scripts/build_kaertei.sh
+- Run: ./kaertei_drone/scripts/run_kaertei.sh [debug|auto]
+- Auto-sourcing: install_foxy.sh appends ROS Foxy to ~/.bashrc; build_kaertei.sh appends workspace install/setup.bash to ~/.bashrc
 
-Open Items to remember
-- Camera indices: unknown on Jetson Nano. Update here once discovered (e.g., front_bottom=/dev/video0, back=/dev/video2, front_nav=/dev/video4). If indices change during testing, update this file.
-- YOLOv8 may be too heavy on Nano 4GB; consider tiny models/TensorRT if needed. Update chosen model here.
+Runtime / Connection Status (ArduPilot via apm.launch.py)
+- State topic: /mavros_node/state  
+  ros2 topic echo /mavros_node/state --qos-reliability reliable --qos-durability transient_local  
+  → menampilkan connected, armed, mode, system_status
+- Extended state: /mavros_node/extended_state  
+  ros2 topic echo /mavros_node/extended_state  
+  → menampilkan status landed / in-air
+- Arming:  
+  ros2 service call /mavros_node/mavros_node/arming mavros_msgs/srv/CommandBool "{value: true}"  
+  ros2 service call /mavros_node/mavros_node/arming mavros_msgs/srv/CommandBool "{value: false}"  # disarm
+- Set mode:  
+  ros2 service call /mavros_node/set_mode mavros_msgs/srv/SetMode "{custom_mode: 'GUIDED'}"
+- Takeoff (auto 2 m):  
+  ros2 service call /mavros_node/mavros_node/takeoff mavros_msgs/srv/CommandTOL "{altitude: 2.0, latitude: 0.0, longitude: 0.0, min_pitch: 0.0, yaw: 0.0}"
+- Manual thrust (uji static spin motor di tanah):  
+  ros2 topic pub /mavros_node/setpoint_attitude/thrust std_msgs/msg/Float32 "{data: 0.1}" -r 20  
+  (0.1 = 10% throttle; harus diulang >2 Hz, jika tidak autopilot failsafe)  
+  Cek PWM via: ros2 topic echo /mavros_node/rc/out
 
+QoS Profil
+- /mavros_node/state → RELIABLE + TRANSIENT_LOCAL, depth 10
+- /mavros_node/statustext/recv → BEST_EFFORT + VOLATILE
+- Catatan: harus echo dengan qos argumen yang cocok agar data keluar
+
+Autopilot Info
+- Firmware: ArduCopter v4.6.2 (1ebd4d99)
+- Boot log via microcom menunjukkan sensor terdeteksi (MS5611 baro, IST8310 mag, Gyro/IMU)
+- Default mode: STABILIZE, system_status=3 saat idle
+- Mode OFFBOARD gagal (mode_sent=False) → OFFBOARD hanya ada di PX4  
+  Gunakan GUIDED / GUIDED_NOGPS / LOITER / AUTO untuk ArduPilot
+
+Debugging Tools / Scripts
+- debug_px4_connection.sh: Boots/attaches to MAVROS using hardware_config.conf, shows /mavros/state + heartbeat; supports override FCU_PORT/FCU_BAUD or arg PORT:BAUD
+- monitor_gps_compass.sh: Runs a ROS 2 node that prints GPS lat/lon/alt + fix status + satellites, heading, and magnetometer (1 Hz)
 
 Build Error — Root Cause & Fix
-- Symptom: colcon fails with AttributeError: module `importlib_metadata` has no attribute `EntryPoints` when importing setuptools.
-- Root cause: On Ubuntu 20.04/Python 3.8, user-installed `setuptools` (new) expects `EntryPoints` API present only in newer `importlib_metadata`, but system `importlib_metadata` (apt) is old (1.x). This version skew breaks `setup.py` discovery.
-- Fix (one-time): `python3 -m pip install --user --upgrade importlib_metadata setuptools wheel`
-- Preventive: `install_foxy.sh` now upgrades `importlib_metadata>=4.6`. `build_kaertei.sh` checks compatibility and auto-upgrades `importlib_metadata` if missing.
+- Symptom: colcon fails with AttributeError: module importlib_metadata has no attribute EntryPoints when importing setuptools
+- Root cause: On Ubuntu 20.04/Python 3.8, user-installed setuptools (new) expects EntryPoints API present only in newer importlib_metadata, but system importlib_metadata (apt) is old (1.x). This version skew breaks setup.py discovery
+- Fix (one-time): python3 -m pip install --user --upgrade importlib_metadata setuptools wheel
+- Preventive: install_foxy.sh now upgrades importlib_metadata>=4.6. build_kaertei.sh checks compatibility and auto-upgrades if missing
 
 Additional Build Error — packaging mismatch
-- Symptom: TypeError: `canonicalize_version() got an unexpected keyword argument 'strip_trailing_zero'` during setup/egg_info.
-- Root cause: New `setuptools` expects newer `packaging` API; older `packaging` lacked this kw arg.
-- Fix (one-time): `python3 -m pip install --user --upgrade packaging setuptools wheel` (we now use packaging 24.2+).
-- Preventive: `install_foxy.sh` upgrades `packaging`; `build_kaertei.sh` validates via `from packaging.utils import canonicalize_version` and auto-upgrades if needed.
+- Symptom: TypeError: canonicalize_version() got an unexpected keyword argument 'strip_trailing_zero' during setup/egg_info
+- Root cause: New setuptools expects newer packaging API; older packaging lacked this kw arg
+- Fix (one-time): python3 -m pip install --user --upgrade packaging setuptools wheel (we now use packaging 24.2+)
+- Preventive: install_foxy.sh upgrades packaging; build_kaertei.sh validates via from packaging.utils import canonicalize_version and auto-upgrades if needed
 
 Current Build Status
-- Build: OK on Ubuntu 20.04 + Python 3.8 after packaging/importlib_metadata alignment.
-- Executables path: `install/kaertei_drone/bin/` (build summary updated; old lib path not used for ament_python console scripts).
+- Build: OK on Ubuntu 20.04 + Python 3.8 after packaging/importlib_metadata alignment
+- Executables path: install/kaertei_drone/bin/ (build summary updated; old lib path not used for ament_python console scripts)
 
-Debug Scripts (Top-level `scripts/`)
-- `debug_px4_connection.sh`: Boots/attaches to MAVROS using `hardware_config.conf`, shows `/mavros/state` + heartbeat; supports override `FCU_PORT`/`FCU_BAUD` or arg `PORT:BAUD`.
-- `monitor_gps_compass.sh`: Runs a ROS 2 node that prints GPS lat/lon/alt + fix status + satellites, heading, and magnetometer (1 Hz).
+Open Items to remember
+- Camera indices: unknown on Jetson Nano. Update here once discovered (e.g., front_bottom=/dev/video0, back=/dev/video2, front_nav=/dev/video4). If indices change during testing, update this file
+- YOLOv8 may be too heavy on Nano 4GB; consider tiny models/TensorRT if needed. Update chosen model here
 
 Change Log
-- 2025-09-07: Switch baseline to Ubuntu 20.04 + ROS 2 Foxy, no Docker; created minimal Foxy installer and updated build/run.
-- 2025-09-07: Created local git branch `no-docker-foxy`. Remote push pending (credentials required).
-- 2025-09-07: Consolidated all shell scripts into `kaertei_drone/scripts/`; removed legacy Humble/22.04 and Docker-related scripts.
-- 2025-09-07: Set FCU to `/dev/ttyACM0:115200` and added RTK serial bridge on `/dev/ttyUSB0:115200`.
-- 2025-09-08: Fixed colcon build error (importlib_metadata.EntryPoints) by upgrading `importlib_metadata`; updated `install_foxy.sh` to install `importlib_metadata>=4.6` and added preflight check in `build_kaertei.sh`.
-- 2025-09-08: Resolved packaging mismatch (canonicalize_version kw arg). Pinned tooling to use `packaging` providing `canonicalize_version(strip_trailing_zero=...)` and updated preflight to validate via `packaging.utils.canonicalize_version`.
-- 2025-09-08: Added standalone debug scripts under `test/` for PX4/MAVROS connection and realtime GPS/compass monitoring.
+- 2025-09-07: Switch baseline to Ubuntu 20.04 + ROS 2 Foxy, no Docker; created minimal Foxy installer and updated build/run
+- 2025-09-07: Created local git branch no-docker-foxy. Remote push pending (credentials required)
+- 2025-09-07: Consolidated all shell scripts into kaertei_drone/scripts/; removed legacy Humble/22.04 and Docker-related scripts
+- 2025-09-07: Set FCU to /dev/ttyACM0:115200 and added RTK serial bridge on /dev/ttyUSB0:115200
+- 2025-09-08: Fixed colcon build error (importlib_metadata.EntryPoints) by upgrading importlib_metadata; updated install_foxy.sh to install importlib_metadata>=4.6 and added preflight check in build_kaertei.sh
+- 2025-09-08: Resolved packaging mismatch (canonicalize_version kw arg). Pinned tooling to use packaging providing canonicalize_version(strip_trailing_zero=...) and updated preflight to validate via packaging.utils.canonicalize_version
+- 2025-09-08: Added standalone debug scripts under test/ for PX4/MAVROS connection and realtime GPS/compass monitoring
+- 2025-09-08: MAVROS handshake berhasil dengan ArduPilot v4.6.2; arming sukses via /mavros_node/mavros_node/arming; OFFBOARD ditolak (mode PX4-only); gunakan GUIDED/LOITER untuk ArduPilot

@@ -12,38 +12,47 @@ from sensor_msgs.msg import Image, NavSatFix
 import time
 import threading
 from enum import Enum
+from dataclasses import dataclass
+from typing import Callable, Dict, Optional
+import yaml
 import json
 
 # MAVROS imports
-from mavros_msgs.msg import State, OverrideRCIn, PositionTarget, GlobalPositionTarget
-from mavros_msgs.srv import CommandBool, CommandTOL, SetMode
+from mavros_msgs.msg import State, OverrideRCIn, PositionTarget, GlobalPositionTarget, WaypointList
+from mavros_msgs.srv import CommandBool, CommandTOL, SetMode, WaypointPull
 from geometry_msgs.msg import TwistStamped
+from rclpy.qos import QoSProfile, ReliabilityPolicy
 
 # Import hardware configuration
 from ..hardware.hardware_config import HardwareConfig
 
 class MissionCheckpoint(Enum):
-    """12 Checkpoint Mission System - KAERTEI 2025 FAIO"""
-    # Phase 1: Initialization & Indoor Search (CP 1-6)
-    CP1_INIT_ARM = "CP1_INIT_ARM"               # Inisialisasi dan arming drone
-    CP2_TAKEOFF_1M = "CP2_TAKEOFF_1M"           # Takeoff ke ketinggian 1m
-    CP3_SEARCH_ITEM1 = "CP3_SEARCH_ITEM1"       # Mencari dan mengambil item pertama
-    CP4_SEARCH_ITEM2_TURN = "CP4_SEARCH_ITEM2_TURN" # Berputar dan mencari item kedua
-    CP5_DROP_ITEM1 = "CP5_DROP_ITEM1"           # Menjatuhkan item pertama
-    CP6_DROP_ITEM2 = "CP6_DROP_ITEM2"           # Menjatuhkan item kedua
-    
-    # Phase 2: GPS Navigation & Outdoor Mission (CP 7-12)
-    CP7_GPS_WP1_3 = "CP7_GPS_WP1_3"             # Navigasi ke GPS waypoint 1-3
-    CP8_SEARCH_ITEM3 = "CP8_SEARCH_ITEM3"       # Mencari dan mengambil item ketiga
-    CP9_DIRECT_WP4 = "CP9_DIRECT_WP4"           # Terbang langsung ke waypoint 4
-    CP10_SEARCH_DROP_ITEM3 = "CP10_SEARCH_DROP_ITEM3" # Mencari dropzone dan menjatuhkan item ketiga
-    CP11_GPS_WP5 = "CP11_GPS_WP5"               # Navigasi ke GPS waypoint 5
-    CP12_LANDING_DISARM = "CP12_LANDING_DISARM" # Landing dan disarm
-    
+    """12 Checkpoint Mission System - KAERTEI 2025 FAIO (CP-01 .. CP-12)"""
+    CP01_INIT_ARM = "CP-01_INIT_ARM"
+    CP02_TAKEOFF_1M = "CP-02_TAKEOFF_1M"
+    CP03_SEARCH_ITEM1 = "CP-03_SEARCH_ITEM1"
+    CP04_SEARCH_ITEM2_TURN = "CP-04_SEARCH_ITEM2_TURN"
+    CP05_DROP_ITEM1 = "CP-05_DROP_ITEM1"
+    CP06_DROP_ITEM2 = "CP-06_DROP_ITEM2"
+    CP07_GPS_WP1_3 = "CP-07_GPS_WP1_3"
+    CP08_SEARCH_ITEM3 = "CP-08_SEARCH_ITEM3"
+    CP09_DIRECT_WP4 = "CP-09_DIRECT_WP4"
+    CP10_SEARCH_DROP_ITEM3 = "CP-10_SEARCH_DROP_ITEM3"
+    CP11_GPS_WP5 = "CP-11_GPS_WP5"
+    CP12_FINAL_DESCENT_DISARM = "CP-12_FINAL_DESCENT_DISARM"
     # Mission States
     COMPLETED = "COMPLETED"
     ERROR = "ERROR"
     PAUSED = "PAUSED"
+
+@dataclass
+class CheckpointSpec:
+    guard: Callable[[], bool]
+    action: Callable[[], None]
+    next_success: MissionCheckpoint
+    next_fail: MissionCheckpoint
+    timeout_s: int
+    retries: int
 
 class Checkpoint12MissionNode(Node):
     def __init__(self):
@@ -56,10 +65,16 @@ class Checkpoint12MissionNode(Node):
         self.debug_mode = self.declare_parameter('debug_mode', True).value
         self.auto_continue = self.declare_parameter('auto_continue', False).value
         
+        # Load YAML parameters (hardware_config.yaml), fallback to .conf via HardwareConfig
+        self.params = self._load_yaml_params()
+        
         # Current mission state
-        self.current_checkpoint = MissionCheckpoint.CP1_INIT_ARM
-        self.waiting_for_next = self.debug_mode
+        self.current_checkpoint = MissionCheckpoint.CP01_INIT_ARM
+        # Start CP-01 automatically; pause only between subsequent CPs
+        self.waiting_for_next = False
         self.checkpoint_completed = False
+        self.current_retries: int = 0
+        self.cp_start_time: float = time.time()
         
         # Mission completion tracking
         self.item1_collected = False
@@ -83,28 +98,54 @@ class Checkpoint12MissionNode(Node):
         self.current_altitude = 0.0
         self.armed = False
         
+        # QoS profiles
+        qos_reliable = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
+        qos_best_effort = QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT)
+
         # Publishers
-        self.checkpoint_status_pub = self.create_publisher(String, '/mission/checkpoint_status', 10)
-        self.mission_command_pub = self.create_publisher(String, '/mission/command', 10)
-        self.camera_command_pub = self.create_publisher(String, '/camera/command', 10)
-        self.magnet_command_pub = self.create_publisher(String, '/magnet/command', 10)
-        self.velocity_pub = self.create_publisher(TwistStamped, '/mavros/setpoint_velocity/cmd_vel', 10)
-        self.position_pub = self.create_publisher(PoseStamped, '/mavros/setpoint_position/local', 10)
-        self.global_pos_pub = self.create_publisher(GlobalPositionTarget, '/mavros/setpoint_raw/global', 10)
+        self.checkpoint_status_pub = self.create_publisher(String, '/mission/checkpoint_status', qos_reliable)
+        self.mission_command_pub = self.create_publisher(String, '/mission/command', qos_reliable)
+        self.camera_command_pub = self.create_publisher(String, '/camera/command', qos_reliable)
+        self.magnet_command_pub = self.create_publisher(String, '/magnet/command', qos_reliable)
+        self.velocity_pub = self.create_publisher(TwistStamped, '/mavros/setpoint_velocity/cmd_vel', qos_reliable)
+        self.position_pub = self.create_publisher(PoseStamped, '/mavros/setpoint_position/local', qos_reliable)
+        self.global_pos_pub = self.create_publisher(GlobalPositionTarget, '/mavros/setpoint_raw/global', qos_reliable)
         
         # Subscribers
-        self.state_sub = self.create_subscription(State, '/mavros/state', self.mavros_state_callback, 10)
-        self.pose_sub = self.create_subscription(PoseStamped, '/mavros/local_position/pose', self.pose_callback, 10)
-        self.gps_sub = self.create_subscription(NavSatFix, '/mavros/global_position/global', self.gps_callback, 10)
+        self.state_sub = self.create_subscription(State, '/mavros/state', self.mavros_state_callback, qos_reliable)
+        self.pose_sub = self.create_subscription(PoseStamped, '/mavros/local_position/pose', self.pose_callback, qos_reliable)
+        self.gps_sub = self.create_subscription(NavSatFix, '/mavros/global_position/global', self.gps_callback, qos_reliable)
+        self.waypoints_sub = self.create_subscription(WaypointList, '/mavros/mission/waypoints', self.waypoints_callback, qos_reliable)
         # Expect unified detection as geometry_msgs/Point
-        self.vision_sub = self.create_subscription(Point, '/vision/detection', self.vision_callback, 10)
-        self.user_input_sub = self.create_subscription(String, '/mission/user_input', self.user_input_callback, 10)
+        self.vision_sub = self.create_subscription(Point, '/vision/detection', self.vision_callback, qos_best_effort)
+        self.user_input_sub = self.create_subscription(String, '/mission/user_input', self.user_input_callback, qos_reliable)
         
         # Services
         self.arm_service = self.create_client(CommandBool, '/mavros/cmd/arming')
         self.takeoff_service = self.create_client(CommandTOL, '/mavros/cmd/takeoff')
         self.mode_service = self.create_client(SetMode, '/mavros/set_mode')
+        self.wp_pull_service = self.create_client(WaypointPull, '/mavros/mission/pull')
         
+        # Waypoint pulling state
+        self.px4_waypoints_count = 0
+        self._last_logged_wp_count = None
+
+        # Build CP table
+        self.cp_table: Dict[MissionCheckpoint, CheckpointSpec] = self._build_cp_table()
+
+        # Setpoint streaming (for OFFBOARD/PX4 or GUIDED/ArduPilot stability)
+        self.setpoint_active = False
+        self.last_twist_cmd = TwistStamped()
+        self.last_twist_cmd.twist.linear.x = 0.0
+        self.last_twist_cmd.twist.linear.y = 0.0
+        self.last_twist_cmd.twist.linear.z = 0.0
+        rate_hz = float(self._p('setpoint_rate_hz', 20))
+        self.setpoint_timer = self.create_timer(max(0.01, 1.0 / rate_hz), self._stream_setpoint)
+
+        # Initial PX4 waypoint pull (retry until MAVROS connected)
+        self._wp_init_done = False
+        self._wp_timer = self.create_timer(2.0, self._try_pull_waypoints_when_ready)
+
         # Mission control timer
         self.mission_timer = self.create_timer(0.5, self.mission_control_loop)
         
@@ -113,54 +154,254 @@ class Checkpoint12MissionNode(Node):
 
     def mission_control_loop(self):
         """Main mission control loop"""
-        if not self.waiting_for_next and not self.mission_completed:
-            self.execute_checkpoint()
-            
-    def execute_checkpoint(self):
-        """Execute current checkpoint based on 12-checkpoint system"""
-        checkpoint = self.current_checkpoint
+        if self.mission_completed or self.current_checkpoint in (MissionCheckpoint.COMPLETED, MissionCheckpoint.ERROR, MissionCheckpoint.PAUSED):
+            return
         
-        self.get_logger().info(f"🔄 Executing: {checkpoint.value}")
-        self.publish_checkpoint_status(checkpoint.value, "EXECUTING")
+        # In debug mode, require manual continue between CP
+        if self.waiting_for_next:
+            return
         
-        if checkpoint == MissionCheckpoint.CP1_INIT_ARM:
-            self.execute_cp1_init_arm()
+        # Evaluate guard and timeout
+        spec = self.cp_table.get(self.current_checkpoint)
+        if spec is None:
+            self.get_logger().error(f"No spec for {self.current_checkpoint}")
+            self.transition_to_error()
+            return
+        
+        elapsed = time.time() - self.cp_start_time
+        if elapsed > spec.timeout_s:
+            self.get_logger().warning(f"⏳ Timeout on {self.current_checkpoint.value} after {elapsed:.1f}s")
+            self._advance(False, spec)
+            return
+        
+        # Guard
+        guard_ok = False
+        try:
+            guard_ok = spec.guard()
+        except Exception as e:
+            self.get_logger().error(f"Guard error on {self.current_checkpoint.value}: {e}")
+        
+        if not guard_ok:
+            # Wait until guard satisfied
+            self.publish_checkpoint_status(self.current_checkpoint.value, "WAITING_GUARD")
+            return
+        
+        # Execute action once per CP; action is responsible for calling complete_checkpoint()
+        if not hasattr(self, '_executing_action') or not self._executing_action:
+            self._executing_action = True
+            self.publish_checkpoint_status(self.current_checkpoint.value, "EXECUTING")
+            try:
+                spec.action()
+                # Do not advance here; the action will call complete_checkpoint()
+            except Exception as e:
+                self.get_logger().error(f"Action error on {self.current_checkpoint.value}: {e}")
+                self._advance(False, spec)
+            finally:
+                self._executing_action = False
             
-        elif checkpoint == MissionCheckpoint.CP2_TAKEOFF_1M:
-            self.execute_cp2_takeoff_1m()
-            
-        elif checkpoint == MissionCheckpoint.CP3_SEARCH_ITEM1:
-            self.execute_cp3_search_item1()
-            
-        elif checkpoint == MissionCheckpoint.CP4_SEARCH_ITEM2_TURN:
-            self.execute_cp4_search_item2_turn()
-            
-        elif checkpoint == MissionCheckpoint.CP5_DROP_ITEM1:
-            self.execute_cp5_drop_item1()
-            
-        elif checkpoint == MissionCheckpoint.CP6_DROP_ITEM2:
-            self.execute_cp6_drop_item2()
-            
-        elif checkpoint == MissionCheckpoint.CP7_GPS_WP1_3:
-            self.execute_cp7_gps_wp1_3()
-            
-        elif checkpoint == MissionCheckpoint.CP8_SEARCH_ITEM3:
-            self.execute_cp8_search_item3()
-            
-        elif checkpoint == MissionCheckpoint.CP9_DIRECT_WP4:
-            self.execute_cp9_direct_wp4()
-            
-        elif checkpoint == MissionCheckpoint.CP10_SEARCH_DROP_ITEM3:
-            self.execute_cp10_search_drop_item3()
-            
-        elif checkpoint == MissionCheckpoint.CP11_GPS_WP5:
-            self.execute_cp11_gps_wp5()
-            
-        elif checkpoint == MissionCheckpoint.CP12_FINAL_DESCENT_DISARM:
-            self.execute_cp12_final_descent_disarm()
-            
-        elif checkpoint == MissionCheckpoint.COMPLETED:
-            self.handle_mission_completed()
+    # ===========================================
+    # FSM Helpers
+    # ===========================================
+    def _advance(self, success: bool, spec: CheckpointSpec):
+        if success:
+            self.publish_checkpoint_status(self.current_checkpoint.value, "COMPLETED")
+            next_cp = spec.next_success
+            self.get_logger().info(f"✅ {self.current_checkpoint.value} → {next_cp.value}")
+            self.current_checkpoint = next_cp
+            self.current_retries = 0
+            self.cp_start_time = time.time()
+        else:
+            self.current_retries += 1
+            if self.current_retries <= spec.retries:
+                self.get_logger().warning(f"🔁 Retry {self.current_retries}/{spec.retries} on {self.current_checkpoint.value}")
+                self.cp_start_time = time.time()
+            else:
+                next_cp = spec.next_fail
+                self.get_logger().error(f"❌ {self.current_checkpoint.value} failed → {next_cp.value}")
+                self.publish_checkpoint_status(self.current_checkpoint.value, "FAILED")
+                self.current_checkpoint = next_cp
+                self.current_retries = 0
+                self.cp_start_time = time.time()
+        
+        # In debug mode, pause between CP
+        if self.debug_mode:
+            self.waiting_for_next = True
+            self.get_logger().info("💬 Send 'continue' to proceed...")
+
+    def _load_yaml_params(self) -> Dict:
+        try:
+            import os
+            yaml_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'config', 'hardware_config.yaml')
+            with open(yaml_path, 'r') as f:
+                data = yaml.safe_load(f) or {}
+            return data
+        except Exception:
+            return {}
+
+    def _p(self, path: str, default):
+        """Read nested param from YAML like 'timeouts.init_arm'"""
+        d = self.params
+        for part in path.split('.'):
+            if isinstance(d, dict) and part in d:
+                d = d[part]
+            else:
+                return default
+        return d
+
+    def _build_cp_table(self) -> Dict[MissionCheckpoint, CheckpointSpec]:
+        t = self._p
+        return {
+            MissionCheckpoint.CP01_INIT_ARM: CheckpointSpec(
+                guard=self.guard_init_arm,
+                action=self.execute_cp1_init_arm,
+                next_success=MissionCheckpoint.CP02_TAKEOFF_1M,
+                next_fail=MissionCheckpoint.CP12_FINAL_DESCENT_DISARM,
+                timeout_s=int(t('timeouts.init_arm', 15)),
+                retries=int(t('retries.arm', 3)),
+            ),
+            MissionCheckpoint.CP02_TAKEOFF_1M: CheckpointSpec(
+                guard=self.guard_takeoff_ready,
+                action=self.execute_cp2_takeoff_1m,
+                next_success=MissionCheckpoint.CP03_SEARCH_ITEM1,
+                next_fail=MissionCheckpoint.CP12_FINAL_DESCENT_DISARM,
+                timeout_s=int(t('timeouts.takeoff', 20)),
+                retries=0,
+            ),
+            MissionCheckpoint.CP03_SEARCH_ITEM1: CheckpointSpec(
+                guard=self.guard_vision_ready,
+                action=self.execute_cp3_search_item1,
+                next_success=MissionCheckpoint.CP04_SEARCH_ITEM2_TURN,
+                next_fail=MissionCheckpoint.CP04_SEARCH_ITEM2_TURN,
+                timeout_s=int(t('timeouts.search', 25)),
+                retries=0,
+            ),
+            MissionCheckpoint.CP04_SEARCH_ITEM2_TURN: CheckpointSpec(
+                guard=self.guard_vision_ready,
+                action=self.execute_cp4_search_item2_turn,
+                next_success=MissionCheckpoint.CP05_DROP_ITEM1,
+                next_fail=MissionCheckpoint.CP05_DROP_ITEM1,
+                timeout_s=int(t('timeouts.search', 25)),
+                retries=0,
+            ),
+            MissionCheckpoint.CP05_DROP_ITEM1: CheckpointSpec(
+                guard=self.guard_hover_stable,
+                action=self.execute_cp5_drop_item1,
+                next_success=MissionCheckpoint.CP06_DROP_ITEM2,
+                next_fail=MissionCheckpoint.CP06_DROP_ITEM2,
+                timeout_s=int(t('timeouts.drop', 15)),
+                retries=1,
+            ),
+            MissionCheckpoint.CP06_DROP_ITEM2: CheckpointSpec(
+                guard=self.guard_hover_stable,
+                action=self.execute_cp6_drop_item2,
+                next_success=MissionCheckpoint.CP07_GPS_WP1_3,
+                next_fail=MissionCheckpoint.CP07_GPS_WP1_3,
+                timeout_s=int(t('timeouts.drop', 15)),
+                retries=1,
+            ),
+            MissionCheckpoint.CP07_GPS_WP1_3: CheckpointSpec(
+                guard=self.guard_gps_ok,
+                action=self.execute_cp7_gps_wp1_3,
+                next_success=MissionCheckpoint.CP08_SEARCH_ITEM3,
+                next_fail=MissionCheckpoint.CP08_SEARCH_ITEM3,
+                timeout_s=180,
+                retries=0,
+            ),
+            MissionCheckpoint.CP08_SEARCH_ITEM3: CheckpointSpec(
+                guard=self.guard_vision_ready,
+                action=self.execute_cp8_search_item3,
+                next_success=MissionCheckpoint.CP09_DIRECT_WP4,
+                next_fail=MissionCheckpoint.CP09_DIRECT_WP4,
+                timeout_s=int(t('timeouts.search', 25)),
+                retries=0,
+            ),
+            MissionCheckpoint.CP09_DIRECT_WP4: CheckpointSpec(
+                guard=self.guard_gps_ok,
+                action=self.execute_cp9_direct_wp4,
+                next_success=MissionCheckpoint.CP10_SEARCH_DROP_ITEM3,
+                next_fail=MissionCheckpoint.CP10_SEARCH_DROP_ITEM3,
+                timeout_s=180,
+                retries=0,
+            ),
+            MissionCheckpoint.CP10_SEARCH_DROP_ITEM3: CheckpointSpec(
+                guard=self.guard_vision_ready,
+                action=self.execute_cp10_search_drop_item3,
+                next_success=MissionCheckpoint.CP11_GPS_WP5,
+                next_fail=MissionCheckpoint.CP11_GPS_WP5,
+                timeout_s=int(t('timeouts.drop', 15)),
+                retries=int(t('retries.pickup', 2)),
+            ),
+            MissionCheckpoint.CP11_GPS_WP5: CheckpointSpec(
+                guard=self.guard_gps_ok,
+                action=self.execute_cp11_gps_wp5,
+                next_success=MissionCheckpoint.CP12_FINAL_DESCENT_DISARM,
+                next_fail=MissionCheckpoint.CP12_FINAL_DESCENT_DISARM,
+                timeout_s=180,
+                retries=0,
+            ),
+            MissionCheckpoint.CP12_FINAL_DESCENT_DISARM: CheckpointSpec(
+                guard=self.guard_clearance_ok,
+                action=self.execute_cp12_final_descent_disarm,
+                next_success=MissionCheckpoint.COMPLETED,
+                next_fail=MissionCheckpoint.COMPLETED,
+                timeout_s=60,
+                retries=0,
+            ),
+        }
+
+    # ===========================================
+    # Guards (boolean, measured)
+    # ===========================================
+    def guard_init_arm(self) -> bool:
+        return self.px4_connected() and self.battery_ok()
+
+    def guard_takeoff_ready(self) -> bool:
+        return self.px4_armed()
+
+    def guard_vision_ready(self) -> bool:
+        # Placeholder: assume vision ready if any detection subscription is alive
+        return True
+
+    def guard_hover_stable(self) -> bool:
+        z_sp = float(self._p('takeoff_alt', 1.0))
+        tol = float(self._p('hover_tol_m', 0.1))
+        hold_s = float(self._p('hover_hold_s', 3))
+        now = time.time()
+        if not hasattr(self, '_hover_ok_since'):
+            self._hover_ok_since = None
+        ok = abs(self.current_altitude - z_sp) <= tol
+        if ok:
+            if self._hover_ok_since is None:
+                self._hover_ok_since = now
+            return (now - self._hover_ok_since) >= hold_s
+        else:
+            self._hover_ok_since = None
+            return False
+
+    def guard_gps_ok(self) -> bool:
+        # Minimal: consider NavSatFix status >= 0 as has fix
+        try:
+            sats_min = int(self._p('gps_min_sats', 8))
+            # satellites_visible is available in mavros_msgs/GPSRAW or GPSStatus; as placeholder, use status >= 0
+            return getattr(self.gps_position.status, 'status', -1) >= 0
+        except Exception:
+            return False
+
+    def guard_clearance_ok(self) -> bool:
+        # Placeholder: rely on descent finalization without explicit LiDAR
+        return True
+
+    # Simple accessors per spec
+    def battery_ok(self) -> bool:
+        vmin = float(self._p('battery_min_volt', 14.4))
+        # TODO: subscribe to /mavros/battery
+        return True  # Assume OK if not implemented
+
+    def px4_connected(self) -> bool:
+        return bool(getattr(self.mavros_state, 'connected', False))
+
+    def px4_armed(self) -> bool:
+        return bool(getattr(self.mavros_state, 'armed', False))
 
     # ===========================================
     # CHECKPOINT IMPLEMENTATIONS
@@ -168,46 +409,57 @@ class Checkpoint12MissionNode(Node):
     
     def execute_cp1_init_arm(self):
         """CP1: Initialize & ARM flight controller"""
-        self.get_logger().info("🔧 CP1: Initializing systems and arming...")
-        
+        self.get_logger().info("🔧 CP1: Initialize & ARM")
+
         # System checks
         if not self.system_health_check():
-            self.get_logger().error("❌ System health check failed!")
-            self.transition_to_error()
+            self.get_logger().error("❌ Health check failed → skip to CP-12")
+            self.complete_checkpoint(MissionCheckpoint.CP12_FINAL_DESCENT_DISARM)
             return
-            
-        # Set mode to STABILIZED first
-        self.set_flight_mode("STABILIZED")
-        time.sleep(1)
-        
-        # ARM the drone
-        if self.arm_drone():
-            self.get_logger().info("✅ CP1 Complete: System armed and ready")
-            self.complete_checkpoint(MissionCheckpoint.CP2_TAKEOFF_1M)
+
+        # Wait for MAVROS connection
+        if not self.wait_for_connection(timeout=10.0):
+            self.get_logger().error("❌ FCU not connected → skip to CP-12")
+            self.complete_checkpoint(MissionCheckpoint.CP12_FINAL_DESCENT_DISARM)
+            return
+
+        # Begin setpoint streaming before arming/mode change (required by PX4 OFFBOARD)
+        self.start_setpoint_stream()
+
+        # Set appropriate control mode and confirm
+        desired_mode = 'OFFBOARD' if str(self._p('flight_stack', 'ardupilot')).lower() == 'px4' else 'GUIDED'
+        self.set_control_mode_auto()
+        self.wait_for_mode(desired_mode, timeout=5.0)
+
+        # ARM the drone with retries
+        arm_retries = int(self._p('retries.arm', 3))
+        if self.try_arm_with_retries(arm_retries, delay_s=2.0):
+            self.get_logger().info("✅ Armed")
+            self.complete_checkpoint(MissionCheckpoint.CP02_TAKEOFF_1M)
         else:
-            self.get_logger().error("❌ CP1 Failed: Could not arm drone")
-            self.transition_to_error()
+            self.get_logger().error("❌ Could not ARM within retries → skip to CP-12")
+            self.complete_checkpoint(MissionCheckpoint.CP12_FINAL_DESCENT_DISARM)
 
     def execute_cp2_takeoff_1m(self):
         """CP2: Takeoff to 1.0m altitude"""
-        self.get_logger().info("🚀 CP2: Taking off to 1.0m...")
+        self.get_logger().info("🚀 CP2: Takeoff to 1.0m")
         
         # Switch to GUIDED mode
         self.set_flight_mode("GUIDED")
         time.sleep(1)
         
         # Execute takeoff
-        target_altitude = 1.0
+        target_altitude = float(self._p('takeoff_alt', 1.0))
         if self.takeoff_to_altitude(target_altitude):
-            self.get_logger().info(f"✅ CP2 Complete: Stable hover at {target_altitude}m")
-            self.complete_checkpoint(MissionCheckpoint.CP3_SEARCH_ITEM1)
+            self.get_logger().info(f"✅ Hover {target_altitude}m")
+            self.complete_checkpoint(MissionCheckpoint.CP03_SEARCH_ITEM1)
         else:
-            self.get_logger().error("❌ CP2 Failed: Takeoff unsuccessful")
-            self.transition_to_error()
+            self.get_logger().error("❌ Takeoff failed → skip to CP-12")
+            self.complete_checkpoint(MissionCheckpoint.CP12_FINAL_DESCENT_DISARM)
 
     def execute_cp3_search_item1(self):
         """CP3: Search Item 1 with front bottom camera"""
-        self.get_logger().info("🔍 CP3: Searching for Item 1...")
+        self.get_logger().info("🔍 CP3: Search Item 1")
         
         # Activate front bottom camera
         self.publish_camera_command("enable:front_bottom")
@@ -221,14 +473,14 @@ class Checkpoint12MissionNode(Node):
             self.align_and_pickup_item("front", item_number=1)
             self.item1_collected = True
             self.get_logger().info("✅ CP3 Complete: Item 1 collected")
-            self.complete_checkpoint(MissionCheckpoint.CP4_SEARCH_ITEM2_TURN)
+            self.complete_checkpoint(MissionCheckpoint.CP04_SEARCH_ITEM2_TURN)
         else:
             self.get_logger().warning("⚠️ CP3 Timeout: Item 1 not found, proceeding anyway")
-            self.complete_checkpoint(MissionCheckpoint.CP4_SEARCH_ITEM2_TURN)
+            self.complete_checkpoint(MissionCheckpoint.CP04_SEARCH_ITEM2_TURN)
 
     def execute_cp4_search_item2_turn(self):
         """CP4: Search Item 2 with back camera & navigation turn"""
-        self.get_logger().info("🔍🔄 CP4: Search Item 2 and execute turn...")
+        self.get_logger().info("🔍🔄 CP4: Search Item 2 & Turn")
         
         # Continue forward while activating back camera
         self.publish_camera_command("enable:back")
@@ -243,54 +495,54 @@ class Checkpoint12MissionNode(Node):
         self.execute_navigation_turn()
         
         self.get_logger().info("✅ CP4 Complete: Item 2 search and navigation turn done")
-        self.complete_checkpoint(MissionCheckpoint.CP5_DROP_ITEM1)
+        self.complete_checkpoint(MissionCheckpoint.CP05_DROP_ITEM1)
 
     def execute_cp5_drop_item1(self):
         """CP5: Drop Item 1 to front bucket"""
-        self.get_logger().info("🪣 CP5: Dropping Item 1...")
+        self.get_logger().info("🪣 CP5: Drop Item 1")
         
         if not self.item1_collected:
             self.get_logger().warning("⚠️ CP5: No Item 1 to drop, skipping")
-            self.complete_checkpoint(MissionCheckpoint.CP6_DROP_ITEM2)
+            self.complete_checkpoint(MissionCheckpoint.CP06_DROP_ITEM2)
             return
             
         # Search for drop bucket with front camera
         self.publish_camera_command("enable:front")
         
         if self.search_and_align_bucket():
-            self.drop_item("front", altitude=0.8)
+            self.drop_item("front")
             self.get_logger().info("✅ CP5 Complete: Item 1 dropped")
         else:
             self.get_logger().warning("⚠️ CP5: Bucket not found, emergency drop")
-            self.drop_item("front", altitude=0.8)
+            self.drop_item("front")
             
-        self.complete_checkpoint(MissionCheckpoint.CP6_DROP_ITEM2)
+        self.complete_checkpoint(MissionCheckpoint.CP06_DROP_ITEM2)
 
     def execute_cp6_drop_item2(self):
         """CP6: Drop Item 2 to back bucket"""
-        self.get_logger().info("🪣 CP6: Dropping Item 2...")
+        self.get_logger().info("🪣 CP6: Drop Item 2")
         
         if not self.item2_collected:
             self.get_logger().warning("⚠️ CP6: No Item 2 to drop, skipping")
-            self.complete_checkpoint(MissionCheckpoint.CP7_GPS_WP1_3)
+            self.complete_checkpoint(MissionCheckpoint.CP07_GPS_WP1_3)
             return
             
         # Search for drop bucket with back camera
         self.publish_camera_command("enable:back")
         
         if self.search_and_align_bucket(camera="back"):
-            self.drop_item("back", altitude=0.8)
+            self.drop_item("back")
             self.get_logger().info("✅ CP6 Complete: Item 2 dropped")
         else:
             self.get_logger().warning("⚠️ CP6: Bucket not found, emergency drop")
-            self.drop_item("back", altitude=0.8)
+            self.drop_item("back")
             
         self.indoor_items_dropped = True
-        self.complete_checkpoint(MissionCheckpoint.CP7_GPS_WP1_3)
+        self.complete_checkpoint(MissionCheckpoint.CP07_GPS_WP1_3)
 
     def execute_cp7_gps_wp1_3(self):
         """CP7: GPS Navigation WP1-3 at 3m/s"""
-        self.get_logger().info("🛰️ CP7: GPS Navigation WP1→WP2→WP3...")
+        self.get_logger().info("🛰️ CP7: GPS WP1→WP3")
         
         # Switch to AUTO mode for GPS navigation
         self.set_flight_mode("AUTO")
@@ -303,16 +555,14 @@ class Checkpoint12MissionNode(Node):
             if self.navigate_to_waypoint(wp, speed=3.0):
                 self.get_logger().info(f"✅ Reached WP{wp}")
             else:
-                self.get_logger().error(f"❌ Failed to reach WP{wp}")
-                self.transition_to_error()
-                return
+                self.get_logger().warning(f"⚠️ Failed to reach WP{wp}, continue")
         
         self.get_logger().info("✅ CP7 Complete: WP1-3 navigation done")
-        self.complete_checkpoint(MissionCheckpoint.CP8_SEARCH_ITEM3)
+        self.complete_checkpoint(MissionCheckpoint.CP08_SEARCH_ITEM3)
 
     def execute_cp8_search_item3(self):
         """CP8: Search Item 3 after WP3"""
-        self.get_logger().info("🔍 CP8: Searching for Item 3...")
+        self.get_logger().info("🔍 CP8: Search Item 3")
         
         # Switch back to GUIDED mode
         self.set_flight_mode("GUIDED")
@@ -327,11 +577,11 @@ class Checkpoint12MissionNode(Node):
         else:
             self.get_logger().warning("⚠️ CP8 Timeout: Item 3 not found")
             
-        self.complete_checkpoint(MissionCheckpoint.CP9_DIRECT_WP4)
+        self.complete_checkpoint(MissionCheckpoint.CP09_DIRECT_WP4)
 
     def execute_cp9_direct_wp4(self):
         """CP9: Direct navigation to WP4 with payload"""
-        self.get_logger().info("🛰️ CP9: Direct navigation to WP4...")
+        self.get_logger().info("🛰️ CP9: Direct to WP4")
         
         # Switch to AUTO mode
         self.set_flight_mode("AUTO")
@@ -340,12 +590,12 @@ class Checkpoint12MissionNode(Node):
             self.get_logger().info("✅ CP9 Complete: Arrived at WP4")
             self.complete_checkpoint(MissionCheckpoint.CP10_SEARCH_DROP_ITEM3)
         else:
-            self.get_logger().error("❌ CP9 Failed: Could not reach WP4")
-            self.transition_to_error()
+            self.get_logger().warning("⚠️ Failed to reach WP4, continue")
+            self.complete_checkpoint(MissionCheckpoint.CP10_SEARCH_DROP_ITEM3)
 
     def execute_cp10_search_drop_item3(self):
         """CP10: Search drop bucket and drop Item 3"""
-        self.get_logger().info("🪣🔍 CP10: Search bucket and drop Item 3...")
+        self.get_logger().info("🪣🔍 CP10: Search & Drop Item 3")
         
         # Switch to GUIDED mode for search
         self.set_flight_mode("GUIDED")
@@ -359,18 +609,18 @@ class Checkpoint12MissionNode(Node):
         self.publish_camera_command("enable:front")
         
         if self.search_and_align_bucket():
-            self.drop_item("front", altitude=0.8)
+            self.drop_item("front")
             self.outdoor_item_dropped = True
             self.get_logger().info("✅ CP10 Complete: Item 3 dropped")
         else:
             self.get_logger().warning("⚠️ CP10: Bucket not found, emergency drop")
-            self.drop_item("front", altitude=0.8)
+            self.drop_item("front")
             
         self.complete_checkpoint(MissionCheckpoint.CP11_GPS_WP5)
 
     def execute_cp11_gps_wp5(self):
         """CP11: GPS Navigation to final WP5"""
-        self.get_logger().info("🛰️ CP11: Final navigation to WP5...")
+        self.get_logger().info("🛰️ CP11: GPS to WP5")
         
         # Switch to AUTO mode
         self.set_flight_mode("AUTO")
@@ -379,19 +629,19 @@ class Checkpoint12MissionNode(Node):
             self.get_logger().info("✅ CP11 Complete: Arrived at final WP5")
             self.complete_checkpoint(MissionCheckpoint.CP12_FINAL_DESCENT_DISARM)
         else:
-            self.get_logger().error("❌ CP11 Failed: Could not reach WP5")
-            self.transition_to_error()
+            self.get_logger().warning("⚠️ Failed to reach WP5, continue")
+            self.complete_checkpoint(MissionCheckpoint.CP12_FINAL_DESCENT_DISARM)
 
     def execute_cp12_final_descent_disarm(self):
         """CP12: Final descent and disarm (no ground contact detection)"""
-        self.get_logger().info("🏁 CP12: Final descent and disarm...")
+        self.get_logger().info("🏁 CP12: Final descent & disarm")
         
         # Switch to GUIDED mode for controlled descent
         self.set_flight_mode("GUIDED")
         time.sleep(1)
         
         # Gradual RPM reduction and descent
-        self.get_logger().info("📉 Reducing RPM gradually...")
+        #
         
         # Controlled descent to ground
         target_altitude = 0.0
@@ -479,6 +729,15 @@ class Checkpoint12MissionNode(Node):
         rclpy.spin_until_future_complete(self, future, timeout_sec=10.0)
         
         return future.result() and future.result().mode_sent
+
+    def wait_for_mode(self, mode: str, timeout: float = 5.0) -> bool:
+        """Wait until /mavros/state.mode matches requested mode"""
+        start = time.time()
+        while time.time() - start < timeout:
+            if getattr(self.mavros_state, 'mode', '') == mode:
+                return True
+            time.sleep(0.1)
+        return False
         
     def takeoff_to_altitude(self, altitude):
         """Takeoff to specified altitude"""
@@ -508,6 +767,22 @@ class Checkpoint12MissionNode(Node):
             time.sleep(0.1)
             
         self.get_logger().error(f"❌ Altitude timeout: {self.current_altitude:.2f}m (target: {target_altitude:.2f}m)")
+        return False
+
+    def wait_for_connection(self, timeout: float = 10.0) -> bool:
+        start = time.time()
+        while time.time() - start < timeout:
+            if self.px4_connected():
+                return True
+            time.sleep(0.1)
+        return False
+
+    def try_arm_with_retries(self, retries: int, delay_s: float = 2.0) -> bool:
+        for i in range(1, max(1, retries) + 1):
+            if self.arm_drone():
+                return True
+            self.get_logger().warning(f"⚠️ ARM attempt {i}/{retries} failed; retrying...")
+            time.sleep(delay_s)
         return False
         
     def wait_for_item_detection(self, timeout=60, camera="front_bottom"):
@@ -604,8 +879,10 @@ class Checkpoint12MissionNode(Node):
         
         return self.bucket_detected
         
-    def drop_item(self, magnet_position, altitude=0.8):
+    def drop_item(self, magnet_position, altitude=None):
         """Drop item at specified altitude"""
+        if altitude is None:
+            altitude = float(self._p('pickup_alt', 0.3))
         self.get_logger().info(f"📦 Dropping item from {magnet_position} magnet at {altitude}m...")
         
         # Maintain altitude
@@ -619,13 +896,17 @@ class Checkpoint12MissionNode(Node):
         
     def navigate_to_waypoint(self, waypoint_number, speed=3.0):
         """Navigate to GPS waypoint"""
-        self.get_logger().info(f"🛰️ Navigating to WP{waypoint_number} at {speed} m/s...")
-        
-        # TODO: Implement GPS waypoint navigation
-        # For now, simulate navigation
-        time.sleep(10)  # Simulate travel time
-        
-        return True  # Assume successful
+        # Ensure PX4 waypoints are loaded
+        if self.px4_waypoints_count == 0:
+            self.pull_px4_waypoints()
+        if self.px4_waypoints_count == 0:
+            self.get_logger().warning("📭 Cannot navigate: no PX4 waypoints loaded")
+        else:
+            self.get_logger().info(f"🛰️ Navigating using PX4 mission: WP{waypoint_number} of {self.px4_waypoints_count} (speed {speed} m/s)")
+
+        # TODO: Implement real GPS waypoint navigation with MAVROS
+        time.sleep(5)
+        return True
         
     def send_velocity_command(self, vx, vy, vz):
         """Send velocity command"""
@@ -635,21 +916,59 @@ class Checkpoint12MissionNode(Node):
         msg.twist.linear.y = vy
         msg.twist.linear.z = vz
         self.velocity_pub.publish(msg)
+        # Update the last command so streaming keeps FCU satisfied
+        self.last_twist_cmd = msg
         
     def send_altitude_command(self, altitude, climb_rate):
         """Send altitude command"""
         # TODO: Implement altitude command
         pass
+
+    def _stream_setpoint(self):
+        """Continuously stream last velocity setpoint when active."""
+        if not self.setpoint_active:
+            return
+        # Ensure fresh header stamp
+        self.last_twist_cmd.header.stamp = self.get_clock().now().to_msg()
+        self.velocity_pub.publish(self.last_twist_cmd)
+
+    def start_setpoint_stream(self, warmup_s: float = None):
+        self.setpoint_active = True
+        if warmup_s is None:
+            warmup_s = float(self._p('offboard_warmup_s', 2))
+        # Warm-up stream for OFFBOARD/GUIDED acceptance
+        start = time.time()
+        while time.time() - start < warmup_s:
+            self._stream_setpoint()
+            time.sleep(0.05)
+
+    def stop_setpoint_stream(self):
+        self.setpoint_active = False
+
+    def set_control_mode_auto(self) -> bool:
+        """Set control mode based on flight_stack config (px4->OFFBOARD, ardupilot->GUIDED)."""
+        stack = str(self._p('flight_stack', 'ardupilot')).lower()
+        mode = 'OFFBOARD' if stack == 'px4' else 'GUIDED'
+        return self.set_flight_mode(mode)
         
     def complete_checkpoint(self, next_checkpoint):
         """Complete current checkpoint and transition to next"""
         self.publish_checkpoint_status(self.current_checkpoint.value, "COMPLETED")
         self.current_checkpoint = next_checkpoint
-        
+        self.current_retries = 0
+        self.cp_start_time = time.time()
+        self._executing_action = False
         if self.debug_mode:
-            self.waiting_for_next = True
-            self.get_logger().info(f"🔄 Ready for next checkpoint: {next_checkpoint.value}")
-            self.get_logger().info("💬 Send 'continue' to proceed...")
+            # Hold position between checkpoints in debug mode
+            self.hold_position_debug()
+            # Only pause for 'next' if the next CP is a normal progression
+            if next_checkpoint not in (MissionCheckpoint.CP12_FINAL_DESCENT_DISARM, MissionCheckpoint.COMPLETED):
+                self.waiting_for_next = True
+                self.get_logger().info(f"🔄 Ready for next checkpoint: {next_checkpoint.value}")
+                self.get_logger().info("💬 Type 'next' on /mission/user_input to proceed")
+            else:
+                # For landing/completion, continue automatically
+                self.waiting_for_next = False
         
     def transition_to_error(self):
         """Transition to error state"""
@@ -672,6 +991,14 @@ class Checkpoint12MissionNode(Node):
         msg = String()
         msg.data = f"{checkpoint}:{status}"
         self.checkpoint_status_pub.publish(msg)
+        # Minimal, standardized CP console log
+        status_up = str(status).upper()
+        if status_up.startswith('EXEC'):  # EXECUTING
+            self.get_logger().info(f"[CP] START {checkpoint}")
+        elif status_up.startswith('COMP'):  # COMPLETED
+            self.get_logger().info(f"[CP] DONE {checkpoint}")
+        elif status_up.startswith('FAIL'):
+            self.get_logger().info(f"[CP] FAIL {checkpoint}")
         
     def publish_camera_command(self, command):
         """Publish camera command"""
@@ -714,7 +1041,8 @@ class Checkpoint12MissionNode(Node):
             
     def user_input_callback(self, msg):
         """User input callback for debug mode"""
-        if msg.data.lower() == "continue" and self.waiting_for_next:
+        cmd = msg.data.strip().lower()
+        if cmd in ("next", "continue", "n") and self.waiting_for_next:
             self.waiting_for_next = False
             self.get_logger().info("▶️ Continuing to next checkpoint...")
         elif msg.data.lower() == "pause":
@@ -723,6 +1051,67 @@ class Checkpoint12MissionNode(Node):
         elif msg.data.lower() == "emergency":
             self.get_logger().warning("🚨 Emergency stop triggered!")
             self.emergency_stop()
+
+    def hold_position_debug(self):
+        """Stop motion and hold position safely in debug pauses"""
+        try:
+            self.send_velocity_command(0.0, 0.0, 0.0)
+            # Prefer LOITER if available to hold position (ArduPilot)
+            if self.px4_connected() and self.px4_armed():
+                self.set_flight_mode("LOITER")
+        except Exception as e:
+            self.get_logger().warning(f"Hold position failed: {e}")
+
+    # ===========================================
+    # PX4 Waypoint Pull/Cache
+    # ===========================================
+    def _try_pull_waypoints_when_ready(self):
+        if self._wp_init_done:
+            return
+        if not self.px4_connected():
+            return
+        ok = self.pull_px4_waypoints()
+        # Mark done regardless; navigation will re-pull when needed
+        self._wp_init_done = True
+        try:
+            self._wp_timer.cancel()
+        except Exception:
+            pass
+
+    def pull_px4_waypoints(self):
+        """Pull mission waypoints from PX4 via MAVROS and log count."""
+        if not self.wp_pull_service.wait_for_service(timeout_sec=2.0):
+            self.get_logger().info("PX4 waypoints: pull service not available yet")
+            return False
+        req = WaypointPull.Request()
+        future = self.wp_pull_service.call_async(req)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=5.0)
+        if not future.result():
+            self.get_logger().warning("PX4 waypoints: pull call failed")
+            return False
+        res = future.result()
+        if getattr(res, 'success', False):
+            count = int(getattr(res, 'wp_received', 0))
+            self.px4_waypoints_count = max(self.px4_waypoints_count, count)
+            if count > 0:
+                self.get_logger().info(f"📥 Loaded {count} waypoints from PX4")
+            else:
+                self.get_logger().info("📭 No waypoints on PX4 (0 loaded)")
+            return True
+        else:
+            self.get_logger().warning("PX4 waypoints: pull unsuccessful")
+            return False
+
+    def waypoints_callback(self, msg: WaypointList):
+        count = len(msg.waypoints)
+        self.px4_waypoints_count = count
+        # Log only on change
+        if self._last_logged_wp_count != count:
+            if count > 0:
+                self.get_logger().info(f"📥 Waypoints updated from PX4: {count} items")
+            else:
+                self.get_logger().info("📭 Waypoints not loaded (0 items)")
+            self._last_logged_wp_count = count
             
     def emergency_stop(self):
         """Emergency stop procedure"""

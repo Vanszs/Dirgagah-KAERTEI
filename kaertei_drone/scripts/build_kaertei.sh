@@ -117,6 +117,19 @@ colcon build \
 if [ $? -eq 0 ]; then
     echo "✅ Build successful!"
     
+    # Ensure ROS 2 launch finds executables under lib/<pkg>
+    LIBEXEC_DIR="$INSTALL_DIR/kaertei_drone/lib/kaertei_drone"
+    BIN_DIR="$INSTALL_DIR/kaertei_drone/bin"
+    if [ -d "$BIN_DIR" ]; then
+        mkdir -p "$LIBEXEC_DIR"
+        for exe in "$BIN_DIR"/*; do
+            name="$(basename "$exe")"
+            # Create/update symlink into lib/<pkg> so launch_ros can resolve it
+            ln -sf "../../bin/$name" "$LIBEXEC_DIR/$name"
+        done
+        echo "🔗 Ensured libexec wrappers in $LIBEXEC_DIR"
+    fi
+    
     echo "🔧 Setting up environment..."
     # Create environment setup script
     cat > "$SCRIPT_DIR/setup_kaertei.sh" << 'EOF'
