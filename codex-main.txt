@@ -1,6 +1,6 @@
 KAERTEI Project — Persistent Context (for future AI sessions)
 
-Last Updated: 2025-09-07
+Last Updated: 2025-09-08
 
 - Platform: Jetson Nano 4GB
 - OS: Ubuntu 20.04 (Focal)
@@ -27,6 +27,7 @@ Build/Run Baseline (Foxy)
 - Source: `/opt/ros/foxy/setup.bash` then build with colcon.
 - Build: `./kaertei_drone/scripts/build_kaertei.sh`
 - Run: `./kaertei_drone/scripts/run_kaertei.sh [debug|auto]`.
+- Auto-sourcing: `install_foxy.sh` appends ROS Foxy to `~/.bashrc`; `build_kaertei.sh` appends workspace `install/setup.bash` to `~/.bashrc`.
 
 Open Items to remember
 - Camera indices: unknown on Jetson Nano. Update here once discovered (e.g., front_bottom=/dev/video0, back=/dev/video2, front_nav=/dev/video4). If indices change during testing, update this file.
@@ -37,3 +38,26 @@ Change Log
 - 2025-09-07: Created local git branch `no-docker-foxy`. Remote push pending (credentials required).
 - 2025-09-07: Consolidated all shell scripts into `kaertei_drone/scripts/`; removed legacy Humble/22.04 and Docker-related scripts.
 - 2025-09-07: Set FCU to `/dev/ttyACM0:115200` and added RTK serial bridge on `/dev/ttyUSB0:115200`.
+ - 2025-09-08: Fixed colcon build error (importlib_metadata.EntryPoints) by upgrading `importlib_metadata`; updated `install_foxy.sh` to install `importlib_metadata>=4.6` and added preflight check in `build_kaertei.sh`.
+- 2025-09-08: Resolved packaging mismatch (canonicalize_version kw arg). Pinned tooling to use `packaging` providing `canonicalize_version(strip_trailing_zero=...)` and updated preflight to validate via `packaging.utils.canonicalize_version`.
+ - 2025-09-08: Added standalone debug scripts under `scripts/` for PX4/MAVROS connection and realtime GPS/compass monitoring.
+
+Build Error — Root Cause & Fix
+- Symptom: colcon fails with AttributeError: module `importlib_metadata` has no attribute `EntryPoints` when importing setuptools.
+- Root cause: On Ubuntu 20.04/Python 3.8, user-installed `setuptools` (new) expects `EntryPoints` API present only in newer `importlib_metadata`, but system `importlib_metadata` (apt) is old (1.x). This version skew breaks `setup.py` discovery.
+- Fix (one-time): `python3 -m pip install --user --upgrade importlib_metadata setuptools wheel`
+- Preventive: `install_foxy.sh` now upgrades `importlib_metadata>=4.6`. `build_kaertei.sh` checks compatibility and auto-upgrades `importlib_metadata` if missing.
+
+Additional Build Error — packaging mismatch
+- Symptom: TypeError: `canonicalize_version() got an unexpected keyword argument 'strip_trailing_zero'` during setup/egg_info.
+- Root cause: New `setuptools` expects newer `packaging` API; older `packaging` lacked this kw arg.
+- Fix (one-time): `python3 -m pip install --user --upgrade packaging setuptools wheel` (we now use packaging 24.2+).
+- Preventive: `install_foxy.sh` upgrades `packaging`; `build_kaertei.sh` validates via `from packaging.utils import canonicalize_version` and auto-upgrades if needed.
+
+Current Build Status
+- Build: OK on Ubuntu 20.04 + Python 3.8 after packaging/importlib_metadata alignment.
+- Executables path: `install/kaertei_drone/bin/` (build summary updated; old lib path not used for ament_python console scripts).
+
+Debug Scripts (Top-level `scripts/`)
+- `debug_px4_connection.sh`: Boots/attaches to MAVROS using `hardware_config.conf`, shows `/mavros/state` + heartbeat; supports override `FCU_PORT`/`FCU_BAUD` or arg `PORT:BAUD`.
+- `monitor_gps_compass.sh`: Runs a ROS 2 node that prints GPS lat/lon/alt + fix status + satellites, heading, and magnetometer (1 Hz).

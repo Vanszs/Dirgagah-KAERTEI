@@ -70,7 +70,17 @@ install_deps() {
     ros-$ROS_DISTRO-tf2-ros ros-$ROS_DISTRO-geometry-msgs ros-$ROS_DISTRO-sensor-msgs \
     v4l-utils usbutils
 
-  python3 -m pip install --user --upgrade pip setuptools wheel psutil PyYAML
+  # Ensure Python packaging tools are compatible on Ubuntu 20.04/Python 3.8.
+  # Newer setuptools expects importlib_metadata to expose EntryPoints API.
+  # Upgrade both to avoid colcon/setuptools errors during build.
+  python3 -m pip install --user --upgrade \
+    pip \
+    setuptools \
+    packaging \
+    importlib_metadata>=4.6 \
+    wheel \
+    psutil \
+    PyYAML
   ok "Dependencies installed"
 }
 

@@ -22,6 +22,79 @@ echo "📦 Install Directory: $INSTALL_DIR"
 echo "🔄 Setting up ROS2 environment (Foxy)..."
 source /opt/ros/foxy/setup.bash
 
+# Verify Python packaging compatibility (setuptools vs importlib_metadata)
+echo "🧪 Checking Python packaging compatibility..."
+python3 - <<'PY'
+import sys
+ok = True
+try:
+    import importlib_metadata as imd  # backport used by setuptools on py3.8
+    has_entrypoints = hasattr(imd, 'EntryPoints')
+except Exception as e:
+    has_entrypoints = False
+
+if not has_entrypoints:
+    sys.exit("MISSING_ENTRYPOINTS")
+print("✅ Packaging OK")
+PY
+
+if [[ $? -ne 0 ]]; then
+    echo "⚠️  Detected old importlib_metadata (missing EntryPoints). Fixing..."
+    python3 -m pip install --user --upgrade importlib_metadata >/dev/null || true
+    # Re-check
+    python3 - <<'PY'
+import sys
+try:
+    import importlib_metadata as imd
+    assert hasattr(imd, 'EntryPoints')
+    print('✅ Packaging OK after upgrade')
+except Exception:
+    print('❌ Packaging still incompatible. Run:')
+    print('   python3 -m pip install --user --upgrade importlib_metadata setuptools wheel')
+    sys.exit(1)
+PY
+    if [[ $? -ne 0 ]]; then
+        echo "❌ Build aborted due to Python packaging mismatch."
+        exit 1
+    fi
+fi
+
+# Verify packaging compatibility: canonicalize_version supports strip_trailing_zero
+echo "🧪 Checking packaging canonicalize_version..."
+python3 - <<'PY'
+import sys
+try:
+    from packaging.utils import canonicalize_version
+    # Call with kw-only arg expected by newer setuptools
+    canonicalize_version("1.0.0", strip_trailing_zero=False)
+    print('✅ packaging OK')
+except TypeError:
+    sys.exit('MISSING_PACKAGING_FEATURE')
+except Exception as e:
+    print('❌ packaging check error:', e)
+    sys.exit(1)
+PY
+
+if [[ $? -ne 0 ]]; then
+    echo "⚠️  Detected old packaging (no strip_trailing_zero). Upgrading..."
+    python3 -m pip install --user --upgrade packaging >/dev/null || true
+    python3 - <<'PY'
+import sys
+try:
+    from packaging.utils import canonicalize_version
+    canonicalize_version("1.0.0", strip_trailing_zero=False)
+    print('✅ packaging OK after upgrade')
+except Exception:
+    print('❌ Packaging still incompatible. Run:')
+    print('   python3 -m pip install --user --upgrade packaging setuptools wheel')
+    sys.exit(1)
+PY
+    if [[ $? -ne 0 ]]; then
+        echo "❌ Build aborted due to packaging version mismatch."
+        exit 1
+    fi
+fi
+
 # Clean previous build if requested
 if [[ "$1" == "clean" ]]; then
     echo "🧹 Cleaning previous build..."
@@ -57,7 +130,7 @@ EOF
     
     echo "🎯 Build Summary:"
     echo "   - Package: kaertei_drone v2.0.0"
-    echo "   - Built nodes: $(ls install/kaertei_drone/lib/kaertei_drone/ 2>/dev/null | wc -l) executables"
+    echo "   - Built nodes: $(ls install/kaertei_drone/bin/ 2>/dev/null | wc -l) executables"
     echo "   - Launch files: $(ls install/kaertei_drone/share/kaertei_drone/launch/ 2>/dev/null | wc -l) files"
     
     echo ""

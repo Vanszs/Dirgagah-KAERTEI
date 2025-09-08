@@ -168,6 +168,24 @@ export PATH="$HOME/.local/bin:$PATH"
 ./kaertei_drone/scripts/install_foxy.sh
 ```
 
+#### ❌ Build error: module 'importlib_metadata' has no attribute 'EntryPoints'
+Terjadi karena versi `setuptools` (user site) lebih baru dari `importlib_metadata` (system), umum pada Ubuntu 20.04/Python 3.8. Solusi cepat:
+```bash
+python3 -m pip install --user --upgrade importlib_metadata setuptools wheel
+# kemudian ulangi build
+./kaertei_drone/scripts/build_kaertei.sh
+```
+Catatan: Script `install_foxy.sh` sudah diupdate agar mencegah masalah ini.
+
+#### ❌ Build error: TypeError canonicalize_version(..., strip_trailing_zero=...)
+Ini muncul karena `setuptools` terbaru memanggil API `packaging.version.canonicalize_version` dengan argumen `strip_trailing_zero` yang tidak tersedia pada versi `packaging` lama. Perbaikan:
+```bash
+python3 -m pip install --user --upgrade packaging setuptools wheel
+# kemudian ulangi build
+./kaertei_drone/scripts/build_kaertei.sh
+```
+Catatan: `install_foxy.sh` dan `build_kaertei.sh` sudah mengecek/upgrade otomatis.
+
 #### **❌ "Hardware not detected"**
 ```bash
 # Cek koneksi hardware
@@ -190,6 +208,24 @@ just doctor
 ```
 
 **💡 Tip:** Lihat [TROUBLESHOOTING.md](TROUBLESHOOTING.md) untuk solusi lengkap masalah lainnya.
+
+---
+
+## 🧪 Debug Scripts (Realtime Tests)
+
+- `scripts/debug_px4_connection.sh`: Start/verify MAVROS connection to PX4 using `hardware_config.conf` (prints `/mavros/state` and heartbeat). Override with `FCU_PORT`/`FCU_BAUD` or `scripts/debug_px4_connection.sh /dev/ttyACM0:115200`.
+- `scripts/monitor_gps_compass.sh`: Realtime GPS + heading + magnetometer monitor (topics: `/mavros/global_position/*`, `/mavros/imu/mag`).
+
+Contoh pakai:
+```bash
+# Cek koneksi PX4 via MAVROS
+./scripts/debug_px4_connection.sh
+
+# Monitor GPS & kompas (Realtime)
+./scripts/monitor_gps_compass.sh
+```
+
+Catatan: script otomatis source ROS 2 Foxy + workspace (`kaertei_drone/scripts/setup_kaertei.sh`).
 
 ---
 
