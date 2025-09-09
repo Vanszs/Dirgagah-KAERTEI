@@ -7,7 +7,8 @@ import time
 import json
 
 from std_msgs.msg import String, Bool, Float32, Int32
-from geometry_msgs.msg import Point, Twist, Vector3, PoseStamped
+from geometry_msgs.msg import Point, Twist, TwistStamped, Vector3, PoseStamped
+from mavros_msgs.msg import PositionTarget
 from sensor_msgs.msg import Image, PointCloud2, NavSatFix, Range
 from mavros_msgs.msg import State, OverrideRCIn
 from mavros_msgs.srv import CommandBool as CommandBoolSrv, SetMode as SetModeSrv
@@ -54,15 +55,16 @@ class TopicAdaptersNode(Node):
         
         # Publishers to MAVROS
         self.mavros_rc_override_pub = self.create_publisher(
-            OverrideRCIn, '/mavros/rc/override', self.control_qos)
+            OverrideRCIn, '/mavros_node/rc/override', self.control_qos)
         self.mavros_setpoint_velocity_pub = self.create_publisher(
-            Twist, '/mavros/setpoint_velocity/cmd_vel_unstamped', self.control_qos)
-        self.mavros_setpoint_position_pub = self.create_publisher(
-            PoseStamped, '/mavros/setpoint_position/local', self.control_qos)
+            TwistStamped, '/mavros_node/setpoint_velocity/cmd_vel', self.control_qos)
+        # Switch to raw local setpoint (PositionTarget)
+        self.mavros_setpoint_raw_local_pub = self.create_publisher(
+            PositionTarget, '/mavros_node/setpoint_raw/local', self.control_qos)
         
         # Service clients for MAVROS commands
-        self.arm_service = self.create_client(CommandBoolSrv, '/mavros/cmd/arming')
-        self.set_mode_service = self.create_client(SetModeSrv, '/mavros/set_mode')
+        self.arm_service = self.create_client(CommandBoolSrv, '/mavros_node/mavros_node/arming')
+        self.set_mode_service = self.create_client(SetModeSrv, '/mavros_node/set_mode')
         
         # Subscribers from mission control
         self.velocity_command_sub = self.create_subscription(
@@ -193,14 +195,30 @@ class TopicAdaptersNode(Node):
     def velocity_command_callback(self, msg):
         """Forward velocity commands to MAVROS"""
         if self.get_parameter('enable_mavros_bridge').value:
-            self.mavros_setpoint_velocity_pub.publish(msg)
+            # Wrap Twist into TwistStamped for cmd_vel
+            ts = TwistStamped()
+            ts.header.stamp = self.get_clock().now().to_msg()
+            ts.twist = msg
+            self.mavros_setpoint_velocity_pub.publish(ts)
             if self.get_parameter('enable_debug_logging').value:
                 self.get_logger().debug(f"Velocity command: {msg.linear.x:.2f}, {msg.linear.y:.2f}, {msg.linear.z:.2f}")
     
     def position_command_callback(self, msg):
         """Forward position commands to MAVROS"""
         if self.get_parameter('enable_mavros_bridge').value:
-            self.mavros_setpoint_position_pub.publish(msg)
+            # Convert PoseStamped to PositionTarget (position-only control)
+            pt = PositionTarget()
+            pt.header.stamp = self.get_clock().now().to_msg()
+            pt.coordinate_frame = PositionTarget.FRAME_LOCAL_NED
+            pt.type_mask = (
+                PositionTarget.IGNORE_VX | PositionTarget.IGNORE_VY | PositionTarget.IGNORE_VZ |
+                PositionTarget.IGNORE_AFX | PositionTarget.IGNORE_AFY | PositionTarget.IGNORE_AFZ |
+                PositionTarget.IGNORE_YAW_RATE
+            )
+            pt.position.x = msg.pose.position.x
+            pt.position.y = msg.pose.position.y
+            pt.position.z = msg.pose.position.z
+            self.mavros_setpoint_raw_local_pub.publish(pt)
             if self.get_parameter('enable_debug_logging').value:
                 self.get_logger().debug(f"Position command: {msg.pose.position.x:.2f}, {msg.pose.position.y:.2f}, {msg.pose.position.z:.2f}")
     

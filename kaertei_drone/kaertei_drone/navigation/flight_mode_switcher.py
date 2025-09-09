@@ -6,8 +6,8 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 import time
 
 from std_msgs.msg import String, Bool
-from geometry_msgs.msg import Twist, PoseStamped
-from mavros_msgs.msg import State
+from geometry_msgs.msg import Twist, TwistStamped, PoseStamped
+from mavros_msgs.msg import State, PositionTarget
 from mavros_msgs.srv import CommandBool, SetMode
 from sensor_msgs.msg import NavSatFix
 
@@ -36,10 +36,11 @@ class FlightModeSwitcherNode(Node):
         )
         
         # Publishers for MAVROS
-        self.setpoint_position_pub = self.create_publisher(
-            PoseStamped, '/mavros/setpoint_position/local', qos_profile)
+        # Publish raw local setpoint (PositionTarget)
+        self.setpoint_raw_local_pub = self.create_publisher(
+            PositionTarget, '/mavros_node/setpoint_raw/local', qos_profile)
         self.setpoint_velocity_pub = self.create_publisher(
-            Twist, '/mavros/setpoint_velocity/cmd_vel_unstamped', qos_profile)
+            TwistStamped, '/mavros_node/setpoint_velocity/cmd_vel', qos_profile)
         
         # Status publishers
         self.flight_mode_status_pub = self.create_publisher(String, '/flight/mode_status', qos_profile)
@@ -54,8 +55,8 @@ class FlightModeSwitcherNode(Node):
             State, '/mavros/state', self.mavros_state_callback, qos_profile)
         
         # Service clients for MAVROS
-        self.arming_client = self.create_client(CommandBool, '/mavros/cmd/arming')
-        self.set_mode_client = self.create_client(SetMode, '/mavros/set_mode')
+        self.arming_client = self.create_client(CommandBool, '/mavros_node/mavros_node/arming')
+        self.set_mode_client = self.create_client(SetMode, '/mavros_node/set_mode')
         
         # Flight state
         self.current_flight_mode = "UNKNOWN"
@@ -317,12 +318,26 @@ class FlightModeSwitcherNode(Node):
         
         # Publish position setpoint if available
         if self.current_setpoint is not None:
-            self.current_setpoint.header.stamp = self.get_clock().now().to_msg()
-            self.setpoint_position_pub.publish(self.current_setpoint)
+            # Convert PoseStamped to PositionTarget (position only)
+            pt = PositionTarget()
+            pt.header.stamp = self.get_clock().now().to_msg()
+            pt.coordinate_frame = PositionTarget.FRAME_LOCAL_NED
+            pt.type_mask = (
+                PositionTarget.IGNORE_VX | PositionTarget.IGNORE_VY | PositionTarget.IGNORE_VZ |
+                PositionTarget.IGNORE_AFX | PositionTarget.IGNORE_AFY | PositionTarget.IGNORE_AFZ |
+                PositionTarget.IGNORE_YAW_RATE
+            )
+            pt.position.x = self.current_setpoint.pose.position.x
+            pt.position.y = self.current_setpoint.pose.position.y
+            pt.position.z = self.current_setpoint.pose.position.z
+            self.setpoint_raw_local_pub.publish(pt)
         
         # Publish velocity setpoint if available
         if self.current_velocity is not None:
-            self.setpoint_velocity_pub.publish(self.current_velocity)
+            ts = TwistStamped()
+            ts.header.stamp = self.get_clock().now().to_msg()
+            ts.twist = self.current_velocity
+            self.setpoint_velocity_pub.publish(ts)
     
     def publish_command_status(self, status):
         """Publish command execution status"""

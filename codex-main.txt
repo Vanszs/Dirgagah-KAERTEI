@@ -32,7 +32,7 @@ Build/Run Baseline (Foxy)
 
 Runtime / Connection Status (ArduPilot via apm.launch.py)
 - State topic: /mavros_node/state  
-  ros2 topic echo /mavros_node/state --qos-reliability reliable --qos-durability transient_local  
+  ros2 topic echo /mavros_node/state mavros_msgs/msg/State --qos-reliability reliable --qos-durability transient_local 
   → menampilkan connected, armed, mode, system_status
 - Extended state: /mavros_node/extended_state  
   ros2 topic echo /mavros_node/extended_state  
@@ -84,6 +84,56 @@ Current Build Status
 Open Items to remember
 - Camera indices: unknown on Jetson Nano. Update here once discovered (e.g., front_bottom=/dev/video0, back=/dev/video2, front_nav=/dev/video4). If indices change during testing, update this file
 - YOLOv8 may be too heavy on Nano 4GB; consider tiny models/TensorRT if needed. Update chosen model here
+
+=== KAERTEI Drone — MAVROS Interface Map (ArduCopter v4.6.2, ROS 2 Foxy) ===
+
+1. State & Status
+- /mavros_node/state                → FCU state (connected, armed, mode)
+- /mavros_node/extended_state       → Extended state (landing, VTOL, etc.)
+- /mavros_node/statustext/recv      → Text warnings/errors from FCU
+
+2. Arming & Mode (services)
+- /mavros_node/mavros_node/arming   → mavros_msgs/srv/CommandBool {value: true|false}
+- /mavros_node/set_mode             → mavros_msgs/srv/SetMode {custom_mode: 'GUIDED'}
+- /mavros_node/mavros_node/takeoff  → mavros_msgs/srv/CommandTOL
+- /mavros_node/mavros_node/land     → mavros_msgs/srv/CommandTOL
+
+3. RC & PWM
+- /mavros_node/rc/in                → RC input channels
+- /mavros_node/rc/out               → PWM outputs to ESC (show when armed)
+- /mavros_node/rc/override          → RC override (manual control)
+
+4. Setpoints
+- /mavros_node/setpoint_attitude/thrust  → std_msgs/Float32 (0.0–1.0 thrust)
+- /mavros_node/setpoint_attitude/cmd_vel → geometry_msgs/Twist
+- /mavros_node/setpoint_velocity/cmd_vel → geometry_msgs/TwistStamped
+- /mavros_node/setpoint_raw/local        → Position/velocity setpoint
+
+5. Sensors / Position
+- /mavros_node/local_position/pose       → Local ENU pose
+- /mavros_node/global_position/global    → Global GPS position
+- /mavros_node/global_position/raw/fix   → GPS fix raw
+- /mavros_node/imu/data                  → IMU orientation
+- /mavros_node/imu/mag                   → Magnetometer
+- /mavros_node/imu/temperature           → IMU temp
+
+6. Parameters (services)
+- /mavros_node/param/get            → mavros_msgs/srv/ParamGet {param_id: '...'}
+- /mavros_node/param/set            → mavros_msgs/srv/ParamSet {param_id: '...', value: {...}}
+- /mavros_node/mavros_node/list_parameters
+- /mavros_node/mavros_node/get_parameters
+
+7. Miscellaneous
+- /mavros_node/sys_status           → Battery, load, drop rate
+- /mavros_node/vfr_hud              → Airspeed, throttle %, climb
+- /mavros_node/esc_status           → ESC telemetry
+- /mavros_node/actuator_control     → Raw actuator command
+
+=== Notes ===
+- ArduCopter modes: STABILIZE (default), GUIDED, GUIDED_NOGPS, LOITER, AUTO, RTL, etc.
+- OFFBOARD mode is PX4-only → not available in ArduPilot.
+- Parameters like MOT_SPIN_ARMED must be changed via MAVLink param (MAVProxy / QGroundControl).
+- ros2 param set only works for ROS node params, not FCU params.
 
 Change Log
 - 2025-09-07: Switch baseline to Ubuntu 20.04 + ROS 2 Foxy, no Docker; created minimal Foxy installer and updated build/run

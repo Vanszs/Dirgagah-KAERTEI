@@ -6,6 +6,7 @@ def generate_launch_description():
         Node(
             package='mavros',
             executable='mavros_node',
+            namespace='mavros_node',
             name='mavros_node',
             output='screen',
             parameters=[
@@ -14,4 +15,5 @@ def generate_launch_description():
                 {'config_yaml': '/opt/ros/foxy/share/mavros/apm_config.yaml'},
             ],
         )
+
     ])

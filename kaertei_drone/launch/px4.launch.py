@@ -6,7 +6,8 @@ def generate_launch_description():
         Node(
             package='mavros',
             executable='mavros_node',
-            name='mavros',
+            namespace='mavros_node',
+            name='mavros_node',
             output='screen',
             parameters=[
                 {

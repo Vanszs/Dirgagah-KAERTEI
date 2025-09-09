@@ -64,7 +64,7 @@ def generate_launch_description():
     mavros_node = TimerAction(
         period=2.0,
         actions=[Node(
-            package='mavros', executable='mavros_node', name='mavros', output='screen',
+            package='mavros', executable='mavros_node', namespace='mavros_node', name='mavros_node', output='screen',
             parameters=[{'fcu_url': '/dev/ttyACM0:115200'}]
         )]
     )

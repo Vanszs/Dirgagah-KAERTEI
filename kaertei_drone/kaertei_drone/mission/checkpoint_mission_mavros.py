@@ -18,10 +18,11 @@ import yaml
 import json
 
 # MAVROS imports
-from mavros_msgs.msg import State, OverrideRCIn, PositionTarget, GlobalPositionTarget, WaypointList
-from mavros_msgs.srv import CommandBool, CommandTOL, SetMode, WaypointPull
+from mavros_msgs.msg import State, OverrideRCIn, PositionTarget, GlobalPositionTarget, WaypointList, StatusText, RCIn, RCOut
+from mavros_msgs.srv import CommandBool, CommandTOL, SetMode, WaypointPull, ParamGet, ParamSet
 from geometry_msgs.msg import TwistStamped
 from rclpy.qos import QoSProfile, ReliabilityPolicy
+from sensor_msgs.msg import MagneticField, Temperature
 
 # Import hardware configuration
 from ..hardware.hardware_config import HardwareConfig
@@ -107,24 +108,39 @@ class Checkpoint12MissionNode(Node):
         self.mission_command_pub = self.create_publisher(String, '/mission/command', qos_reliable)
         self.camera_command_pub = self.create_publisher(String, '/camera/command', qos_reliable)
         self.magnet_command_pub = self.create_publisher(String, '/magnet/command', qos_reliable)
-        self.velocity_pub = self.create_publisher(TwistStamped, '/mavros/setpoint_velocity/cmd_vel', qos_reliable)
-        self.position_pub = self.create_publisher(PoseStamped, '/mavros/setpoint_position/local', qos_reliable)
-        self.global_pos_pub = self.create_publisher(GlobalPositionTarget, '/mavros/setpoint_raw/global', qos_reliable)
+        self.velocity_pub = self.create_publisher(TwistStamped, '/mavros_node/setpoint_velocity/cmd_vel', qos_reliable)
+        # Use raw local setpoint (PositionTarget) according to MAVROS interface map
+        self.local_setpoint_pub = self.create_publisher(PositionTarget, '/mavros_node/setpoint_raw/local', qos_reliable)
+        self.global_pos_pub = self.create_publisher(GlobalPositionTarget, '/mavros_node/setpoint_raw/global', qos_reliable)
         
         # Subscribers
-        self.state_sub = self.create_subscription(State, '/mavros/state', self.mavros_state_callback, qos_reliable)
-        self.pose_sub = self.create_subscription(PoseStamped, '/mavros/local_position/pose', self.pose_callback, qos_reliable)
-        self.gps_sub = self.create_subscription(NavSatFix, '/mavros/global_position/global', self.gps_callback, qos_reliable)
-        self.waypoints_sub = self.create_subscription(WaypointList, '/mavros/mission/waypoints', self.waypoints_callback, qos_reliable)
+        self.state_sub = self.create_subscription(State, '/mavros_node/state', self.mavros_state_callback, qos_reliable)
+        self.pose_sub = self.create_subscription(PoseStamped, '/mavros_node/local_position/pose', self.pose_callback, qos_reliable)
+        self.gps_sub = self.create_subscription(NavSatFix, '/mavros_node/global_position/global', self.gps_callback, qos_reliable)
+        self.waypoints_sub = self.create_subscription(WaypointList, '/mavros_node/mission/waypoints', self.waypoints_callback, qos_reliable)
+        # FCU status text (MAVLink STATUSTEXT)
+        self.statustext_sub = self.create_subscription(StatusText, '/mavros_node/statustext/recv', self.statustext_callback, qos_reliable)
+        # Additional sensor topics
+        self.raw_fix_sub = self.create_subscription(NavSatFix, '/mavros_node/global_position/raw/fix', self.raw_fix_callback, qos_reliable)
+        self.mag_sub = self.create_subscription(MagneticField, '/mavros_node/imu/mag', self.mag_callback, qos_best_effort)
+        self.temp_sub = self.create_subscription(Temperature, '/mavros_node/imu/temperature', self.temperature_callback, qos_best_effort)
+        # Optional RC interfaces
+        self.rc_in_sub = self.create_subscription(RCIn, '/mavros_node/rc/in', self.rc_in_callback, qos_reliable)
+        self.rc_out_sub = self.create_subscription(RCOut, '/mavros_node/rc/out', self.rc_out_callback, qos_reliable)
         # Expect unified detection as geometry_msgs/Point
         self.vision_sub = self.create_subscription(Point, '/vision/detection', self.vision_callback, qos_best_effort)
         self.user_input_sub = self.create_subscription(String, '/mission/user_input', self.user_input_callback, qos_reliable)
         
         # Services
-        self.arm_service = self.create_client(CommandBool, '/mavros/cmd/arming')
-        self.takeoff_service = self.create_client(CommandTOL, '/mavros/cmd/takeoff')
-        self.mode_service = self.create_client(SetMode, '/mavros/set_mode')
-        self.wp_pull_service = self.create_client(WaypointPull, '/mavros/mission/pull')
+        self.arm_service = self.create_client(CommandBool, '/mavros_node/mavros_node/arming')
+        self.takeoff_service = self.create_client(CommandTOL, '/mavros_node/mavros_node/takeoff')
+        self.land_service = self.create_client(CommandTOL, '/mavros_node/mavros_node/land')
+        self.mode_service = self.create_client(SetMode, '/mavros_node/set_mode')
+        self.wp_pull_service = self.create_client(WaypointPull, '/mavros_node/mission/pull')
+        self.param_get_service = self.create_client(ParamGet, '/mavros_node/param/get')
+        self.param_set_service = self.create_client(ParamSet, '/mavros_node/param/set')
+        # RC override publisher (optional manual control)
+        self.rc_override_pub = self.create_publisher(OverrideRCIn, '/mavros_node/rc/override', qos_reliable)
         
         # Waypoint pulling state
         self.px4_waypoints_count = 0
@@ -151,6 +167,14 @@ class Checkpoint12MissionNode(Node):
         
         self.get_logger().info("🚁 KAERTEI 2025 - 12 Checkpoint Mission Controller Initialized")
         self.get_logger().info(f"Debug Mode: {self.debug_mode}")
+
+        # Latest sensor/RC/status caches
+        self.latest_statustext = None
+        self.gps_raw_fix = None
+        self.latest_mag = None
+        self.latest_imu_temp = None
+        self.latest_rc_in = None
+        self.latest_rc_out = None
 
     def mission_control_loop(self):
         """Main mission control loop"""
@@ -636,21 +660,23 @@ class Checkpoint12MissionNode(Node):
         """CP12: Final descent and disarm (no ground contact detection)"""
         self.get_logger().info("🏁 CP12: Final descent & disarm")
         
-        # Switch to GUIDED mode for controlled descent
-        self.set_flight_mode("GUIDED")
-        time.sleep(1)
-        
-        # Gradual RPM reduction and descent
-        #
-        
-        # Controlled descent to ground
-        target_altitude = 0.0
-        descent_rate = -0.5  # m/s descent rate
-        
-        while self.current_altitude > 0.2:  # Land when close to ground
-            self.send_altitude_command(target_altitude, descent_rate)
-            time.sleep(0.5)
-            
+        # Prefer MAVROS landing service for a clean land
+        landed_cmd_ok = self.land()
+        if not landed_cmd_ok:
+            # Fallback to mode-based landing when available
+            self.get_logger().warn("⚠️ Land service failed; attempting mode switch to AUTO.LAND/GUIDED")
+            # Try ArduPilot LAND mode first, then PX4 LAND
+            if not self.set_flight_mode("AUTO.LAND"):
+                self.set_flight_mode("LAND")
+
+        # Wait until low altitude, then disarm
+        start = time.time()
+        timeout = 30.0
+        while time.time() - start < timeout:
+            if self.current_altitude <= 0.2:
+                break
+            time.sleep(0.2)
+
         # Disarm the drone
         if self.disarm_drone():
             self.get_logger().info("✅ CP12 Complete: Mission accomplished!")
@@ -924,6 +950,113 @@ class Checkpoint12MissionNode(Node):
         # TODO: Implement altitude command
         pass
 
+    def send_position_target_local(self, x: float, y: float, z: float, yaw: Optional[float] = None,
+                                   frame: int = None, type_mask: int = None):
+        """Publish raw local position target via /mavros/setpoint_raw/local.
+
+        By default, drive position only (ignore velocities/accels/yaw rate).
+        """
+        msg = PositionTarget()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        if frame is None:
+            frame = PositionTarget.FRAME_LOCAL_NED
+        msg.coordinate_frame = frame
+
+        # Default: use only position (ignore vx,vy,vz & ax,ay,az & yaw_rate)
+        if type_mask is None:
+            type_mask = (
+                PositionTarget.IGNORE_VX | PositionTarget.IGNORE_VY | PositionTarget.IGNORE_VZ |
+                PositionTarget.IGNORE_AFX | PositionTarget.IGNORE_AFY | PositionTarget.IGNORE_AFZ |
+                PositionTarget.IGNORE_YAW_RATE
+            )
+        msg.type_mask = type_mask
+
+        msg.position.x = x
+        msg.position.y = y
+        msg.position.z = z
+        if yaw is not None:
+            msg.yaw = float(yaw)
+        self.local_setpoint_pub.publish(msg)
+
+    def send_velocity_target_local(self, vx: float, vy: float, vz: float, yaw_rate: Optional[float] = None,
+                                   frame: int = None):
+        """Publish raw local velocity target using PositionTarget (alternative to cmd_vel)."""
+        msg = PositionTarget()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        if frame is None:
+            frame = PositionTarget.FRAME_LOCAL_NED
+        msg.coordinate_frame = frame
+        # Ignore position and accelerations, use velocity
+        msg.type_mask = (
+            PositionTarget.IGNORE_PX | PositionTarget.IGNORE_PY | PositionTarget.IGNORE_PZ |
+            PositionTarget.IGNORE_AFX | PositionTarget.IGNORE_AFY | PositionTarget.IGNORE_AFZ |
+            PositionTarget.IGNORE_YAW
+        )
+        msg.velocity.x = vx
+        msg.velocity.y = vy
+        msg.velocity.z = vz
+        if yaw_rate is not None:
+            msg.yaw_rate = float(yaw_rate)
+        self.local_setpoint_pub.publish(msg)
+
+    def land(self, altitude: float = 0.0, yaw: float = 0.0) -> bool:
+        """Trigger landing via MAVROS /mavros/cmd/land (CommandTOL)."""
+        if not self.land_service.wait_for_service(timeout_sec=5.0):
+            self.get_logger().error("Land service not available")
+            return False
+        req = CommandTOL.Request()
+        # If GPS present, prefer current GPS for land
+        lat = getattr(self.gps_position, 'latitude', 0.0) if self.gps_position else 0.0
+        lon = getattr(self.gps_position, 'longitude', 0.0) if self.gps_position else 0.0
+        req.latitude = float(lat)
+        req.longitude = float(lon)
+        req.altitude = float(altitude)
+        req.yaw = float(yaw)
+        future = self.land_service.call_async(req)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=20.0)
+        ok = bool(future.result() and future.result().success)
+        if ok:
+            self.get_logger().info("🛬 Land command accepted")
+        else:
+            self.get_logger().warn("⚠️ Land command was not accepted")
+        return ok
+
+    def mavros_param_get(self, param_id: str) -> Optional[float]:
+        """Get MAVROS parameter value (float) using /mavros/param/get."""
+        if not self.param_get_service.wait_for_service(timeout_sec=2.0):
+            self.get_logger().warn("ParamGet service not available")
+            return None
+        req = ParamGet.Request()
+        req.param_id = str(param_id)
+        future = self.param_get_service.call_async(req)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=5.0)
+        if not future.result():
+            self.get_logger().warn(f"ParamGet failed: {param_id}")
+            return None
+        res = future.result()
+        # ROS2 mavros_msgs/ParamValue has .integer/.real; prefer real if set
+        val = getattr(res.value, 'real', 0.0)
+        return val
+
+    def mavros_param_set(self, param_id: str, value: float) -> bool:
+        """Set MAVROS parameter value using /mavros/param/set."""
+        if not self.param_set_service.wait_for_service(timeout_sec=2.0):
+            self.get_logger().warn("ParamSet service not available")
+            return False
+        req = ParamSet.Request()
+        req.param_id = str(param_id)
+        # ParamValue in ROS2 has fields .integer and .real
+        from mavros_msgs.msg import ParamValue
+        pv = ParamValue()
+        pv.real = float(value)
+        req.value = pv
+        future = self.param_set_service.call_async(req)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=5.0)
+        ok = bool(future.result() and future.result().success)
+        if not ok:
+            self.get_logger().warn(f"ParamSet failed: {param_id}={value}")
+        return ok
+
     def _stream_setpoint(self):
         """Continuously stream last velocity setpoint when active."""
         if not self.setpoint_active:
@@ -999,6 +1132,8 @@ class Checkpoint12MissionNode(Node):
             self.get_logger().info(f"[CP] DONE {checkpoint}")
         elif status_up.startswith('FAIL'):
             self.get_logger().info(f"[CP] FAIL {checkpoint}")
+        elif status_up.startswith('WAIT'):
+            self.get_logger().info(f"[CP] WAIT {checkpoint}")
         
     def publish_camera_command(self, command):
         """Publish camera command"""
@@ -1018,8 +1153,20 @@ class Checkpoint12MissionNode(Node):
     
     def mavros_state_callback(self, msg):
         """MAVROS state callback"""
+        prev_mode = getattr(self.mavros_state, 'mode', '') if hasattr(self, 'mavros_state') else None
+        prev_armed = getattr(self, 'armed', None)
+        prev_conn = getattr(self.mavros_state, 'connected', False) if hasattr(self, 'mavros_state') else None
+
         self.mavros_state = msg
         self.armed = msg.armed
+
+        # Log on state changes for quick field debugging
+        if prev_conn is not None and prev_conn != msg.connected:
+            self.get_logger().info(f"[STATE] MAVROS connected={msg.connected}")
+        if prev_armed is not None and prev_armed != msg.armed:
+            self.get_logger().info(f"[STATE] armed={msg.armed}")
+        if prev_mode is not None and prev_mode != msg.mode:
+            self.get_logger().info(f"[STATE] mode={msg.mode}")
         
     def pose_callback(self, msg):
         """Local position callback"""
@@ -1030,6 +1177,41 @@ class Checkpoint12MissionNode(Node):
         """GPS position callback"""
         self.gps_position = msg
         
+    def raw_fix_callback(self, msg: NavSatFix):
+        """Raw GPS fix callback (/mavros/global_position/raw/fix)"""
+        self.gps_raw_fix = msg
+        # Optionally mirror to primary if it's empty
+        if (self.gps_position is None) or (getattr(self.gps_position, 'latitude', 0.0) == 0.0 and getattr(self.gps_position, 'longitude', 0.0) == 0.0):
+            self.gps_position = msg
+
+    def mag_callback(self, msg: MagneticField):
+        """Magnetometer callback"""
+        self.latest_mag = msg
+
+    def temperature_callback(self, msg: Temperature):
+        """IMU temperature callback"""
+        self.latest_imu_temp = msg
+
+    def statustext_callback(self, msg: StatusText):
+        """FCU status text via MAVROS"""
+        self.latest_statustext = msg
+        # Map severity to log level (MAV_SEVERITY: 0-7)
+        sev = int(getattr(msg, 'severity', 6))
+        text = getattr(msg, 'text', '').strip()
+        if text:
+            if sev <= 2:
+                self.get_logger().error(f"FCU: {text}")
+            elif sev <= 4:
+                self.get_logger().warn(f"FCU: {text}")
+            else:
+                self.get_logger().info(f"FCU: {text}")
+
+    def rc_in_callback(self, msg: RCIn):
+        self.latest_rc_in = msg
+
+    def rc_out_callback(self, msg: RCOut):
+        self.latest_rc_out = msg
+
     def vision_callback(self, msg):
         """Vision detection callback (Point center)"""
         try:

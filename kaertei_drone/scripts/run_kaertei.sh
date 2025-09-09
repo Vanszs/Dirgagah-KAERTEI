@@ -57,7 +57,8 @@ echo "🎯 Launching 12-Checkpoint Mission System..."
 LOG_FILE="$SCRIPT_DIR/log.txt"
 # Show only critical/important messages
 # Only minimal mission progress and prompt (everything else goes to log.txt)
-FILTER_REGEX='^\[CP\] |Ready for next checkpoint|Type '\''next'\'''
+# Show CP progress regardless of ROS log prefix
+FILTER_REGEX='\[CP\] |Ready for next checkpoint|Type '\''next'\''' 
 
 if [ "$MODE" == "debug" ]; then
     echo "🐛 DEBUG MODE: Step-by-step checkpoint execution"
@@ -86,10 +87,30 @@ if [ "$MODE" == "debug" ]; then
     trap cleanup INT TERM
 
     echo "\nCommands: next | pause | emergency | quit"
-    echo "Type 'next' to advance checkpoints. Full log: $LOG_FILE"
+    echo "(Full log: $LOG_FILE)"
+    LAST_STATUS=""
+    LAST_READY_HINT=""
     while true; do
         if ! kill -0 $LAUNCH_PID 2>/dev/null; then
             cleanup
+        fi
+        # Build dynamic status for prompt from latest CP lines
+        LAST_CP_LINE=$(grep -E "\\[CP\\] (WAIT|START|DONE|FAIL) " "$LOG_FILE" | tail -n1)
+        if [ -n "$LAST_CP_LINE" ]; then
+            # Extract state and checkpoint label
+            STATE=$(echo "$LAST_CP_LINE" | sed -E 's/.*\[CP\] ([A-Z]+) (.*)/\1/')
+            CP=$(echo "$LAST_CP_LINE" | sed -E 's/.*\[CP\] ([A-Z]+) (.*)/\2/')
+            NEW_STATUS="CP ${CP} - ${STATE}"
+            if [ "$NEW_STATUS" != "$LAST_STATUS" ]; then
+                echo "[Status] $NEW_STATUS"
+                LAST_STATUS="$NEW_STATUS"
+            fi
+        fi
+        # Only suggest 'next' when node signals readiness
+        READY_LINE=$(grep -E "Ready for next checkpoint" "$LOG_FILE" | tail -n1)
+        if [ -n "$READY_LINE" ] && [ "$READY_LINE" != "$LAST_READY_HINT" ]; then
+            echo "Hint: ketik 'next' untuk lanjut ($READY_LINE)"
+            LAST_READY_HINT="$READY_LINE"
         fi
         read -r -p ">> " CMD
         case "${CMD,,}" in
